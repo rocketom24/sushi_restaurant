@@ -1,15 +1,139 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// =======================================================
+// GENERATOR
+// =======================================================
 
 generator client {
   provider = "prisma-client"
   output   = "../app/generated/prisma"
 }
 
+// =======================================================
+// DATASOURCE
+// =======================================================
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// =======================================================
+// ENUMS
+// =======================================================
+
+enum UserRole {
+  OWNER
+  KITCHEN
+  CUSTOMER
+}
+
+enum OrderType {
+  DINE_IN
+  TAKEAWAY
+  DELIVERY
+}
+
+enum OrderStatus {
+  NEW
+  CONFIRMED
+  PREPARING
+  READY
+  COMPLETED
+  CANCELLED
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  STRIPE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+// =======================================================
+// MODELS
+// =======================================================
+
+model User {
+  id       String   @id @default(uuid())
+  name     String
+  email    String
+  password String
+  role     UserRole @default(CUSTOMER)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Not @unique — soft-deleted rows would otherwise block reuse of the email.
+  // Enforce "unique among active users" at the application layer:
+  // WHERE email = ? AND deletedAt IS NULL before every create/update.
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Category {
+  id String @id @default(uuid())
+
+  name        String
+  slug        String
+  description String?
+  imageUrl    String?
+  iconName    String?
+
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  parentId String?
+  parent   Category?  @relation("CategoryToCategory", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryToCategory")
+
+  menuItems MenuItem[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Not @unique — same soft-delete reasoning as User.email.
+  // Enforce "unique among active categories" at the application layer:
+  // WHERE slug = ? AND deletedAt IS NULL before every create/update.
+  @@index([slug])
+  @@index([parentId])
+  @@index([isActive])
+  @@map("categories")
+}
+
+model MenuItem {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  price           Decimal  @db.Decimal(10, 2)
+  imageUrl        String?
+  preparationTime Int? // in minutes
+  isAvailable     Boolean  @default(true)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([categoryId])
+  @@index([isAvailable])
+  @@index([deletedAt, categoryId])
+  @@map("menu_items")
 }
