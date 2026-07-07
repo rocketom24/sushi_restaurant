@@ -141,6 +141,7 @@ model OrderItem {
 model Payment {
   id            String         @id @default(uuid())
   orderId       String
+  cardBrand     CardBrand?
   method        PaymentMethod
   gateway       PaymentGateway
   status        PaymentStatus  @default(PENDING)
@@ -192,7 +193,14 @@ enum ReservationStatus {
 enum PaymentMethod {
   CASH
   CARD
-  STRIPE
+  SATISPAY
+  TICKET_RESTAURANT_EDENRED
+}
+
+enum CardBrand {
+  VISA
+  MASTERCARD
+  AMERICAN_EXPRESS
 }
 
 enum PaymentStatus {
