@@ -19,6 +19,7 @@ model User {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
   orders    Order[]
+  addresses CustomerAddress[]
 
   @@index([email])
   @@index([role])
@@ -270,6 +271,29 @@ model OrderItemCustomization {
   @@index([orderItemId])
   @@index([optionId])
   @@map("order_item_customizations")
+}
+
+model CustomerAddress {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  label       String  // e.g. "Home", "Office", "Parents"
+  fullAddress String
+  city        String?
+  postalCode  String?
+  notes       String? // e.g. gate code, floor number — freeform for now
+
+  isDefault Boolean @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([userId])
+  @@index([userId, isDefault])
+  @@map("customer_addresses")
 }
 
 
