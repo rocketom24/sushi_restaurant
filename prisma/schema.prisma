@@ -62,6 +62,9 @@ model MenuItem {
   deletedAt       DateTime?
   category        Category    @relation(fields: [categoryId], references: [id])
   orderItems      OrderItem[]
+  customizationGroups CustomizationGroup[]
+  linkedByOptions     CustomizationOption[] @relation("OptionLinkedMenuItem")
+
 
   @@index([categoryId])
   @@index([isAvailable])
@@ -81,6 +84,7 @@ model Table {
   updatedAt   DateTime    @updatedAt
   deletedAt   DateTime?
   orders      Order[]
+  reservations Reservation[]
 
   @@index([tableNumber])
   @@index([qrToken])
@@ -132,6 +136,7 @@ model OrderItem {
   deletedAt  DateTime?
   menuItem   MenuItem  @relation(fields: [menuItemId], references: [id])
   order      Order     @relation(fields: [orderId], references: [id])
+  customizations OrderItemCustomization[]
 
   @@index([orderId])
   @@index([menuItemId])
@@ -162,6 +167,113 @@ model Payment {
   @@map("payments")
 }
 
+model Reservation {
+  id String @id @default(uuid())
+
+  customerName String
+  phone        String
+  email        String?
+  guestCount   Int
+
+  reservationAt DateTime
+  status        ReservationStatus @default(PENDING)
+  source        ReservationSource
+
+  tableId String?
+  table   Table?  @relation(fields: [tableId], references: [id], onDelete: SetNull)
+
+  specialRequest String?
+  internalNote   String?
+
+  arrivedAt DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([status])
+  @@index([reservationAt])
+  @@index([tableId])
+  @@index([phone])
+  @@map("reservations")
+}
+
+model CustomizationGroup {
+  id   String @id @default(uuid())
+  name String // e.g. "Portion", "Spice Level", "Sauce"
+
+  isRequired    Boolean       @default(false)
+  selectionType SelectionType @default(SINGLE)
+  sortOrder     Int           @default(0)
+
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+
+  options CustomizationOption[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([menuItemId])
+  @@map("customization_groups")
+}
+
+model CustomizationOption {
+  id   String @id @default(uuid())
+  name String // e.g. "6 Pieces", "Spicy Mayo", "Extra Nigiri"
+
+  // Additive cost for this choice — 0 for most, positive for upsells
+  // like "Extra Avocado" or "Extra Gyoza"
+  priceModifier Decimal @default(0) @db.Decimal(10, 2)
+  sortOrder     Int     @default(0)
+
+  groupId String
+  group   CustomizationGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  // An option may reference another MenuItem — e.g. "Extra Nigiri" in a
+  // Combo Box points at the actual Nigiri MenuItem for pricing/kitchen prep
+  linkedMenuItemId String?
+  linkedMenuItem   MenuItem? @relation("OptionLinkedMenuItem", fields: [linkedMenuItemId], references: [id], onDelete: SetNull)
+
+   orderItemCustomizations OrderItemCustomization[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([groupId])
+  @@index([linkedMenuItemId])
+  @@map("customization_options")
+}
+
+model OrderItemCustomization {
+  id String @id @default(uuid())
+
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  // Nullable, non-restrictive reference back to the source option —
+  // useful for analytics ("how often is Spicy Mayo picked") but never
+  // relied on for display, since the option itself may be edited/deleted later
+  optionId String?
+  option   CustomizationOption? @relation(fields: [optionId], references: [id], onDelete: SetNull)
+
+  // Snapshot fields — the actual source of truth for receipts/kitchen tickets.
+  // Menu changes must never alter historical orders (per business rules).
+  groupName     String
+  optionName    String
+  priceModifier Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+
+  @@index([orderItemId])
+  @@index([optionId])
+  @@map("order_item_customizations")
+}
+
+
+
 enum UserRole {
   OWNER
   KITCHEN
@@ -188,6 +300,12 @@ enum ReservationStatus {
   CONFIRMED
   CANCELLED
   COMPLETED
+}
+
+enum ReservationSource {
+  ONLINE
+  PHONE
+  WALK_IN
 }
 
 enum PaymentMethod {
@@ -220,4 +338,9 @@ enum TableStatus {
   OCCUPIED
   RESERVED
   CLEANING
+}
+
+enum SelectionType {
+  SINGLE
+  MULTIPLE
 }
