@@ -21,6 +21,13 @@ model User {
   orders    Order[]
   addresses CustomerAddress[]
 
+  couponRedemptions CouponRedemption[]
+  loyaltyAccount    LoyaltyAccount?
+  rewardRedemptions RewardRedemption[]
+
+  assignedKitchenTickets     KitchenTicket[]
+  assignedKitchenTicketItems KitchenTicketItem[] @relation("KitchenTicketItemChef")
+
   @@index([email])
   @@index([role])
   @@map("users")
@@ -116,6 +123,16 @@ model Order {
   user            User?       @relation(fields: [userId], references: [id])
   payments        Payment[]
 
+  discountId String?
+  discount   Discount? @relation(fields: [discountId], references: [id], onDelete: SetNull)
+
+  couponRedemptions   CouponRedemption[]
+  loyaltyTransactions LoyaltyTransaction[]
+
+  
+  kitchenTicket KitchenTicket?
+
+
   @@index([status])
   @@index([orderType])
   @@index([tableId])
@@ -138,6 +155,7 @@ model OrderItem {
   menuItem   MenuItem  @relation(fields: [menuItemId], references: [id])
   order      Order     @relation(fields: [orderId], references: [id])
   customizations OrderItemCustomization[]
+  kitchenTicketItem KitchenTicketItem?
 
   @@index([orderId])
   @@index([menuItemId])
@@ -298,6 +316,254 @@ model CustomerAddress {
 
 
 
+model Discount {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  type        DiscountType
+  value       Decimal      @db.Decimal(10, 2)
+
+  isActive Boolean   @default(true)
+  startsAt DateTime?
+  endsAt   DateTime?
+
+  // Traceability only — the actual charged amount is already snapshotted
+  // on Order.discountAmount. This just tells you *which* automatic
+  // discount produced it, for reporting.
+  orders Order[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([isActive])
+  @@map("discounts")
+}
+
+// =======================================================
+// COUPON — applied using a code (e.g. WELCOME10)
+// =======================================================
+
+model Coupon {
+  id          String       @id @default(uuid())
+  code        String
+  description String?
+  type        DiscountType
+  value       Decimal      @db.Decimal(10, 2)
+
+  minOrderAmount  Decimal? @db.Decimal(10, 2)
+  maxUsageCount   Int? // total redemptions allowed across all customers, null = unlimited
+  maxUsagePerUser Int? // null = unlimited per customer
+  usageCount      Int      @default(0)
+
+  isActive Boolean   @default(true)
+  startsAt DateTime?
+  endsAt   DateTime?
+
+  redemptions CouponRedemption[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Not @unique on code — same soft-delete reasoning used throughout.
+  // Enforce uniqueness among active rows at the application layer:
+  // WHERE code = ? AND deletedAt IS NULL
+  @@index([code])
+  @@index([isActive])
+  @@map("coupons")
+}
+
+// Permanent audit record of a coupon being used on an order.
+// No soft delete — this is an immutable ledger entry, not an editable resource.
+model CouponRedemption {
+  id String @id @default(uuid())
+
+  couponId String
+  coupon   Coupon @relation(fields: [couponId], references: [id], onDelete: Restrict)
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  // Optional — guest checkout has no user account
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Snapshot of the discount actually applied, independent of later
+  // changes to Coupon.value
+  discountAmount Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+
+  @@index([couponId])
+  @@index([orderId])
+  @@index([userId])
+  @@map("coupon_redemptions")
+}
+
+// =======================================================
+// LOYALTY — customers earn points from purchases
+// =======================================================
+
+model LoyaltyAccount {
+  id String @id @default(uuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  pointsBalance Int @default(0)
+
+  transactions LoyaltyTransaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("loyalty_accounts")
+}
+
+// Permanent ledger — "Transactions are stored permanently" per the doc.
+// No soft delete, no updatedAt — each row is a fixed historical fact.
+model LoyaltyTransaction {
+  id String @id @default(uuid())
+
+  loyaltyAccountId String
+  loyaltyAccount   LoyaltyAccount @relation(fields: [loyaltyAccountId], references: [id], onDelete: Restrict)
+
+  // Optional — points can be earned from an order, or adjusted manually
+  // by staff (correction, goodwill gesture) with no order involved
+  orderId String?
+  order   Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  type        LoyaltyTransactionType
+  points      Int // positive for EARNED, negative for REDEEMED/EXPIRED
+  description String?
+  rewardRedemption RewardRedemption?
+
+  createdAt DateTime @default(now())
+
+  @@index([loyaltyAccountId])
+  @@index([orderId])
+  @@index([type])
+  @@map("loyalty_transactions")
+}
+
+// =======================================================
+// REWARDS — restaurant-defined items redeemable with points
+// =======================================================
+
+model Reward {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  pointsCost  Int
+  isActive    Boolean @default(true)
+
+  redemptions RewardRedemption[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([isActive])
+  @@map("rewards")
+}
+
+// Permanent record of a reward being claimed. No soft delete —
+// same immutable-ledger reasoning as CouponRedemption.
+model RewardRedemption {
+  id String @id @default(uuid())
+
+  rewardId String
+  reward   Reward @relation(fields: [rewardId], references: [id], onDelete: Restrict)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  // Links to the ledger entry that deducted the points, so the
+  // point deduction and the reward claim stay traceable to each other
+  loyaltyTransactionId String?             @unique
+  loyaltyTransaction   LoyaltyTransaction? @relation(fields: [loyaltyTransactionId], references: [id], onDelete: SetNull)
+
+  fulfilled  Boolean   @default(false)
+  redeemedAt DateTime  @default(now())
+  fulfilledAt DateTime?
+
+  @@index([rewardId])
+  @@index([userId])
+  @@map("reward_redemptions")
+}
+
+
+
+model KitchenTicket {
+  id String @id @default(uuid())
+
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  status KitchenTicketStatus @default(QUEUED)
+
+  // Chef currently responsible for this ticket overall.
+  // Nullable — a ticket can sit in queue before anyone picks it up.
+  assignedChefId String?
+  assignedChef   User?   @relation(fields: [assignedChefId], references: [id], onDelete: SetNull)
+
+  // Timing — supports "Order timing" and future kitchen analytics
+  queuedAt    DateTime  @default(now())
+  startedAt   DateTime?
+  readyAt     DateTime?
+  servedAt    DateTime?
+
+  notes String?
+
+  items KitchenTicketItem[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([status])
+  @@index([assignedChefId])
+  @@index([queuedAt])
+  @@map("kitchen_tickets")
+}
+
+// =======================================================
+// KITCHEN TICKET ITEM — per-item prep tracking within a ticket.
+// Individual dishes finish at different times (nigiri is fast,
+// a combo box is slow) so status is tracked per item, not just
+// per whole order.
+// =======================================================
+
+model KitchenTicketItem {
+  id String @id @default(uuid())
+
+  kitchenTicketId String
+  kitchenTicket   KitchenTicket @relation(fields: [kitchenTicketId], references: [id], onDelete: Cascade)
+
+  orderItemId String    @unique
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  status KitchenTicketStatus @default(QUEUED)
+
+  // Optional — supports future "multiple chefs" without redesigning now;
+  // individual dishes can be assigned separately from the ticket's main chef
+  assignedChefId String?
+  assignedChef   User?   @relation("KitchenTicketItemChef", fields: [assignedChefId], references: [id], onDelete: SetNull)
+
+  startedAt DateTime?
+  readyAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([kitchenTicketId])
+  @@index([status])
+  @@index([assignedChefId])
+  @@map("kitchen_ticket_items")
+}
+
+
 enum UserRole {
   OWNER
   KITCHEN
@@ -367,4 +633,24 @@ enum TableStatus {
 enum SelectionType {
   SINGLE
   MULTIPLE
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+enum LoyaltyTransactionType {
+  EARNED
+  REDEEMED
+  ADJUSTED
+  EXPIRED
+}
+
+enum KitchenTicketStatus {
+  QUEUED
+  PREPARING
+  READY
+  SERVED
+  CANCELLED
 }
