@@ -35,11 +35,31 @@ export type RegisterFormState = {
     confirmPassword?: string[];
     _form?: string[];
   };
-
   values?: {
     name?: string;
     email?: string;
   };
+  success?: boolean;
+};
 
+// ...existing registerSchema and RegisterInput above...
+
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "Email is required.")
+    .email("Please enter a valid email address."),
+  password: z.string().min(1, "Password is required."),
+});
+
+export type LoginInput = z.infer<typeof loginSchema>;
+
+export type LoginFormState = {
+  errors?: {
+    email?: string[];
+    password?: string[];
+    _form?: string[];
+  };
   success?: boolean;
 };

@@ -2,7 +2,8 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { registerAction } from "@/app/auth/actions";
+// components/auth/RegisterForm.tsx
+import { registerAction } from "@/app/(auth)/actions";
 import type { RegisterFormState } from "@/lib/validations/auth";
 
 const initialState: RegisterFormState = {};

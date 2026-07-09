@@ -1,0 +1,95 @@
+"use client";
+
+import { useActionState } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+// components/auth/LoginForm.tsx
+import { loginAction } from "@/app/(auth)/actions";
+import type { LoginFormState } from "@/lib/validations/auth";
+
+const initialState: LoginFormState = {};
+
+export default function LoginForm() {
+  const [state, formAction, isPending] = useActionState(
+    loginAction,
+    initialState
+  );
+  const searchParams = useSearchParams();
+  const message = searchParams.get("message");
+
+  return (
+    <form action={formAction} className="space-y-5">
+      {message && (
+        <div className="rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
+          {message}
+        </div>
+      )}
+
+      {state.errors?._form && (
+        <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          {state.errors._form[0]}
+        </div>
+      )}
+
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium mb-1">
+          Email
+        </label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-900"
+        />
+        {state.errors?.email && (
+          <p className="mt-1 text-sm text-red-600">{state.errors.email[0]}</p>
+        )}
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <label htmlFor="password" className="block text-sm font-medium">
+            Password
+          </label>
+          <Link
+            href="/forgot-password"
+            className="text-sm text-neutral-500 hover:text-neutral-900 underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-900"
+        />
+        {state.errors?.password && (
+          <p className="mt-1 text-sm text-red-600">
+            {state.errors.password[0]}
+          </p>
+        )}
+      </div>
+
+      <button
+        type="submit"
+        disabled={isPending}
+        className="w-full rounded-md bg-neutral-900 text-white py-2.5 font-medium hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      >
+        {isPending ? "Logging in..." : "Login"}
+      </button>
+
+      <p className="text-center text-sm text-gray-600">
+        Don&apos;t have an account?{" "}
+        <Link
+          href="/register"
+          className="text-neutral-900 font-medium underline"
+        >
+          Register
+        </Link>
+      </p>
+    </form>
+  );
+}
