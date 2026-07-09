@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { requireGuest } from "@/lib/guards";
 import LoginForm from "@/components/auth/LoginForm";
 
 export const metadata = {
@@ -6,7 +7,9 @@ export const metadata = {
   description: "Login to your account to order sushi and track your loyalty points.",
 };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  await requireGuest(); // redirects away if already logged in
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 p-8">

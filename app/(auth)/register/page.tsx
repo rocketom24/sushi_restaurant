@@ -1,3 +1,4 @@
+import { requireGuest } from "@/lib/guards";
 import RegisterForm from "@/components/auth/RegisterForm";
 
 export const metadata = {
@@ -5,7 +6,9 @@ export const metadata = {
   description: "Register to order sushi, save addresses, and earn loyalty points.",
 };
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
+  await requireGuest(); // redirects away if already logged in
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
