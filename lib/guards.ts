@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import type { User as PrismaUser } from "@/app/generated/prisma/client";
+// lib/guards.ts — wrap getCurrentUser with React cache
+import { cache } from "react";
 
 export class UnauthenticatedError extends Error {
   constructor(message = "Not authenticated") {
@@ -27,7 +29,7 @@ export class ForbiddenError extends Error {
  * project's authorization principle: "The application must never
  * trust Supabase metadata for authorization."
  */
-export async function getCurrentUser(): Promise<PrismaUser | null> {
+export const getCurrentUser = cache(async (): Promise<PrismaUser | null> => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -39,15 +41,13 @@ export async function getCurrentUser(): Promise<PrismaUser | null> {
     where: { id: user.id, deletedAt: null },
   });
 
-  // Deleted-account edge case: valid Supabase session, but the
-  // Prisma profile is gone or soft-deleted. Treat as logged out.
   if (!profile) {
     await supabase.auth.signOut();
     return null;
   }
 
   return profile;
-}
+});
 
 // =======================================================
 // API ROUTE / SERVER ACTION GUARDS — throw, caller catches
@@ -125,3 +125,10 @@ export async function requireGuest(): Promise<void> {
   if (user.role === "OWNER") redirect("/dashboard");
   redirect("/");
 }
+
+
+
+
+
+
+

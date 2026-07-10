@@ -71,11 +71,16 @@ model MenuItem {
   orderItems      OrderItem[]
   customizationGroups CustomizationGroup[]
   linkedByOptions     CustomizationOption[] @relation("OptionLinkedMenuItem")
+  isFeatured Boolean     @default(false)
+  sortOrder  Int         @default(0)
+  calories   Int?
+  spiceLevel SpiceLevel?
 
 
   @@index([categoryId])
   @@index([isAvailable])
   @@index([deletedAt, categoryId])
+  @@index([isFeatured])
   @@map("menu_items")
 }
 
@@ -563,6 +568,9 @@ model KitchenTicketItem {
 }
 
 
+
+
+
 enum UserRole {
   OWNER
   KITCHEN
@@ -652,4 +660,11 @@ enum KitchenTicketStatus {
   READY
   SERVED
   CANCELLED
+}
+
+enum SpiceLevel {
+  NONE
+  MILD
+  MEDIUM
+  HOT
 }
