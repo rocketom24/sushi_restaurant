@@ -38,6 +38,9 @@ export default async function DashboardLayout({
               Reservations
             </Link>
           </nav>
+          <Link href="/dashboard/kitchen" className="hover:text-neutral-900 hover:underline">
+             Kitchen
+          </Link>
         </div>
 
         <LogoutButton />
