@@ -4,14 +4,22 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import { createOrderAction } from "@/lib/actions/checkout.actions";
+import PaymentMethodSelector from "./PaymentMethodSelector";
+import { startPaymentAction } from "@/lib/actions/payment.actions";
+import type { PaymentMethod } from "@/app/generated/prisma/client";
 
 export default function CheckoutForm() {
   const { items, totals, clearCart } = useCart();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [orderType, setOrderType] = useState<"DINE_IN" | "TAKEAWAY" | "DELIVERY">(
-    "TAKEAWAY"
-  );
+
+  const [orderType, setOrderType] = useState<
+    "DINE_IN" | "TAKEAWAY" | "DELIVERY"
+  >("TAKEAWAY");
+
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethod>("CASH");
+
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -23,12 +31,15 @@ export default function CheckoutForm() {
     startTransition(async () => {
       const result = await createOrderAction({
         orderType,
-        deliveryAddress: orderType === "DELIVERY" ? deliveryAddress : undefined,
+        deliveryAddress:
+          orderType === "DELIVERY" ? deliveryAddress : undefined,
         notes: notes || undefined,
         items: items.map((item) => ({
           menuItemId: item.menuItemId,
           quantity: item.quantity,
-          customizationOptionIds: item.customizations.map((c) => c.optionId),
+          customizationOptionIds: item.customizations.map(
+            (c) => c.optionId
+          ),
           specialInstructions: item.specialInstructions,
         })),
       });
@@ -38,6 +49,28 @@ export default function CheckoutForm() {
         return;
       }
 
+      // Start payment after order creation
+      const paymentResult = await startPaymentAction(
+        result.orderId,
+        paymentMethod
+      );
+
+      if (!paymentResult.success) {
+        setError(paymentResult.error);
+        return;
+      }
+
+      // Card payment -> Stripe
+      if (paymentResult.clientSecret) {
+        clearCart();
+
+        router.push(
+          `/checkout/payment?orderId=${result.orderId}&clientSecret=${paymentResult.clientSecret}`
+        );
+        return;
+      }
+
+      // Cash / other offline payments
       clearCart();
       router.push(`/orders/${result.orderId}`);
     });
@@ -46,13 +79,17 @@ export default function CheckoutForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="rounded-md bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
+      {/* Order Type */}
       <div>
-        <label className="block text-sm font-medium mb-2">Order Type</label>
+        <label className="mb-2 block text-sm font-medium">
+          Order Type
+        </label>
+
         <div className="flex gap-2">
           {(["TAKEAWAY", "DELIVERY", "DINE_IN"] as const).map((type) => (
             <button
@@ -65,17 +102,26 @@ export default function CheckoutForm() {
                   : "border-gray-300 hover:bg-gray-50"
               }`}
             >
-              {type === "DINE_IN" ? "Dine In" : type === "TAKEAWAY" ? "Takeaway" : "Delivery"}
+              {type === "DINE_IN"
+                ? "Dine In"
+                : type === "TAKEAWAY"
+                ? "Takeaway"
+                : "Delivery"}
             </button>
           ))}
         </div>
       </div>
 
+      {/* Delivery Address */}
       {orderType === "DELIVERY" && (
         <div>
-          <label htmlFor="deliveryAddress" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="deliveryAddress"
+            className="mb-1 block text-sm font-medium"
+          >
             Delivery Address
           </label>
+
           <textarea
             id="deliveryAddress"
             value={deliveryAddress}
@@ -87,10 +133,15 @@ export default function CheckoutForm() {
         </div>
       )}
 
+      {/* Notes */}
       <div>
-        <label htmlFor="notes" className="block text-sm font-medium mb-1">
+        <label
+          htmlFor="notes"
+          className="mb-1 block text-sm font-medium"
+        >
           Order Notes (optional)
         </label>
+
         <textarea
           id="notes"
           value={notes}
@@ -102,19 +153,34 @@ export default function CheckoutForm() {
         />
       </div>
 
+
+      {/* Total */}
       <div className="border-t border-gray-200 pt-4">
-        <div className="flex justify-between font-semibold text-lg">
+        <div className="flex justify-between text-lg font-semibold">
           <span>Total</span>
           <span>€{totals.grandTotal.toFixed(2)}</span>
         </div>
       </div>
 
+        
+          {/* Payment Method */}
+      <PaymentMethodSelector
+        value={paymentMethod}
+        onChange={setPaymentMethod}
+      />
+
+      
+      {/* Submit */}
       <button
         type="submit"
         disabled={isPending || items.length === 0}
-        className="w-full rounded-md bg-neutral-900 text-white py-3 font-medium hover:bg-neutral-800 disabled:opacity-50"
+        className="w-full rounded-md bg-neutral-900 py-3 font-medium text-white hover:bg-neutral-800 disabled:opacity-50"
       >
-        {isPending ? "Placing Order..." : "Place Order"}
+        {isPending
+          ? "Processing..."
+          : paymentMethod === "CARD"
+          ? "Continue to Secure Payment"
+          : "Place Order"}
       </button>
     </form>
   );

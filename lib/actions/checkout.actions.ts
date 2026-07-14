@@ -183,7 +183,7 @@ if (!validated.success) {
         data: {
           orderId: createdOrder.id,
           method: "CASH",
-          gateway: "MANUAL",
+          gateway: "NONE",
           status: "PENDING",
           amount: totalAmount,
         },

@@ -166,22 +166,34 @@ model OrderItem {
   @@map("order_items")
 }
 
+// Updated Payment model
 model Payment {
-  id            String         @id @default(uuid())
-  orderId       String
-  cardBrand     CardBrand?
-  method        PaymentMethod
-  gateway       PaymentGateway
-  status        PaymentStatus  @default(PENDING)
-  amount        Decimal        @db.Decimal(10, 2)
-  currency      String         @default("EUR")
-  transactionId String?
-  paidAt        DateTime?
-  notes         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  deletedAt     DateTime?
-  order         Order          @relation(fields: [orderId], references: [id])
+  id String @id @default(uuid())
+
+  orderId String
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  method    PaymentMethod
+  cardBrand CardBrand?
+  gateway   PaymentGateway
+  status    PaymentStatus @default(PENDING)
+
+  amount   Decimal @db.Decimal(10, 2)
+  currency String  @default("EUR")
+
+  transactionId    String?
+  gatewayReference String?
+
+  paidAt       DateTime?
+  refundedAt   DateTime?
+  refundAmount Decimal?  @db.Decimal(10, 2)
+  failureReason String?
+
+  notes String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@index([orderId])
   @@index([status])
@@ -189,6 +201,8 @@ model Payment {
   @@index([paidAt])
   @@map("payments")
 }
+
+
 
 model Reservation {
   id String @id @default(uuid())
@@ -620,14 +634,18 @@ enum CardBrand {
 
 enum PaymentStatus {
   PENDING
+  PROCESSING
   PAID
   FAILED
   REFUNDED
+  CANCELLED
 }
 
 enum PaymentGateway {
-  MANUAL
+  NONE
+  SATISPAY
   STRIPE
+  EDENRED
 }
 
 enum TableStatus {
