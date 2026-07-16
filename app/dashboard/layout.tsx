@@ -30,23 +30,27 @@ export default async function DashboardLayout({
             <Link href="/dashboard/menu" className="hover:text-neutral-900 hover:underline">
               Menu
             </Link>
-            {/* Placeholders for upcoming modules — links will 404 until those pages exist */}
             <Link href="/dashboard/orders" className="hover:text-neutral-900 hover:underline">
               Orders
+            </Link>
+            <Link href="/dashboard/kitchen" className="hover:text-neutral-900 hover:underline">
+              Kitchen
+            </Link>
+            <Link href="/dashboard/payments" className="hover:text-neutral-900 hover:underline">
+              Payments
             </Link>
             <Link href="/dashboard/reservations" className="hover:text-neutral-900 hover:underline">
               Reservations
             </Link>
           </nav>
-          <Link href="/dashboard/kitchen" className="hover:text-neutral-900 hover:underline">
-             Kitchen
-          </Link>
-          <Link href="/dashboard/payments" className="hover:text-neutral-900 hover:underline">
-            Payments
-          </Link>
         </div>
 
-        <LogoutButton />
+        <div className="flex items-center gap-4">
+          <Link href="/" className="text-sm text-gray-600 hover:text-neutral-900 hover:underline">
+            View Site
+          </Link>
+          <LogoutButton />
+        </div>
       </header>
       <main className="p-6">{children}</main>
     </div>

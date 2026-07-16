@@ -26,6 +26,17 @@ export async function getPublicMenu() {
   });
 }
 
+/** Featured, available dishes for the home page. Prices pre-serialized. */
+export async function getFeaturedItems(limit = 4) {
+  const items = await prisma.menuItem.findMany({
+    where: { deletedAt: null, isAvailable: true, isFeatured: true },
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    take: limit,
+  });
+
+  return items.map((item) => ({ ...item, price: Number(item.price) }));
+}
+
 export async function searchMenuItems(query: string) {
   if (!query.trim()) return [];
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Unauthorized | Your Restaurant",
+  title: "Unauthorized",
 };
 
 export default function UnauthorizedPage() {

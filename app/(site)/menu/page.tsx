@@ -4,7 +4,7 @@ import { getPublicMenu } from "@/lib/actions/public-menu.actions";
 import MenuBrowser from "@/components/menu/MenuBrowser";
 
 export const metadata = {
-  title: "Menu | Your Restaurant",
+  title: "Menu",
   description: "Browse our full sushi menu.",
 };
 
