@@ -19,13 +19,15 @@ export default function PaymentMethodSelector({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium mb-2">Payment Method</label>
+      <label className="block text-sm font-medium text-gray-300 mb-2">Payment Method</label>
       <div className="space-y-2">
         {METHODS.map((m) => (
           <label
             key={m.value}
-            className={`flex items-center justify-between rounded-md border px-3 py-2.5 cursor-pointer ${
-              value === m.value ? "border-neutral-900 bg-neutral-50" : "border-gray-300"
+            className={`flex items-center justify-between rounded-md border px-3 py-2.5 cursor-pointer transition-colors ${
+              value === m.value
+                ? "border-orange-500 bg-orange-500/10"
+                : "border-white/15 hover:border-white/30"
             }`}
           >
             <span className="flex items-center gap-2">
@@ -34,10 +36,11 @@ export default function PaymentMethodSelector({
                 name="paymentMethod"
                 checked={value === m.value}
                 onChange={() => onChange(m.value)}
+                className="accent-orange-500"
               />
-              <span className="text-sm">{m.label}</span>
+              <span className="text-sm text-neutral-200">{m.label}</span>
             </span>
-            {m.note && <span className="text-xs text-gray-400">{m.note}</span>}
+            {m.note && <span className="text-xs text-gray-500">{m.note}</span>}
           </label>
         ))}
       </div>

@@ -13,25 +13,34 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-neutral-900 text-white">
-        <div className="max-w-6xl mx-auto px-4 py-24 text-center">
-          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-4">
-            Fresh Sushi, Italian Soul
+      <section className="relative overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(249,115,22,0.12),transparent_55%)]"
+        />
+        <div className="relative max-w-6xl mx-auto px-4 py-28 text-center">
+          <p className="text-orange-500 text-xs font-medium tracking-[0.35em] uppercase mb-5">
+            Japanese Kitchen · Italian Soul
+          </p>
+          <h1 className="font-serif text-5xl sm:text-6xl text-white tracking-tight mb-6">
+            Experience the <span className="text-orange-500">Taste</span>
+            <br />
+            of Fresh Sushi
           </h1>
-          <p className="text-lg text-gray-300 max-w-xl mx-auto mb-8">
+          <p className="text-lg text-gray-400 max-w-xl mx-auto mb-10">
             Handcrafted rolls and seasonal dishes — order online for takeaway
             or delivery, or reserve your table in seconds.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Link
               href="/menu"
-              className="rounded-md bg-white text-neutral-900 px-6 py-3 font-medium hover:bg-gray-200"
+              className="rounded-md bg-orange-600 text-white px-7 py-3 font-medium hover:bg-orange-500 transition-colors"
             >
               View Menu
             </Link>
             <Link
               href="/reservations/new"
-              className="rounded-md border border-white/40 px-6 py-3 font-medium hover:bg-white/10"
+              className="rounded-md border border-white/25 text-white px-7 py-3 font-medium hover:border-orange-500/70 hover:text-orange-400 transition-colors"
             >
               Book a Table
             </Link>
@@ -41,46 +50,43 @@ export default async function HomePage() {
 
       {/* Featured dishes */}
       {featured.length > 0 && (
-        <section className="max-w-6xl mx-auto px-4 py-16">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-semibold text-neutral-900">
-              Featured Dishes
-            </h2>
-            <Link
-              href="/menu"
-              className="text-sm text-gray-500 hover:text-neutral-900 hover:underline"
-            >
-              Full menu &rarr;
-            </Link>
+        <section className="max-w-6xl mx-auto px-4 py-20">
+          <div className="text-center mb-10">
+            <p className="text-orange-500 text-xs font-medium tracking-[0.35em] uppercase mb-3">
+              Chef&apos;s Selection
+            </p>
+            <h2 className="font-serif text-3xl text-white">Featured Dishes</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {featured.map((item) => (
               <Link
                 key={item.id}
                 href="/menu"
-                className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+                className="group bg-neutral-900 rounded-2xl border border-white/10 overflow-hidden hover:border-orange-500/50 transition-colors"
               >
                 {item.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={item.imageUrl}
                     alt={item.name}
-                    className="h-40 w-full object-cover"
+                    className="h-44 w-full object-cover"
                   />
                 ) : (
-                  <div className="h-40 w-full bg-neutral-100 flex items-center justify-center text-4xl">
+                  <div className="h-44 w-full bg-neutral-800 flex items-center justify-center text-5xl">
                     🍣
                   </div>
                 )}
-                <div className="p-4">
+                <div className="p-5">
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-medium text-neutral-900">{item.name}</h3>
-                    <span className="text-sm font-semibold text-neutral-900">
+                    <h3 className="font-medium text-white group-hover:text-orange-400 transition-colors">
+                      {item.name}
+                    </h3>
+                    <span className="text-sm font-semibold text-orange-400">
                       €{item.price.toFixed(2)}
                     </span>
                   </div>
                   {item.description && (
-                    <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                    <p className="text-sm text-gray-500 mt-2 line-clamp-2">
                       {item.description}
                     </p>
                   )}
@@ -88,29 +94,37 @@ export default async function HomePage() {
               </Link>
             ))}
           </div>
+          <div className="text-center mt-10">
+            <Link
+              href="/menu"
+              className="text-sm text-gray-400 hover:text-orange-400 transition-colors"
+            >
+              Explore the full menu &rarr;
+            </Link>
+          </div>
         </section>
       )}
 
       {/* How it works */}
-      <section className="bg-white border-y border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 py-16 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+      <section className="border-y border-white/10 bg-neutral-950">
+        <div className="max-w-6xl mx-auto px-4 py-20 grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
           <div>
-            <p className="text-3xl mb-3">🥢</p>
-            <h3 className="font-semibold text-neutral-900 mb-1">Browse the Menu</h3>
+            <p className="text-4xl mb-4">🥢</p>
+            <h3 className="font-serif text-lg text-white mb-2">Browse the Menu</h3>
             <p className="text-sm text-gray-500">
               Explore our full selection of sushi and Italian-inspired dishes.
             </p>
           </div>
           <div>
-            <p className="text-3xl mb-3">🛵</p>
-            <h3 className="font-semibold text-neutral-900 mb-1">Order Online</h3>
+            <p className="text-4xl mb-4">🛵</p>
+            <h3 className="font-serif text-lg text-white mb-2">Order Online</h3>
             <p className="text-sm text-gray-500">
               Takeaway, delivery, or dine-in — pay by card or cash.
             </p>
           </div>
           <div>
-            <p className="text-3xl mb-3">📅</p>
-            <h3 className="font-semibold text-neutral-900 mb-1">Reserve a Table</h3>
+            <p className="text-4xl mb-4">📅</p>
+            <h3 className="font-serif text-lg text-white mb-2">Reserve a Table</h3>
             <p className="text-sm text-gray-500">
               Book online and we&apos;ll have your table ready when you arrive.
             </p>
@@ -119,16 +133,17 @@ export default async function HomePage() {
       </section>
 
       {/* Hours & CTA */}
-      <section className="max-w-6xl mx-auto px-4 py-16 text-center">
-        <h2 className="text-2xl font-semibold text-neutral-900 mb-2">
-          Opening Hours
-        </h2>
-        <p className="text-gray-500 mb-8">
+      <section className="max-w-6xl mx-auto px-4 py-20 text-center">
+        <p className="text-orange-500 text-xs font-medium tracking-[0.35em] uppercase mb-3">
+          Visit Us
+        </p>
+        <h2 className="font-serif text-3xl text-white mb-3">Opening Hours</h2>
+        <p className="text-gray-400 mb-10">
           Lunch 12:00–14:30 &nbsp;·&nbsp; Dinner 18:00–22:30
         </p>
         <Link
           href="/reservations/new"
-          className="inline-block rounded-md bg-neutral-900 text-white px-6 py-3 font-medium hover:bg-neutral-800"
+          className="inline-block rounded-md bg-orange-600 text-white px-7 py-3 font-medium hover:bg-orange-500 transition-colors"
         >
           Reserve Your Table
         </Link>

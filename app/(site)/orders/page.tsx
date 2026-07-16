@@ -5,8 +5,8 @@ export default async function MyOrdersPage() {
   const orders = await getMyOrders();
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="text-2xl font-semibold text-neutral-900 mb-6">My Orders</h1>
+    <div className="max-w-2xl mx-auto px-4 py-16">
+      <h1 className="font-serif text-3xl text-white mb-8">My Orders</h1>
 
       {orders.length === 0 ? (
         <p className="text-gray-500 text-center py-16">No orders found.</p>

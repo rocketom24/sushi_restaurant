@@ -55,7 +55,7 @@ export default function MenuBrowser({ categories }: { categories: CategoryData[]
         placeholder="Search menu..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full max-w-md mx-auto block rounded-md border border-gray-300 px-4 py-2.5 mb-10"
+        className="w-full max-w-md mx-auto block rounded-md bg-neutral-900 border border-white/15 px-4 py-2.5 mb-12 text-neutral-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/60"
       />
 
       {filtered.length === 0 && (
@@ -63,8 +63,8 @@ export default function MenuBrowser({ categories }: { categories: CategoryData[]
       )}
 
       {filtered.map((cat) => (
-        <section key={cat.id} className="mb-12">
-          <h2 className="text-xl font-semibold text-neutral-900 mb-4">{cat.name}</h2>
+        <section key={cat.id} className="mb-14">
+          <h2 className="font-serif text-2xl text-white mb-6 text-center">{cat.name}</h2>
 
           {cat.menuItems.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -76,7 +76,7 @@ export default function MenuBrowser({ categories }: { categories: CategoryData[]
 
           {cat.children.map((child) => (
             <div key={child.id} className="mb-6">
-              <h3 className="text-lg font-medium text-neutral-700 mb-3">{child.name}</h3>
+              <h3 className="font-serif text-lg text-gray-300 mb-3">{child.name}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {child.menuItems.map((item) => (
                   <MenuCard key={item.id} item={item} />

@@ -79,14 +79,14 @@ export default function CheckoutForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
           {error}
         </div>
       )}
 
       {/* Order Type */}
       <div>
-        <label className="mb-2 block text-sm font-medium">
+        <label className="mb-2 block text-sm font-medium text-gray-300">
           Order Type
         </label>
 
@@ -96,10 +96,10 @@ export default function CheckoutForm() {
               key={type}
               type="button"
               onClick={() => setOrderType(type)}
-              className={`flex-1 rounded-md border px-3 py-2 text-sm font-medium ${
+              className={`flex-1 rounded-md border px-3 py-2 text-sm font-medium transition-colors ${
                 orderType === type
-                  ? "border-neutral-900 bg-neutral-900 text-white"
-                  : "border-gray-300 hover:bg-gray-50"
+                  ? "border-orange-500 bg-orange-600 text-white"
+                  : "border-white/15 text-gray-300 hover:border-white/30"
               }`}
             >
               {type === "DINE_IN"
@@ -117,7 +117,7 @@ export default function CheckoutForm() {
         <div>
           <label
             htmlFor="deliveryAddress"
-            className="mb-1 block text-sm font-medium"
+            className="mb-1 block text-sm font-medium text-gray-300"
           >
             Delivery Address
           </label>
@@ -128,7 +128,7 @@ export default function CheckoutForm() {
             onChange={(e) => setDeliveryAddress(e.target.value)}
             rows={2}
             required
-            className="w-full rounded-md border border-gray-300 px-3 py-2"
+            className="w-full rounded-md bg-neutral-900 border border-white/15 px-3 py-2 text-neutral-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/60"
           />
         </div>
       )}
@@ -137,7 +137,7 @@ export default function CheckoutForm() {
       <div>
         <label
           htmlFor="notes"
-          className="mb-1 block text-sm font-medium"
+          className="mb-1 block text-sm font-medium text-gray-300"
         >
           Order Notes (optional)
         </label>
@@ -149,16 +149,16 @@ export default function CheckoutForm() {
           maxLength={250}
           rows={2}
           placeholder="e.g. Less spicy, ring the bell"
-          className="w-full rounded-md border border-gray-300 px-3 py-2"
+          className="w-full rounded-md bg-neutral-900 border border-white/15 px-3 py-2 text-neutral-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/60"
         />
       </div>
 
 
       {/* Total */}
-      <div className="border-t border-gray-200 pt-4">
-        <div className="flex justify-between text-lg font-semibold">
+      <div className="border-t border-white/10 pt-4">
+        <div className="flex justify-between text-lg font-semibold text-white">
           <span>Total</span>
-          <span>€{totals.grandTotal.toFixed(2)}</span>
+          <span className="text-orange-400">€{totals.grandTotal.toFixed(2)}</span>
         </div>
       </div>
 
@@ -174,7 +174,7 @@ export default function CheckoutForm() {
       <button
         type="submit"
         disabled={isPending || items.length === 0}
-        className="w-full rounded-md bg-neutral-900 py-3 font-medium text-white hover:bg-neutral-800 disabled:opacity-50"
+        className="w-full rounded-md bg-orange-600 py-3 font-medium text-white hover:bg-orange-500 disabled:opacity-50 transition-colors"
       >
         {isPending
           ? "Processing..."

@@ -8,12 +8,12 @@ export default async function MyReservationsPage() {
   const reservations = await getMyReservations();
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-neutral-900">My Reservations</h1>
+    <div className="max-w-2xl mx-auto px-4 py-16">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="font-serif text-3xl text-white">My Reservations</h1>
         <Link
           href="/reservations/new"
-          className="rounded-md bg-neutral-900 text-white px-4 py-2 text-sm font-medium hover:bg-neutral-800"
+          className="rounded-md bg-orange-600 text-white px-4 py-2 text-sm font-medium hover:bg-orange-500 transition-colors"
         >
           + New Reservation
         </Link>

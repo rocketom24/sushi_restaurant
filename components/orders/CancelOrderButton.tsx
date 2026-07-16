@@ -25,7 +25,7 @@ export default function CancelOrderButton({ orderId }: { orderId: string }) {
     <button
       onClick={handleCancel}
       disabled={isPending}
-      className="text-sm text-red-600 hover:text-red-800 disabled:opacity-50"
+      className="text-sm text-red-400 hover:text-red-300 disabled:opacity-50"
     >
       {isPending ? "Cancelling..." : "Cancel Order"}
     </button>

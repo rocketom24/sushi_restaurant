@@ -12,11 +12,11 @@ export default async function LoginPage() {
   await requireGuest(); // redirects away if already logged in
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] px-4 scheme-dark">
+      <div className="w-full max-w-md bg-neutral-900 rounded-2xl border border-white/10 p-8">
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-semibold text-neutral-900 hover:underline">
-            Sushi Restaurant
+          <Link href="/" className="font-serif text-2xl text-white hover:underline">
+            Sushi<span className="text-orange-500"> Restaurant</span>
           </Link>
           <p className="mt-2 text-gray-500 text-sm">Welcome back</p>
         </div>

@@ -10,13 +10,13 @@ export default function QuantitySelector({
   onChange: (next: number) => void;
 }) {
   return (
-    <div className="inline-flex items-center border border-gray-300 rounded-md">
+    <div className="inline-flex items-center border border-white/15 rounded-md text-neutral-200">
       <button
         type="button"
         onClick={() => onChange(quantity - 1)}
         disabled={quantity <= MIN_QUANTITY}
         aria-label="Decrease quantity"
-        className="w-8 h-8 flex items-center justify-center text-lg disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50"
+        className="w-8 h-8 flex items-center justify-center text-lg disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10"
       >
         −
       </button>
@@ -32,7 +32,7 @@ export default function QuantitySelector({
         onClick={() => onChange(quantity + 1)}
         disabled={quantity >= MAX_QUANTITY}
         aria-label="Increase quantity"
-        className="w-8 h-8 flex items-center justify-center text-lg disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50"
+        className="w-8 h-8 flex items-center justify-center text-lg disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10"
       >
         +
       </button>

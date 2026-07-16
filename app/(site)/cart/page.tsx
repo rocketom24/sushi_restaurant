@@ -17,16 +17,16 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12">
+    <div className="max-w-2xl mx-auto px-4 py-16">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-semibold text-neutral-900">Your Cart</h1>
+        <h1 className="font-serif text-3xl text-white">Your Cart</h1>
         {!isEmpty && (
           <button
             type="button"
             onClick={() => {
               if (confirm("Clear your entire cart?")) clearCart();
             }}
-            className="text-sm text-red-600 hover:text-red-800"
+            className="text-sm text-red-400 hover:text-red-300"
           >
             Clear Cart
           </button>
@@ -37,7 +37,7 @@ export default function CartPage() {
         <EmptyCart />
       ) : (
         <>
-          <div className="bg-white rounded-xl border border-gray-100 px-5">
+          <div className="bg-neutral-900 rounded-2xl border border-white/10 px-5 mb-6">
             {items.map((item) => (
               <CartItem key={item.lineId} item={item} />
             ))}

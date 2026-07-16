@@ -14,11 +14,11 @@ export default function ReservationCard({ reservation }: { reservation: Reservat
   return (
     <Link
       href={`/reservations/${reservation.id}`}
-      className="block bg-white rounded-xl border border-gray-100 p-4 hover:border-gray-300 transition-colors"
+      className="block bg-neutral-900 rounded-2xl border border-white/10 p-4 hover:border-orange-500/50 transition-colors"
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="font-medium text-neutral-900">
+          <p className="font-medium text-white">
             {new Date(reservation.reservationAt).toLocaleDateString("en-GB", {
               weekday: "short",
               day: "numeric",
@@ -35,7 +35,7 @@ export default function ReservationCard({ reservation }: { reservation: Reservat
             {reservation.table ? ` · Table ${reservation.table.tableNumber}` : ""}
           </p>
         </div>
-        <ReservationStatusBadge status={reservation.status} />
+        <ReservationStatusBadge status={reservation.status} variant="dark" />
       </div>
     </Link>
   );

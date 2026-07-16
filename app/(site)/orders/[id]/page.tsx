@@ -15,26 +15,26 @@ export default async function MyOrderDetailPage({
   if (!order) notFound();
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12">
-      <div className="flex items-start justify-between mb-6">
+    <div className="max-w-2xl mx-auto px-4 py-16">
+      <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-semibold text-neutral-900">
+          <h1 className="font-serif text-3xl text-white">
             {order.orderNumber}
           </h1>
           <p className="text-sm text-gray-500 mt-1">
             {new Date(order.createdAt).toLocaleString("en-GB")}
           </p>
         </div>
-        <OrderStatusBadge status={order.status} />
+        <OrderStatusBadge status={order.status} variant="dark" />
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 p-5 mb-4">
-        <h2 className="font-medium text-neutral-900 mb-3">Items</h2>
+      <div className="bg-neutral-900 rounded-2xl border border-white/10 p-5 mb-4">
+        <h2 className="font-medium text-white mb-3">Items</h2>
         <div className="space-y-3">
           {order.orderItems.map((item) => (
             <div key={item.id} className="flex justify-between text-sm">
               <div>
-                <p className="text-neutral-900">
+                <p className="text-neutral-200">
                   {item.quantity}× {item.menuItem.name}
                 </p>
                 {item.customizations.length > 0 && (
@@ -50,7 +50,7 @@ export default async function MyOrderDetailPage({
                   <p className="text-gray-500 italic mt-0.5">"{item.notes}"</p>
                 )}
               </div>
-              <span className="text-neutral-900">
+              <span className="text-neutral-200">
                 €{Number(item.subtotal).toFixed(2)}
               </span>
             </div>
@@ -58,21 +58,21 @@ export default async function MyOrderDetailPage({
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 p-5 mb-4 space-y-1 text-sm">
-        <div className="flex justify-between text-gray-600">
+      <div className="bg-neutral-900 rounded-2xl border border-white/10 p-5 mb-4 space-y-1 text-sm">
+        <div className="flex justify-between text-gray-400">
           <span>Subtotal</span>
           <span>€{Number(order.subtotal).toFixed(2)}</span>
         </div>
-        <div className="flex justify-between font-semibold text-neutral-900 pt-2 border-t border-gray-100">
+        <div className="flex justify-between font-semibold text-white pt-2 border-t border-white/10">
           <span>Total</span>
-          <span>€{Number(order.totalAmount).toFixed(2)}</span>
+          <span className="text-orange-400">€{Number(order.totalAmount).toFixed(2)}</span>
         </div>
       </div>
 
       {order.orderType === "DELIVERY" && order.deliveryAddress && (
-        <div className="bg-white rounded-xl border border-gray-100 p-5 mb-4 text-sm">
-          <h2 className="font-medium text-neutral-900 mb-1">Delivery Address</h2>
-          <p className="text-gray-600">{order.deliveryAddress}</p>
+        <div className="bg-neutral-900 rounded-2xl border border-white/10 p-5 mb-4 text-sm">
+          <h2 className="font-medium text-white mb-1">Delivery Address</h2>
+          <p className="text-gray-400">{order.deliveryAddress}</p>
         </div>
       )}
 

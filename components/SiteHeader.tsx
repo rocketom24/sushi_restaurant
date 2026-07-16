@@ -7,31 +7,34 @@ export default async function SiteHeader() {
   const user = await getCurrentUser();
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        <Link href="/" className="font-semibold text-lg text-neutral-900 whitespace-nowrap">
-          Sushi Restaurant
+    <header className="sticky top-0 z-40 bg-black/85 backdrop-blur border-b border-white/10">
+      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+        <Link
+          href="/"
+          className="font-serif text-xl text-white whitespace-nowrap tracking-wide"
+        >
+          Sushi<span className="text-orange-500"> Restaurant</span>
         </Link>
 
-        <nav className="flex items-center gap-4 text-sm text-gray-600">
-          <Link href="/menu" className="hover:text-neutral-900 hover:underline">
+        <nav className="flex items-center gap-5 text-sm text-gray-400">
+          <Link href="/menu" className="hover:text-orange-400 transition-colors">
             Menu
           </Link>
-          <Link href="/reservations/new" className="hover:text-neutral-900 hover:underline">
+          <Link href="/reservations/new" className="hover:text-orange-400 transition-colors">
             Book a Table
           </Link>
           {user && user.role === "CUSTOMER" && (
             <>
-              <Link href="/orders" className="hover:text-neutral-900 hover:underline">
+              <Link href="/orders" className="hover:text-orange-400 transition-colors">
                 My Orders
               </Link>
-              <Link href="/reservations" className="hover:text-neutral-900 hover:underline">
+              <Link href="/reservations" className="hover:text-orange-400 transition-colors">
                 My Reservations
               </Link>
             </>
           )}
           {user && user.role === "OWNER" && (
-            <Link href="/dashboard" className="hover:text-neutral-900 hover:underline">
+            <Link href="/dashboard" className="hover:text-orange-400 transition-colors">
               Dashboard
             </Link>
           )}
@@ -42,16 +45,16 @@ export default async function SiteHeader() {
           {user ? (
             <div className="flex items-center gap-3 text-sm">
               <span className="text-gray-500 hidden sm:inline">Hi, {user.name}</span>
-              <LogoutButton />
+              <LogoutButton className="text-sm text-gray-400 hover:text-orange-400 underline" />
             </div>
           ) : (
             <div className="flex items-center gap-3 text-sm">
-              <Link href="/login" className="text-gray-600 hover:text-neutral-900 hover:underline">
+              <Link href="/login" className="text-gray-400 hover:text-orange-400 transition-colors">
                 Login
               </Link>
               <Link
                 href="/register"
-                className="rounded-md bg-neutral-900 text-white px-3 py-2 font-medium hover:bg-neutral-800"
+                className="rounded-md bg-orange-600 text-white px-3 py-2 font-medium hover:bg-orange-500 transition-colors"
               >
                 Sign Up
               </Link>

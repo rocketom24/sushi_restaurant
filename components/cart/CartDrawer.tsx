@@ -16,11 +16,11 @@ export default function CartDrawer() {
         type="button"
         onClick={() => setIsOpen(true)}
         aria-label={`Open cart, ${totals.itemCount} items`}
-        className="relative inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50"
+        className="relative inline-flex items-center gap-2 rounded-md border border-white/20 px-3 py-2 text-sm text-gray-300 hover:border-orange-500/60 hover:text-orange-400 transition-colors"
       >
         Cart
         {isHydrated && totals.itemCount > 0 && (
-          <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium rounded-full bg-neutral-900 text-white">
+          <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium rounded-full bg-orange-600 text-white">
             {totals.itemCount}
           </span>
         )}
@@ -36,14 +36,14 @@ export default function CartDrawer() {
           />
 
           {/* drawer panel */}
-          <div className="relative w-full max-w-sm bg-white h-full shadow-xl flex flex-col">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-              <h2 className="font-semibold text-neutral-900">Your Cart</h2>
+          <div className="relative w-full max-w-sm bg-neutral-950 border-l border-white/10 h-full shadow-xl flex flex-col">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+              <h2 className="font-serif text-lg text-white">Your Cart</h2>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
                 aria-label="Close cart"
-                className="text-gray-400 hover:text-neutral-900 text-xl leading-none"
+                className="text-gray-500 hover:text-orange-400 text-xl leading-none"
               >
                 ×
               </button>
@@ -62,7 +62,7 @@ export default function CartDrawer() {
             </div>
 
             {isHydrated && !isEmpty && (
-              <div className="px-5 py-4 border-t border-gray-100">
+              <div className="px-5 py-4 border-t border-white/10">
                 <CartSummary />
               </div>
             )}

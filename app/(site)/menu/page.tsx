@@ -28,10 +28,13 @@ export default async function PublicMenuPage() {
   }));
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-semibold text-neutral-900 text-center mb-10">
-        Our Menu
-      </h1>
+    <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="text-center mb-12">
+        <p className="text-orange-500 text-xs font-medium tracking-[0.35em] uppercase mb-3">
+          Delicious &amp; Amazing
+        </p>
+        <h1 className="font-serif text-4xl text-white">Our Menu</h1>
+      </div>
       <MenuBrowser categories={serializedCategories} />
     </div>
   );

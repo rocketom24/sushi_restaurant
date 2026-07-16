@@ -48,7 +48,7 @@ function PaymentForm({ orderId }: { orderId: string }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
           {error}
         </div>
       )}
@@ -58,7 +58,7 @@ function PaymentForm({ orderId }: { orderId: string }) {
       <button
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full rounded-md bg-neutral-900 py-3 font-medium text-white hover:bg-neutral-800 disabled:opacity-50"
+        className="w-full rounded-md bg-orange-600 py-3 font-medium text-white hover:bg-orange-500 disabled:opacity-50 transition-colors"
       >
         {isProcessing ? "Processing..." : "Pay Now"}
       </button>
@@ -83,8 +83,8 @@ export default function CheckoutPaymentPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md px-4 py-12">
-      <h1 className="mb-6 text-2xl font-semibold text-neutral-900">
+    <div className="mx-auto max-w-md px-4 py-16">
+      <h1 className="mb-6 font-serif text-3xl text-white">
         Complete Payment
       </h1>
 
@@ -92,6 +92,14 @@ export default function CheckoutPaymentPage() {
         stripe={stripePromise}
         options={{
           clientSecret,
+          appearance: {
+            theme: "night",
+            variables: {
+              colorPrimary: "#ea580c",
+              colorBackground: "#171717",
+              colorText: "#e7e5e4",
+            },
+          },
         }}
       >
         <PaymentForm orderId={orderId} />
