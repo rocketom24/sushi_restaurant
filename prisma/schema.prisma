@@ -10,21 +10,25 @@ datasource db {
 }
 
 model User {
-  id        String   @id    
+  id        String @id
   name      String
   email     String
-  role      UserRole  @default(CUSTOMER)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  role      UserRole @default(CUSTOMER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   deletedAt DateTime?
-  orders    Order[]
+
+  orders       Order[]
+  reservations Reservation[]   // <-- ADD THIS
+
   addresses CustomerAddress[]
 
   couponRedemptions CouponRedemption[]
   loyaltyAccount    LoyaltyAccount?
   rewardRedemptions RewardRedemption[]
 
-  assignedKitchenTickets     KitchenTicket[]
+  assignedKitchenTickets KitchenTicket[]
   assignedKitchenTicketItems KitchenTicketItem[] @relation("KitchenTicketItemChef")
 
   @@index([email])
@@ -216,8 +220,12 @@ model Reservation {
   status        ReservationStatus @default(PENDING)
   source        ReservationSource
 
+  // NEW
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   tableId String?
-  table   Table?  @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  table   Table? @relation(fields: [tableId], references: [id], onDelete: SetNull)
 
   specialRequest String?
   internalNote   String?
@@ -232,6 +240,8 @@ model Reservation {
   @@index([reservationAt])
   @@index([tableId])
   @@index([phone])
+  @@index([userId])
+
   @@map("reservations")
 }
 
@@ -609,8 +619,10 @@ enum OrderStatus {
 enum ReservationStatus {
   PENDING
   CONFIRMED
-  CANCELLED
+  SEATED
   COMPLETED
+  CANCELLED
+  NO_SHOW
 }
 
 enum ReservationSource {
