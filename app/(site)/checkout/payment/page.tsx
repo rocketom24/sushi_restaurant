@@ -9,6 +9,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import { useI18n } from "@/components/i18n/I18nProvider";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -17,6 +18,7 @@ const stripePromise = loadStripe(
 function PaymentForm({ orderId }: { orderId: string }) {
   const stripe = useStripe();
   const elements = useElements();
+  const { dict } = useI18n();
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +62,7 @@ function PaymentForm({ orderId }: { orderId: string }) {
         disabled={!stripe || isProcessing}
         className="w-full bg-accent hover:bg-white hover:text-night text-white py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest disabled:opacity-50 transition-all duration-300"
       >
-        {isProcessing ? "Elaborazione..." : "Paga Ora"}
+        {isProcessing ? dict.payment.processing : dict.payment.payNow}
       </button>
     </form>
   );
@@ -68,6 +70,7 @@ function PaymentForm({ orderId }: { orderId: string }) {
 
 export default function CheckoutPaymentPage() {
   const searchParams = useSearchParams();
+  const { dict } = useI18n();
 
   const orderId = searchParams.get("orderId");
   const clientSecret = searchParams.get("clientSecret");
@@ -76,7 +79,7 @@ export default function CheckoutPaymentPage() {
     return (
       <div className="mx-auto max-w-md px-6 py-20">
         <p className="text-center text-gray-400 font-light">
-          Sessione di pagamento non valida.
+          {dict.payment.invalid}
         </p>
       </div>
     );
@@ -85,10 +88,10 @@ export default function CheckoutPaymentPage() {
   return (
     <div className="mx-auto max-w-md px-6 py-20">
       <span className="text-accent text-xs font-semibold uppercase tracking-widest">
-        {"// Pagamento Sicuro"}
+        {dict.payment.eyebrow}
       </span>
       <h1 className="mt-2 mb-8 font-serif text-3xl md:text-4xl text-cream">
-        Completa il Pagamento
+        {dict.payment.title}
       </h1>
 
       <Elements

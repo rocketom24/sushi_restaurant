@@ -1,20 +1,25 @@
 import Link from "next/link";
-import { getFeaturedItems } from "@/lib/actions/public-menu.actions";
+import { getFeaturedItems, getHeroSlides } from "@/lib/actions/public-menu.actions";
+import { getDict } from "@/lib/i18n/server";
 import HeroShowcase from "@/components/home/HeroShowcase";
 
 export const metadata = {
-  title: "KURO — Sushi Giapponese a Domicilio e al Tavolo",
+  title: "KURO — Japanese Sushi, Delivered & at the Table",
   description:
-    "L'arte del sushi incontra il minimalismo. Ordina online o prenota un tavolo.",
+    "The art of sushi meets minimalism. Order online or book a table.",
 };
 
 export default async function HomePage() {
-  const featured = await getFeaturedItems();
+  const [slides, featured, t] = await Promise.all([
+    getHeroSlides(),
+    getFeaturedItems(),
+    getDict(),
+  ]);
 
   return (
     <div>
-      {/* Hero slider */}
-      <HeroShowcase items={featured} />
+      {/* Hero slider — featured dishes, new arrivals, active offers */}
+      <HeroShowcase slides={slides} />
 
       {/* Featured / classic selections */}
       {featured.length > 0 && (
@@ -22,15 +27,14 @@ export default async function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
               <span className="text-accent text-xs font-semibold uppercase tracking-widest">
-                {"// In Evidenza"}
+                {t.home.featuredEyebrow}
               </span>
               <h2 className="text-3xl md:text-5xl font-serif mt-2 text-cream">
-                Le Selezioni dello Chef
+                {t.home.featuredTitle}
               </h2>
             </div>
             <p className="text-xs text-gray-400 mt-2 md:mt-0 max-w-xs font-light">
-              * Ogni piatto è preparato espresso utilizzando materie prime
-              certificate e freschissime.
+              {t.home.featuredNote}
             </p>
           </div>
 
@@ -70,7 +74,7 @@ export default async function HomePage() {
                 )}
                 <div className="flex justify-between items-center pt-2 border-t border-white/5">
                   <span className="text-[10px] tracking-wider text-gray-500 uppercase">
-                    Specialità
+                    {t.home.specialty}
                   </span>
                   <span className="w-8 h-8 rounded-full bg-white/5 group-hover:bg-accent text-white flex items-center justify-center transition-colors text-sm">
                     +
@@ -85,7 +89,7 @@ export default async function HomePage() {
               href="/menu"
               className="inline-block border border-white/20 hover:border-accent hover:text-accent px-8 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300"
             >
-              Scopri Tutto il Menu
+              {t.home.seeFullMenu}
             </Link>
           </div>
         </section>
@@ -95,16 +99,13 @@ export default async function HomePage() {
       <section className="py-20 bg-carbon px-6 md:px-16 lg:px-24 border-t border-white/5">
         <div className="max-w-2xl">
           <span className="text-gray-500 text-xs uppercase tracking-widest">
-            La Filosofia
+            {t.home.philosophyEyebrow}
           </span>
           <h3 className="text-3xl font-serif mt-2 mb-4 text-cream">
-            La Nostra Visione
+            {t.home.philosophyTitle}
           </h3>
           <p className="text-sm text-gray-400 font-light leading-relaxed">
-            Il perfetto equilibrio tra la millenaria cultura culinaria del Sol
-            Levante e la freschezza e artigianalità tipiche dei migliori
-            mercati italiani. Ogni piatto è preparato espresso, dal banco alla
-            tavola.
+            {t.home.philosophyText}
           </p>
         </div>
       </section>
@@ -112,19 +113,17 @@ export default async function HomePage() {
       {/* Hours & reserve */}
       <section className="py-24 bg-night px-6 md:px-16 lg:px-24 text-center">
         <span className="text-accent text-xs font-semibold uppercase tracking-widest">
-          {"// Orari"}
+          {t.home.hoursEyebrow}
         </span>
         <h2 className="text-3xl md:text-4xl font-serif mt-2 mb-3 text-cream">
-          Vieni a Trovarci
+          {t.home.hoursTitle}
         </h2>
-        <p className="text-sm text-gray-400 font-light mb-10">
-          Pranzo 12:00–14:30 &nbsp;·&nbsp; Cena 18:00–22:30
-        </p>
+        <p className="text-sm text-gray-400 font-light mb-10">{t.footer.hours}</p>
         <Link
           href="/reservations/new"
           className="inline-block bg-accent hover:bg-white hover:text-night text-white px-8 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300"
         >
-          Prenota il Tuo Tavolo
+          {t.home.reserveCta}
         </Link>
       </section>
     </div>

@@ -3,9 +3,11 @@
 import type { CartItem as CartItemType } from "@/types/cart";
 import QuantitySelector from "./QuantitySelector";
 import { useCart } from "@/hooks/useCart";
+import { useI18n } from "@/components/i18n/I18nProvider";
 
 export default function CartItem({ item }: { item: CartItemType }) {
   const { updateQuantity, removeItem } = useCart();
+  const { dict } = useI18n();
 
   return (
     <div className="bg-white/2 border border-white/5 rounded-lg p-3 mb-3 flex gap-4">
@@ -57,7 +59,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
             onClick={() => removeItem(item.lineId)}
             className="text-xs uppercase tracking-wider text-red-400 hover:text-red-300 transition-colors"
           >
-            Rimuovi
+            {dict.cart.remove}
           </button>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 // components/auth/RegisterForm.tsx
 import { registerAction } from "@/app/(auth)/actions";
+import { useI18n } from "@/components/i18n/I18nProvider";
 import type { RegisterFormState } from "@/lib/validations/auth";
 
 const initialState: RegisterFormState = {};
@@ -18,6 +19,8 @@ export default function RegisterForm() {
     registerAction,
     initialState
   );
+  const { dict } = useI18n();
+  const t = dict.auth;
 
   return (
     <form action={formAction} className="space-y-6">
@@ -29,7 +32,7 @@ export default function RegisterForm() {
 
       <div>
         <label htmlFor="name" className={labelClass}>
-          Nome Completo
+          {t.fullName}
         </label>
         <input
           id="name"
@@ -46,7 +49,7 @@ export default function RegisterForm() {
 
       <div>
         <label htmlFor="email" className={labelClass}>
-          Email
+          {t.email}
         </label>
         <input
           id="email"
@@ -63,7 +66,7 @@ export default function RegisterForm() {
 
       <div>
         <label htmlFor="password" className={labelClass}>
-          Password
+          {t.password}
         </label>
         <input
           id="password"
@@ -81,7 +84,7 @@ export default function RegisterForm() {
 
       <div>
         <label htmlFor="confirmPassword" className={labelClass}>
-          Conferma Password
+          {t.confirmPassword}
         </label>
         <input
           id="confirmPassword"
@@ -102,16 +105,16 @@ export default function RegisterForm() {
         disabled={isPending}
         className="w-full bg-accent hover:bg-white hover:text-night text-white py-3 rounded-full text-xs font-semibold uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
       >
-        {isPending ? "Creazione account..." : "Registrati"}
+        {isPending ? t.registering : t.register}
       </button>
 
       <p className="text-center text-sm text-gray-500 font-light">
-        Hai già un account?{" "}
+        {t.haveAccount}{" "}
         <Link
           href="/login"
           className="text-accent font-medium hover:underline underline-offset-4"
         >
-          Accedi
+          {t.login}
         </Link>
       </p>
     </form>

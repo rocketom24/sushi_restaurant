@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { requireGuest } from "@/lib/guards";
 import RegisterForm from "@/components/auth/RegisterForm";
+import { getDict } from "@/lib/i18n/server";
 
 export const metadata = {
-  title: "Crea Account",
-  description: "Registrati per ordinare sushi e prenotare un tavolo.",
+  title: "Create Account",
+  description: "Register to order sushi and book a table.",
 };
 
 export default async function RegisterPage() {
   await requireGuest(); // redirects away if already logged in
+  const t = await getDict();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-night px-6 scheme-dark">
@@ -21,7 +23,7 @@ export default async function RegisterPage() {
             KURO<span className="text-accent">.</span>
           </Link>
           <p className="mt-3 text-gray-500 text-sm font-light">
-            Crea il tuo account
+            {t.auth.createAccount}
           </p>
         </div>
 

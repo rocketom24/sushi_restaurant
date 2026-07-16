@@ -2,14 +2,16 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { requireGuest } from "@/lib/guards";
 import LoginForm from "@/components/auth/LoginForm";
+import { getDict } from "@/lib/i18n/server";
 
 export const metadata = {
-  title: "Accedi",
-  description: "Accedi al tuo account per ordinare sushi e prenotare un tavolo.",
+  title: "Login",
+  description: "Log in to order sushi and book a table.",
 };
 
 export default async function LoginPage() {
   await requireGuest(); // redirects away if already logged in
+  const t = await getDict();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-night px-6 scheme-dark">
@@ -21,7 +23,7 @@ export default async function LoginPage() {
           >
             KURO<span className="text-accent">.</span>
           </Link>
-          <p className="mt-3 text-gray-500 text-sm font-light">Bentornato</p>
+          <p className="mt-3 text-gray-500 text-sm font-light">{t.auth.welcomeBack}</p>
         </div>
 
         <Suspense fallback={<div className="h-48" />}>

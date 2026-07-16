@@ -14,17 +14,20 @@ const DARK_STATUS_COLORS: Record<OrderStatus, string> = {
 export default function OrderStatusBadge({
   status,
   variant = "light",
+  label,
 }: {
   status: OrderStatus;
   variant?: "light" | "dark";
+  /** Optional translated label; defaults to the English dashboard label. */
+  label?: string;
 }) {
   const colors = variant === "dark" ? DARK_STATUS_COLORS[status] : STATUS_COLORS[status];
 
   return (
     <span
-      className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full ${colors}`}
+      className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${colors}`}
     >
-      {STATUS_LABELS[status]}
+      {label ?? STATUS_LABELS[status]}
     </span>
   );
 }

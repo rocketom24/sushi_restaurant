@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getMyOrderById } from "@/lib/actions/order.actions";
+import { getDict, getLocale } from "@/lib/i18n/server";
 import OrderStatusBadge from "@/components/orders/OrderStatusBadge";
 import CancelOrderButton from "@/components/orders/CancelOrderButton";
 import { canCustomerCancel } from "@/lib/orders/status-transitions";
@@ -10,7 +11,11 @@ export default async function MyOrderDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const order = await getMyOrderById(id);
+  const [order, t, locale] = await Promise.all([
+    getMyOrderById(id),
+    getDict(),
+    getLocale(),
+  ]);
 
   if (!order) notFound();
 
@@ -19,21 +24,25 @@ export default async function MyOrderDetailPage({
       <div className="flex items-start justify-between mb-10">
         <div>
           <span className="text-accent text-xs font-semibold uppercase tracking-widest">
-            {"// Ordine"}
+            {t.orders.orderEyebrow}
           </span>
           <h1 className="font-serif text-3xl md:text-4xl text-cream mt-2">
             {order.orderNumber}
           </h1>
           <p className="text-xs text-gray-500 font-light mt-2">
-            {new Date(order.createdAt).toLocaleString("it-IT")}
+            {new Date(order.createdAt).toLocaleString(locale === "it" ? "it-IT" : "en-GB")}
           </p>
         </div>
-        <OrderStatusBadge status={order.status} variant="dark" />
+        <OrderStatusBadge
+          status={order.status}
+          variant="dark"
+          label={t.status.order[order.status]}
+        />
       </div>
 
       <div className="glass rounded-3xl p-6 mb-5">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
-          Articoli
+          {t.orders.items}
         </h2>
         <div className="space-y-4">
           {order.orderItems.map((item) => (
@@ -67,11 +76,11 @@ export default async function MyOrderDetailPage({
 
       <div className="glass rounded-3xl p-6 mb-5 space-y-2 text-sm">
         <div className="flex justify-between text-gray-400 font-light">
-          <span>Subtotale</span>
+          <span>{t.orders.subtotal}</span>
           <span>€{Number(order.subtotal).toFixed(2)}</span>
         </div>
         <div className="flex justify-between items-baseline pt-3 border-t border-white/5">
-          <span className="text-gray-400">Totale</span>
+          <span className="text-gray-400">{t.orders.total}</span>
           <span className="font-serif text-xl text-accent">
             €{Number(order.totalAmount).toFixed(2)}
           </span>
@@ -81,7 +90,7 @@ export default async function MyOrderDetailPage({
       {order.orderType === "DELIVERY" && order.deliveryAddress && (
         <div className="glass rounded-3xl p-6 mb-5 text-sm">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">
-            Indirizzo di Consegna
+            {t.orders.deliveryAddress}
           </h2>
           <p className="text-cream font-light">{order.deliveryAddress}</p>
         </div>

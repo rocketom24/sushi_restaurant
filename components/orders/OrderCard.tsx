@@ -1,24 +1,23 @@
+"use client";
+
 import Link from "next/link";
 import OrderStatusBadge from "./OrderStatusBadge";
+import { useI18n } from "@/components/i18n/I18nProvider";
 import type { OrderStatus, OrderType } from "@/app/generated/prisma/client";
-
-const ORDER_TYPE_LABELS: Record<OrderType, string> = {
-  DINE_IN: "Al Tavolo",
-  TAKEAWAY: "Asporto",
-  DELIVERY: "Consegna",
-};
 
 type OrderCardData = {
   id: string;
   orderNumber: string;
   orderType: OrderType;
   status: OrderStatus;
-  totalAmount: unknown;
+  totalAmount: number;
   createdAt: Date;
   orderItems: { id: string }[];
 };
 
 export default function OrderCard({ order }: { order: OrderCardData }) {
+  const { dict, locale } = useI18n();
+
   return (
     <Link
       href={`/orders/${order.id}`}
@@ -30,22 +29,27 @@ export default function OrderCard({ order }: { order: OrderCardData }) {
             {order.orderNumber}
           </p>
           <p className="text-xs text-gray-500 font-light mt-1">
-            {new Date(order.createdAt).toLocaleDateString("it-IT", {
+            {new Date(order.createdAt).toLocaleDateString(locale === "it" ? "it-IT" : "en-GB", {
               day: "numeric",
               month: "short",
               year: "numeric",
             })}{" "}
-            · {order.orderItems.length} articol{order.orderItems.length !== 1 ? "i" : "o"}
+            · {order.orderItems.length}{" "}
+            {order.orderItems.length === 1 ? dict.orders.item : dict.orders.itemsPlural}
           </p>
         </div>
-        <OrderStatusBadge status={order.status} variant="dark" />
+        <OrderStatusBadge
+          status={order.status}
+          variant="dark"
+          label={dict.status.order[order.status]}
+        />
       </div>
       <div className="mt-4 pt-3 border-t border-white/5 flex justify-between items-center">
         <span className="text-[10px] tracking-wider text-gray-500 uppercase">
-          {ORDER_TYPE_LABELS[order.orderType]}
+          {dict.status.orderType[order.orderType]}
         </span>
         <span className="text-sm font-semibold text-accent">
-          €{Number(order.totalAmount).toFixed(2)}
+          €{order.totalAmount.toFixed(2)}
         </span>
       </div>
     </Link>

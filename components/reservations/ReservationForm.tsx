@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { createReservationAction } from "@/lib/actions/reservation.actions";
+import { useI18n } from "@/components/i18n/I18nProvider";
 import type { ReservationFormState } from "@/lib/validations/reservation";
 
 const TIME_SLOTS = [
@@ -17,6 +18,8 @@ const errorClass = "mt-2 text-xs text-red-400";
 
 export default function ReservationForm() {
   const [state, formAction, isPending] = useActionState(createReservationAction, {});
+  const { dict } = useI18n();
+  const t = dict.reservations;
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -30,7 +33,7 @@ export default function ReservationForm() {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="reservationDate" className={labelClass}>Data</label>
+          <label htmlFor="reservationDate" className={labelClass}>{t.date}</label>
           <input
             id="reservationDate"
             name="reservationDate"
@@ -45,14 +48,14 @@ export default function ReservationForm() {
         </div>
 
         <div>
-          <label htmlFor="reservationTime" className={labelClass}>Ora</label>
+          <label htmlFor="reservationTime" className={labelClass}>{t.time}</label>
           <select
             id="reservationTime"
             name="reservationTime"
             required
             className={inputClass}
           >
-            <option value="">Seleziona orario</option>
+            <option value="">{t.selectTime}</option>
             {TIME_SLOTS.map((t) => (
               <option key={t} value={t}>{t}</option>
             ))}
@@ -64,7 +67,7 @@ export default function ReservationForm() {
       </div>
 
       <div>
-        <label htmlFor="guestCount" className={labelClass}>Numero di Persone</label>
+        <label htmlFor="guestCount" className={labelClass}>{t.guests}</label>
         <input
           id="guestCount"
           name="guestCount"
@@ -81,7 +84,7 @@ export default function ReservationForm() {
       </div>
 
       <div>
-        <label htmlFor="customerName" className={labelClass}>Nome Completo</label>
+        <label htmlFor="customerName" className={labelClass}>{t.fullName}</label>
         <input
           id="customerName"
           name="customerName"
@@ -95,7 +98,7 @@ export default function ReservationForm() {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="phone" className={labelClass}>Telefono</label>
+          <label htmlFor="phone" className={labelClass}>{t.phone}</label>
           <input
             id="phone"
             name="phone"
@@ -108,7 +111,7 @@ export default function ReservationForm() {
           )}
         </div>
         <div>
-          <label htmlFor="email" className={labelClass}>Email (opzionale)</label>
+          <label htmlFor="email" className={labelClass}>{t.emailOptional}</label>
           <input
             id="email"
             name="email"
@@ -120,14 +123,14 @@ export default function ReservationForm() {
 
       <div>
         <label htmlFor="specialRequest" className={labelClass}>
-          Richieste Speciali (opzionale)
+          {t.specialRequests}
         </label>
         <textarea
           id="specialRequest"
           name="specialRequest"
           maxLength={250}
           rows={2}
-          placeholder="es. tavolo vicino alla finestra, compleanno"
+          placeholder={t.srPlaceholder}
           className={inputClass}
         />
       </div>
@@ -137,7 +140,7 @@ export default function ReservationForm() {
         disabled={isPending}
         className="w-full bg-accent hover:bg-white hover:text-night text-white py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest disabled:opacity-50 transition-all duration-300"
       >
-        {isPending ? "Prenotazione in corso..." : "Prenota il Tavolo"}
+        {isPending ? t.submitting : t.submit}
       </button>
     </form>
   );

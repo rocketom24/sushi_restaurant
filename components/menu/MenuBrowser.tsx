@@ -3,6 +3,7 @@
 
 import { useState, useMemo } from "react";
 import MenuCard from "./MenuCard";
+import { useI18n } from "@/components/i18n/I18nProvider";
 
 type MenuItemData = {
   id: string;
@@ -23,6 +24,7 @@ type CategoryData = {
 };
 
 export default function MenuBrowser({ categories }: { categories: CategoryData[] }) {
+  const { dict } = useI18n();
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
@@ -47,7 +49,7 @@ export default function MenuBrowser({ categories }: { categories: CategoryData[]
   if (categories.length === 0) {
     return (
       <p className="text-gray-400 text-center py-20 font-light">
-        Il menu è in preparazione. Torna a trovarci presto.
+        {dict.menu.empty}
       </p>
     );
   }
@@ -56,7 +58,7 @@ export default function MenuBrowser({ categories }: { categories: CategoryData[]
     <div>
       <input
         type="text"
-        placeholder="Cerca nel menu..."
+        placeholder={dict.menu.searchPlaceholder}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="w-full max-w-md block rounded-full bg-white/3 border border-white/10 px-6 py-3 mb-12 text-sm text-cream placeholder:text-gray-500 focus:outline-none focus:border-accent transition-colors"
@@ -64,7 +66,7 @@ export default function MenuBrowser({ categories }: { categories: CategoryData[]
 
       {filtered.length === 0 && (
         <p className="text-gray-400 text-center py-20 font-light">
-          Nessun piatto corrisponde a &ldquo;{search}&rdquo;.
+          {dict.menu.noMatch} &ldquo;{search}&rdquo;.
         </p>
       )}
 

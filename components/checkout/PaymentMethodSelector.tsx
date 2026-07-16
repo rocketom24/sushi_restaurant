@@ -1,14 +1,8 @@
 // components/checkout/PaymentMethodSelector.tsx
 "use client";
 
+import { useI18n } from "@/components/i18n/I18nProvider";
 import type { PaymentMethod } from "@/app/generated/prisma/client";
-
-const METHODS: { value: PaymentMethod; label: string; note?: string }[] = [
-  { value: "CASH", label: "Contanti" },
-  { value: "CARD", label: "Carta" },
-  { value: "SATISPAY", label: "Satispay", note: "Prossimamente" },
-  { value: "TICKET_RESTAURANT_EDENRED", label: "Ticket Restaurant Edenred", note: "Prossimamente" },
-];
 
 export default function PaymentMethodSelector({
   value,
@@ -17,13 +11,26 @@ export default function PaymentMethodSelector({
   value: PaymentMethod;
   onChange: (method: PaymentMethod) => void;
 }) {
+  const { dict } = useI18n();
+
+  const methods: { value: PaymentMethod; label: string; note?: string }[] = [
+    { value: "CASH", label: dict.checkout.cash },
+    { value: "CARD", label: dict.checkout.card },
+    { value: "SATISPAY", label: "Satispay", note: dict.checkout.comingSoon },
+    {
+      value: "TICKET_RESTAURANT_EDENRED",
+      label: "Ticket Restaurant Edenred",
+      note: dict.checkout.comingSoon,
+    },
+  ];
+
   return (
     <div>
       <label className="block text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
-        Metodo di Pagamento
+        {dict.checkout.paymentMethod}
       </label>
       <div className="space-y-2">
-        {METHODS.map((m) => (
+        {methods.map((m) => (
           <label
             key={m.value}
             className={`flex items-center justify-between rounded-lg border px-4 py-3 cursor-pointer transition-all duration-300 ${

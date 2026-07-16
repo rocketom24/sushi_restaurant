@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 // components/auth/LoginForm.tsx
 import { loginAction } from "@/app/(auth)/actions";
+import { useI18n } from "@/components/i18n/I18nProvider";
 import type { LoginFormState } from "@/lib/validations/auth";
 
 const initialState: LoginFormState = {};
@@ -20,6 +21,8 @@ export default function LoginForm() {
     initialState
   );
   const searchParams = useSearchParams();
+  const { dict } = useI18n();
+  const t = dict.auth;
   const message = searchParams.get("message");
 
   return (
@@ -38,7 +41,7 @@ export default function LoginForm() {
 
       <div>
         <label htmlFor="email" className={labelClass}>
-          Email
+          {t.email}
         </label>
         <input
           id="email"
@@ -54,7 +57,7 @@ export default function LoginForm() {
 
       <div>
         <label htmlFor="password" className={labelClass}>
-          Password
+          {t.password}
         </label>
         <input
           id="password"
@@ -75,16 +78,16 @@ export default function LoginForm() {
         disabled={isPending}
         className="w-full bg-accent hover:bg-white hover:text-night text-white py-3 rounded-full text-xs font-semibold uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
       >
-        {isPending ? "Accesso in corso..." : "Accedi"}
+        {isPending ? t.loggingIn : t.login}
       </button>
 
       <p className="text-center text-sm text-gray-500 font-light">
-        Non hai un account?{" "}
+        {t.noAccount}{" "}
         <Link
           href="/register"
           className="text-accent font-medium hover:underline underline-offset-4"
         >
-          Registrati
+          {t.register}
         </Link>
       </p>
     </form>

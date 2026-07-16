@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import ReservationStatusBadge from "./ReservationStatusBadge";
+import { useI18n } from "@/components/i18n/I18nProvider";
 import type { ReservationStatus } from "@/app/generated/prisma/client";
 
 type ReservationCardData = {
@@ -11,6 +14,10 @@ type ReservationCardData = {
 };
 
 export default function ReservationCard({ reservation }: { reservation: ReservationCardData }) {
+  const { dict, locale } = useI18n();
+  const t = dict.reservations;
+  const dateLocale = locale === "it" ? "it-IT" : "en-GB";
+
   return (
     <Link
       href={`/reservations/${reservation.id}`}
@@ -19,23 +26,28 @@ export default function ReservationCard({ reservation }: { reservation: Reservat
       <div className="flex items-start justify-between">
         <div>
           <p className="font-serif text-lg text-cream group-hover:text-accent transition-colors duration-300">
-            {new Date(reservation.reservationAt).toLocaleDateString("it-IT", {
+            {new Date(reservation.reservationAt).toLocaleDateString(dateLocale, {
               weekday: "short",
               day: "numeric",
               month: "short",
             })}{" "}
             ·{" "}
-            {new Date(reservation.reservationAt).toLocaleTimeString("it-IT", {
+            {new Date(reservation.reservationAt).toLocaleTimeString(dateLocale, {
               hour: "2-digit",
               minute: "2-digit",
             })}
           </p>
           <p className="text-xs text-gray-500 font-light mt-1">
-            {reservation.guestCount} person{reservation.guestCount !== 1 ? "e" : "a"}
-            {reservation.table ? ` · Tavolo ${reservation.table.tableNumber}` : ""}
+            {reservation.guestCount}{" "}
+            {reservation.guestCount === 1 ? t.person : t.people}
+            {reservation.table ? ` · ${t.table} ${reservation.table.tableNumber}` : ""}
           </p>
         </div>
-        <ReservationStatusBadge status={reservation.status} variant="dark" />
+        <ReservationStatusBadge
+          status={reservation.status}
+          variant="dark"
+          label={dict.status.reservation[reservation.status]}
+        />
       </div>
     </Link>
   );

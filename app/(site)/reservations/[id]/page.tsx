@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireAuthPage } from "@/lib/guards";
 import { getMyReservationById } from "@/lib/actions/reservation.actions";
+import { getDict, getLocale } from "@/lib/i18n/server";
 import ReservationStatusBadge from "@/components/reservations/ReservationStatusBadge";
 import { canCustomerCancel } from "@/lib/reservations/status-transitions";
 import CancelReservationButton from "@/components/reservations/CancelReservationButton";
@@ -13,7 +14,11 @@ export default async function MyReservationDetailPage({
 }) {
   await requireAuthPage();
   const { id } = await params;
-  const reservation = await getMyReservationById(id);
+  const [reservation, t, locale] = await Promise.all([
+    getMyReservationById(id),
+    getDict(),
+    getLocale(),
+  ]);
 
   if (!reservation) notFound();
 
@@ -24,37 +29,44 @@ export default async function MyReservationDetailPage({
       <div className="flex items-start justify-between mb-10">
         <div>
           <span className="text-accent text-xs font-semibold uppercase tracking-widest">
-            {"// Prenotazione"}
+            {t.reservations.detailEyebrow}
           </span>
           <h1 className="font-serif text-3xl md:text-4xl text-cream mt-2">
-            Il Tuo Tavolo
+            {t.reservations.detailTitle}
           </h1>
         </div>
-        <ReservationStatusBadge status={reservation.status} variant="dark" />
+        <ReservationStatusBadge
+          status={reservation.status}
+          variant="dark"
+          label={t.status.reservation[reservation.status]}
+        />
       </div>
 
       <div className="glass rounded-3xl p-6 space-y-3 text-sm">
         <Row
-          label="Data e Ora"
-          value={new Date(reservation.reservationAt).toLocaleString("it-IT", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          label={t.reservations.dateTime}
+          value={new Date(reservation.reservationAt).toLocaleString(
+            locale === "it" ? "it-IT" : "en-GB",
+            {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              hour: "2-digit",
+              minute: "2-digit",
+            }
+          )}
         />
-        <Row label="Persone" value={`${reservation.guestCount}`} />
+        <Row label={t.reservations.guestsLabel} value={`${reservation.guestCount}`} />
         <Row
-          label="Tavolo"
+          label={t.reservations.table}
           value={
             reservation.table
-              ? `Tavolo ${reservation.table.tableNumber}`
-              : "Non ancora assegnato"
+              ? `${t.reservations.table} ${reservation.table.tableNumber}`
+              : t.reservations.tableUnassigned
           }
         />
         {reservation.specialRequest && (
-          <Row label="Richiesta Speciale" value={reservation.specialRequest} />
+          <Row label={t.reservations.specialRequest} value={reservation.specialRequest} />
         )}
       </div>
 

@@ -1,7 +1,10 @@
 import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
+import { getDict } from "@/lib/i18n/server";
 
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  const t = await getDict();
+
   return (
     <div className="min-h-screen flex flex-col bg-night text-cream scheme-dark">
       <SiteHeader />
@@ -13,24 +16,22 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           </p>
           <nav className="flex gap-8 text-xs tracking-widest uppercase font-light text-gray-400">
             <Link href="/menu" className="hover:text-accent transition-colors duration-300">
-              Menu
+              {t.nav.menu}
             </Link>
             <Link
               href="/reservations/new"
               className="hover:text-accent transition-colors duration-300"
             >
-              Prenota
+              {t.nav.book}
             </Link>
             <Link href="/orders" className="hover:text-accent transition-colors duration-300">
-              I Miei Ordini
+              {t.nav.myOrders}
             </Link>
           </nav>
-          <p className="text-xs text-gray-600">
-            Pranzo 12:00–14:30 · Cena 18:00–22:30
-          </p>
+          <p className="text-xs text-gray-600">{t.footer.hours}</p>
         </div>
         <div className="border-t border-white/5 py-5 text-center text-xs text-gray-600">
-          © {new Date().getFullYear()} KURO Sushi — Tutti i diritti riservati.
+          © {new Date().getFullYear()} KURO Sushi — {t.footer.rights}
         </div>
       </footer>
     </div>

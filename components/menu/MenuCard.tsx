@@ -1,6 +1,8 @@
 // components/menu/MenuCard.tsx
+"use client";
 
 import AddToCartButton from "@/components/cart/AddToCartButton";
+import { useI18n } from "@/components/i18n/I18nProvider";
 
 type MenuItemData = {
   id: string;
@@ -14,16 +16,18 @@ type MenuItemData = {
 };
 
 export default function MenuCard({ item }: { item: MenuItemData }) {
+  const { dict } = useI18n();
+
   return (
     <div className="glass p-5 rounded-3xl group hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5 relative">
       {item.isFeatured && (
         <span className="absolute top-8 left-8 z-10 bg-accent text-white text-[9px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full">
-          In Evidenza
+          {dict.menu.featured}
         </span>
       )}
       {!item.isAvailable && (
         <span className="absolute top-8 right-8 z-10 bg-black/70 border border-white/10 text-gray-300 text-[9px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full">
-          Esaurito
+          {dict.menu.soldOut}
         </span>
       )}
       <div className="h-56 overflow-hidden rounded-2xl mb-4 relative">

@@ -1,11 +1,12 @@
 // app/menu/page.tsx
 
 import { getPublicMenu } from "@/lib/actions/public-menu.actions";
+import { getDict } from "@/lib/i18n/server";
 import MenuBrowser from "@/components/menu/MenuBrowser";
 
 export const metadata = {
-  title: "Il Nostro Menu",
-  description: "Sfoglia il nostro menu completo di sushi.",
+  title: "Menu",
+  description: "Browse our full sushi menu.",
 };
 
 type PublicMenuItem = Awaited<ReturnType<typeof getPublicMenu>>[number]["menuItems"][number];
@@ -15,7 +16,7 @@ function serializeMenuItem(item: PublicMenuItem) {
 }
 
 export default async function PublicMenuPage() {
-  const categories = await getPublicMenu();
+  const [categories, t] = await Promise.all([getPublicMenu(), getDict()]);
 
   // Serialize every Decimal price before crossing into Client Components
   const serializedCategories = categories.map((cat) => ({
@@ -32,15 +33,14 @@ export default async function PublicMenuPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
         <div>
           <span className="text-accent text-xs font-semibold uppercase tracking-widest">
-            {"// Selezioni Classiche"}
+            {t.menu.eyebrow}
           </span>
           <h1 className="text-3xl md:text-5xl font-serif mt-2 text-cream">
-            La Carta dei Nostri Capolavori
+            {t.menu.title}
           </h1>
         </div>
         <p className="text-xs text-gray-400 mt-2 md:mt-0 max-w-xs font-light">
-          * Ogni piatto è preparato espresso utilizzando materie prime
-          certificate e freschissime.
+          {t.menu.note}
         </p>
       </div>
       <MenuBrowser categories={serializedCategories} />

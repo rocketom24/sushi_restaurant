@@ -6,16 +6,29 @@ import { useCart } from "@/hooks/useCart";
 import { createOrderAction } from "@/lib/actions/checkout.actions";
 import PaymentMethodSelector from "./PaymentMethodSelector";
 import { startPaymentAction } from "@/lib/actions/payment.actions";
+import { useI18n } from "@/components/i18n/I18nProvider";
 import type { PaymentMethod } from "@/app/generated/prisma/client";
 
-const ORDER_TYPE_LABELS: Record<"TAKEAWAY" | "DELIVERY" | "DINE_IN", string> = {
-  TAKEAWAY: "Asporto",
-  DELIVERY: "Consegna",
-  DINE_IN: "Al Tavolo",
+export type SavedAddress = {
+  id: string;
+  label: string;
+  fullAddress: string;
+  city: string | null;
+  postalCode: string | null;
+  isDefault: boolean;
 };
 
-export default function CheckoutForm() {
+function formatAddress(a: SavedAddress): string {
+  return [a.fullAddress, a.postalCode, a.city].filter(Boolean).join(", ");
+}
+
+export default function CheckoutForm({
+  savedAddresses = [],
+}: {
+  savedAddresses?: SavedAddress[];
+}) {
   const { items, totals, clearCart } = useCart();
+  const { dict } = useI18n();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -26,7 +39,10 @@ export default function CheckoutForm() {
   const [paymentMethod, setPaymentMethod] =
     useState<PaymentMethod>("CASH");
 
-  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const defaultAddress = savedAddresses.find((a) => a.isDefault);
+  const [deliveryAddress, setDeliveryAddress] = useState(
+    defaultAddress ? formatAddress(defaultAddress) : ""
+  );
   const [notes, setNotes] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -82,6 +98,12 @@ export default function CheckoutForm() {
     });
   }
 
+  const orderTypeLabels = {
+    TAKEAWAY: dict.checkout.takeaway,
+    DELIVERY: dict.checkout.delivery,
+    DINE_IN: dict.checkout.dineIn,
+  } as const;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
@@ -93,7 +115,7 @@ export default function CheckoutForm() {
       {/* Order Type */}
       <div>
         <label className="mb-3 block text-xs font-semibold uppercase tracking-widest text-gray-400">
-          Tipo di Ordine
+          {dict.checkout.orderType}
         </label>
 
         <div className="flex gap-2">
@@ -108,7 +130,7 @@ export default function CheckoutForm() {
                   : "border-white/10 text-gray-400 hover:border-white/30"
               }`}
             >
-              {ORDER_TYPE_LABELS[type]}
+              {orderTypeLabels[type]}
             </button>
           ))}
         </div>
@@ -121,8 +143,27 @@ export default function CheckoutForm() {
             htmlFor="deliveryAddress"
             className="mb-2 block text-xs font-semibold uppercase tracking-widest text-gray-400"
           >
-            Indirizzo di Consegna
+            {dict.checkout.deliveryAddress}
           </label>
+
+          {savedAddresses.length > 0 && (
+            <select
+              aria-label={dict.checkout.savedAddresses}
+              defaultValue={defaultAddress?.id ?? ""}
+              onChange={(e) => {
+                const chosen = savedAddresses.find((a) => a.id === e.target.value);
+                if (chosen) setDeliveryAddress(formatAddress(chosen));
+              }}
+              className="w-full mb-2 rounded-lg bg-white/3 border border-white/10 px-4 py-3 text-sm text-cream focus:outline-none focus:border-accent transition-colors"
+            >
+              <option value="">{dict.checkout.chooseSaved}</option>
+              {savedAddresses.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.label} — {formatAddress(a)}
+                </option>
+              ))}
+            </select>
+          )}
 
           <textarea
             id="deliveryAddress"
@@ -141,7 +182,7 @@ export default function CheckoutForm() {
           htmlFor="notes"
           className="mb-2 block text-xs font-semibold uppercase tracking-widest text-gray-400"
         >
-          Note (opzionale)
+          {dict.checkout.notes}
         </label>
 
         <textarea
@@ -150,7 +191,7 @@ export default function CheckoutForm() {
           onChange={(e) => setNotes(e.target.value)}
           maxLength={250}
           rows={2}
-          placeholder="es. Poco piccante, suonare il campanello"
+          placeholder={dict.checkout.notesPlaceholder}
           className="w-full rounded-lg bg-white/3 border border-white/10 px-4 py-3 text-sm text-cream placeholder:text-gray-500 focus:outline-none focus:border-accent transition-colors"
         />
       </div>
@@ -158,7 +199,7 @@ export default function CheckoutForm() {
       {/* Total */}
       <div className="border-t border-white/5 pt-5">
         <div className="flex justify-between items-baseline">
-          <span className="text-gray-400 text-sm">Totale</span>
+          <span className="text-gray-400 text-sm">{dict.checkout.total}</span>
           <span className="font-serif text-2xl text-accent">
             €{totals.grandTotal.toFixed(2)}
           </span>
@@ -178,10 +219,10 @@ export default function CheckoutForm() {
         className="w-full bg-accent hover:bg-white hover:text-night text-white py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest disabled:opacity-50 transition-all duration-300"
       >
         {isPending
-          ? "Elaborazione..."
+          ? dict.checkout.processing
           : paymentMethod === "CARD"
-          ? "Procedi al Pagamento Sicuro"
-          : "Invia Ordine"}
+          ? dict.checkout.paySecure
+          : dict.checkout.submit}
       </button>
     </form>
   );

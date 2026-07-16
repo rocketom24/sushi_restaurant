@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useCart } from "@/hooks/useCart";
+import { useI18n } from "@/components/i18n/I18nProvider";
 import CartItem from "./CartItem";
 import CartSummary from "./CartSummary";
 import EmptyCart from "./EmptyCart";
@@ -10,13 +11,14 @@ import EmptyCart from "./EmptyCart";
 export default function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const { items, totals, isEmpty, isHydrated } = useCart();
+  const { dict } = useI18n();
 
   return (
     <>
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        aria-label={`Apri il carrello, ${totals.itemCount} articoli`}
+        aria-label={`${dict.nav.openCart} (${totals.itemCount})`}
         className="relative p-2 text-cream hover:text-accent transition-colors duration-300 focus:outline-none"
       >
         {isHydrated && totals.itemCount > 0 && (
@@ -48,7 +50,7 @@ export default function CartDrawer() {
         <div className="fixed inset-0 z-50 flex justify-end">
           {/* backdrop */}
           <button
-            aria-label="Chiudi il carrello"
+            aria-label={dict.nav.closeCart}
             onClick={() => setIsOpen(false)}
             className="absolute inset-0 bg-black/50"
           />
@@ -56,11 +58,11 @@ export default function CartDrawer() {
           {/* drawer panel */}
           <div className="relative w-full sm:w-96 bg-carbon border-l border-white/5 h-full shadow-2xl flex flex-col p-6">
             <div className="flex justify-between items-center pb-6 border-b border-white/5">
-              <h2 className="font-serif text-2xl text-cream">Il Tuo Ordine</h2>
+              <h2 className="font-serif text-2xl text-cream">{dict.cart.yourOrder}</h2>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                aria-label="Chiudi il carrello"
+                aria-label={dict.nav.closeCart}
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <svg
@@ -83,7 +85,7 @@ export default function CartDrawer() {
             <div className="flex-1 overflow-y-auto no-scrollbar pt-4">
               {!isHydrated ? (
                 <div className="py-16 text-center text-gray-400 text-sm font-light">
-                  Caricamento carrello...
+                  {dict.cart.loading}
                 </div>
               ) : isEmpty ? (
                 <EmptyCart />
