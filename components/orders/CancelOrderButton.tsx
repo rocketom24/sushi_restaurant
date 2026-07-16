@@ -9,7 +9,7 @@ export default function CancelOrderButton({ orderId }: { orderId: string }) {
   const router = useRouter();
 
   function handleCancel() {
-    if (!confirm("Cancel this order? This cannot be undone.")) return;
+    if (!confirm("Annullare questo ordine? L'operazione è irreversibile.")) return;
 
     startTransition(async () => {
       const result = await cancelMyOrderAction(orderId);
@@ -25,9 +25,9 @@ export default function CancelOrderButton({ orderId }: { orderId: string }) {
     <button
       onClick={handleCancel}
       disabled={isPending}
-      className="text-sm text-red-400 hover:text-red-300 disabled:opacity-50"
+      className="text-xs uppercase tracking-wider text-red-400 hover:text-red-300 disabled:opacity-50 transition-colors"
     >
-      {isPending ? "Cancelling..." : "Cancel Order"}
+      {isPending ? "Annullamento..." : "Annulla Ordine"}
     </button>
   );
 }

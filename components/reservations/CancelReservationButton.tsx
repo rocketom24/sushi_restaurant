@@ -10,7 +10,7 @@ export default function CancelReservationButton({ reservationId }: { reservation
   const router = useRouter();
 
   function handleCancel() {
-    if (!confirm("Cancel this reservation?")) return;
+    if (!confirm("Annullare questa prenotazione?")) return;
     startTransition(async () => {
       const result = await cancelMyReservationAction(reservationId);
       if (result.error) alert(result.error);
@@ -22,9 +22,9 @@ export default function CancelReservationButton({ reservationId }: { reservation
     <button
       onClick={handleCancel}
       disabled={isPending}
-      className="text-sm text-red-400 hover:text-red-300 disabled:opacity-50"
+      className="text-xs uppercase tracking-wider text-red-400 hover:text-red-300 disabled:opacity-50 transition-colors"
     >
-      {isPending ? "Cancelling..." : "Cancel Reservation"}
+      {isPending ? "Annullamento..." : "Annulla Prenotazione"}
     </button>
   );
 }

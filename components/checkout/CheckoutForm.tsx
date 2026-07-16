@@ -8,6 +8,12 @@ import PaymentMethodSelector from "./PaymentMethodSelector";
 import { startPaymentAction } from "@/lib/actions/payment.actions";
 import type { PaymentMethod } from "@/app/generated/prisma/client";
 
+const ORDER_TYPE_LABELS: Record<"TAKEAWAY" | "DELIVERY" | "DINE_IN", string> = {
+  TAKEAWAY: "Asporto",
+  DELIVERY: "Consegna",
+  DINE_IN: "Al Tavolo",
+};
+
 export default function CheckoutForm() {
   const { items, totals, clearCart } = useCart();
   const router = useRouter();
@@ -77,17 +83,17 @@ export default function CheckoutForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
           {error}
         </div>
       )}
 
       {/* Order Type */}
       <div>
-        <label className="mb-2 block text-sm font-medium text-gray-300">
-          Order Type
+        <label className="mb-3 block text-xs font-semibold uppercase tracking-widest text-gray-400">
+          Tipo di Ordine
         </label>
 
         <div className="flex gap-2">
@@ -96,17 +102,13 @@ export default function CheckoutForm() {
               key={type}
               type="button"
               onClick={() => setOrderType(type)}
-              className={`flex-1 rounded-md border px-3 py-2 text-sm font-medium transition-colors ${
+              className={`flex-1 rounded-full border px-3 py-2.5 text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
                 orderType === type
-                  ? "border-orange-500 bg-orange-600 text-white"
-                  : "border-white/15 text-gray-300 hover:border-white/30"
+                  ? "border-accent bg-accent text-white"
+                  : "border-white/10 text-gray-400 hover:border-white/30"
               }`}
             >
-              {type === "DINE_IN"
-                ? "Dine In"
-                : type === "TAKEAWAY"
-                ? "Takeaway"
-                : "Delivery"}
+              {ORDER_TYPE_LABELS[type]}
             </button>
           ))}
         </div>
@@ -117,9 +119,9 @@ export default function CheckoutForm() {
         <div>
           <label
             htmlFor="deliveryAddress"
-            className="mb-1 block text-sm font-medium text-gray-300"
+            className="mb-2 block text-xs font-semibold uppercase tracking-widest text-gray-400"
           >
-            Delivery Address
+            Indirizzo di Consegna
           </label>
 
           <textarea
@@ -128,7 +130,7 @@ export default function CheckoutForm() {
             onChange={(e) => setDeliveryAddress(e.target.value)}
             rows={2}
             required
-            className="w-full rounded-md bg-neutral-900 border border-white/15 px-3 py-2 text-neutral-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/60"
+            className="w-full rounded-lg bg-white/3 border border-white/10 px-4 py-3 text-sm text-cream placeholder:text-gray-500 focus:outline-none focus:border-accent transition-colors"
           />
         </div>
       )}
@@ -137,9 +139,9 @@ export default function CheckoutForm() {
       <div>
         <label
           htmlFor="notes"
-          className="mb-1 block text-sm font-medium text-gray-300"
+          className="mb-2 block text-xs font-semibold uppercase tracking-widest text-gray-400"
         >
-          Order Notes (optional)
+          Note (opzionale)
         </label>
 
         <textarea
@@ -148,39 +150,38 @@ export default function CheckoutForm() {
           onChange={(e) => setNotes(e.target.value)}
           maxLength={250}
           rows={2}
-          placeholder="e.g. Less spicy, ring the bell"
-          className="w-full rounded-md bg-neutral-900 border border-white/15 px-3 py-2 text-neutral-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/60"
+          placeholder="es. Poco piccante, suonare il campanello"
+          className="w-full rounded-lg bg-white/3 border border-white/10 px-4 py-3 text-sm text-cream placeholder:text-gray-500 focus:outline-none focus:border-accent transition-colors"
         />
       </div>
 
-
       {/* Total */}
-      <div className="border-t border-white/10 pt-4">
-        <div className="flex justify-between text-lg font-semibold text-white">
-          <span>Total</span>
-          <span className="text-orange-400">€{totals.grandTotal.toFixed(2)}</span>
+      <div className="border-t border-white/5 pt-5">
+        <div className="flex justify-between items-baseline">
+          <span className="text-gray-400 text-sm">Totale</span>
+          <span className="font-serif text-2xl text-accent">
+            €{totals.grandTotal.toFixed(2)}
+          </span>
         </div>
       </div>
 
-        
-          {/* Payment Method */}
+      {/* Payment Method */}
       <PaymentMethodSelector
         value={paymentMethod}
         onChange={setPaymentMethod}
       />
 
-      
       {/* Submit */}
       <button
         type="submit"
         disabled={isPending || items.length === 0}
-        className="w-full rounded-md bg-orange-600 py-3 font-medium text-white hover:bg-orange-500 disabled:opacity-50 transition-colors"
+        className="w-full bg-accent hover:bg-white hover:text-night text-white py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest disabled:opacity-50 transition-all duration-300"
       >
         {isPending
-          ? "Processing..."
+          ? "Elaborazione..."
           : paymentMethod === "CARD"
-          ? "Continue to Secure Payment"
-          : "Place Order"}
+          ? "Procedi al Pagamento Sicuro"
+          : "Invia Ordine"}
       </button>
     </form>
   );

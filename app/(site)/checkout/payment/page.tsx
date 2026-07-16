@@ -58,9 +58,9 @@ function PaymentForm({ orderId }: { orderId: string }) {
       <button
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full rounded-md bg-orange-600 py-3 font-medium text-white hover:bg-orange-500 disabled:opacity-50 transition-colors"
+        className="w-full bg-accent hover:bg-white hover:text-night text-white py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest disabled:opacity-50 transition-all duration-300"
       >
-        {isProcessing ? "Processing..." : "Pay Now"}
+        {isProcessing ? "Elaborazione..." : "Paga Ora"}
       </button>
     </form>
   );
@@ -74,18 +74,21 @@ export default function CheckoutPaymentPage() {
 
   if (!orderId || !clientSecret) {
     return (
-      <div className="mx-auto max-w-md px-4 py-12">
-        <p className="text-center text-gray-500">
-          Invalid payment session.
+      <div className="mx-auto max-w-md px-6 py-20">
+        <p className="text-center text-gray-400 font-light">
+          Sessione di pagamento non valida.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16">
-      <h1 className="mb-6 font-serif text-3xl text-white">
-        Complete Payment
+    <div className="mx-auto max-w-md px-6 py-20">
+      <span className="text-accent text-xs font-semibold uppercase tracking-widest">
+        {"// Pagamento Sicuro"}
+      </span>
+      <h1 className="mt-2 mb-8 font-serif text-3xl md:text-4xl text-cream">
+        Completa il Pagamento
       </h1>
 
       <Elements
@@ -95,9 +98,10 @@ export default function CheckoutPaymentPage() {
           appearance: {
             theme: "night",
             variables: {
-              colorPrimary: "#ea580c",
-              colorBackground: "#171717",
-              colorText: "#e7e5e4",
+              colorPrimary: "#E05A47",
+              colorBackground: "#0F1115",
+              colorText: "#EAE6E1",
+              borderRadius: "10px",
             },
           },
         }}

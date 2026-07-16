@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { getFeaturedItems } from "@/lib/actions/public-menu.actions";
+import HeroShowcase from "@/components/home/HeroShowcase";
 
 export const metadata = {
-  title: "Sushi Restaurant — Order Online & Reserve a Table",
+  title: "KURO — Sushi Giapponese a Domicilio e al Tavolo",
   description:
-    "Fresh sushi with an Italian twist. Browse the menu, order online, or book a table.",
+    "L'arte del sushi incontra il minimalismo. Ordina online o prenota un tavolo.",
 };
 
 export default async function HomePage() {
@@ -12,140 +13,118 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(249,115,22,0.12),transparent_55%)]"
-        />
-        <div className="relative max-w-6xl mx-auto px-4 py-28 text-center">
-          <p className="text-orange-500 text-xs font-medium tracking-[0.35em] uppercase mb-5">
-            Japanese Kitchen · Italian Soul
-          </p>
-          <h1 className="font-serif text-5xl sm:text-6xl text-white tracking-tight mb-6">
-            Experience the <span className="text-orange-500">Taste</span>
-            <br />
-            of Fresh Sushi
-          </h1>
-          <p className="text-lg text-gray-400 max-w-xl mx-auto mb-10">
-            Handcrafted rolls and seasonal dishes — order online for takeaway
-            or delivery, or reserve your table in seconds.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link
-              href="/menu"
-              className="rounded-md bg-orange-600 text-white px-7 py-3 font-medium hover:bg-orange-500 transition-colors"
-            >
-              View Menu
-            </Link>
-            <Link
-              href="/reservations/new"
-              className="rounded-md border border-white/25 text-white px-7 py-3 font-medium hover:border-orange-500/70 hover:text-orange-400 transition-colors"
-            >
-              Book a Table
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* Hero slider */}
+      <HeroShowcase items={featured} />
 
-      {/* Featured dishes */}
+      {/* Featured / classic selections */}
       {featured.length > 0 && (
-        <section className="max-w-6xl mx-auto px-4 py-20">
-          <div className="text-center mb-10">
-            <p className="text-orange-500 text-xs font-medium tracking-[0.35em] uppercase mb-3">
-              Chef&apos;s Selection
+        <section className="py-24 bg-night px-6 md:px-16 lg:px-24">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+            <div>
+              <span className="text-accent text-xs font-semibold uppercase tracking-widest">
+                {"// In Evidenza"}
+              </span>
+              <h2 className="text-3xl md:text-5xl font-serif mt-2 text-cream">
+                Le Selezioni dello Chef
+              </h2>
+            </div>
+            <p className="text-xs text-gray-400 mt-2 md:mt-0 max-w-xs font-light">
+              * Ogni piatto è preparato espresso utilizzando materie prime
+              certificate e freschissime.
             </p>
-            <h2 className="font-serif text-3xl text-white">Featured Dishes</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featured.map((item) => (
               <Link
                 key={item.id}
                 href="/menu"
-                className="group bg-neutral-900 rounded-2xl border border-white/10 overflow-hidden hover:border-orange-500/50 transition-colors"
+                className="glass p-5 rounded-3xl group hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5 block"
               >
-                {item.imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={item.imageUrl}
-                    alt={item.name}
-                    className="h-44 w-full object-cover"
-                  />
-                ) : (
-                  <div className="h-44 w-full bg-neutral-800 flex items-center justify-center text-5xl">
-                    🍣
-                  </div>
-                )}
-                <div className="p-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-medium text-white group-hover:text-orange-400 transition-colors">
-                      {item.name}
-                    </h3>
-                    <span className="text-sm font-semibold text-orange-400">
-                      €{item.price.toFixed(2)}
-                    </span>
-                  </div>
-                  {item.description && (
-                    <p className="text-sm text-gray-500 mt-2 line-clamp-2">
-                      {item.description}
-                    </p>
+                <div className="h-56 overflow-hidden rounded-2xl mb-4 relative">
+                  {item.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-white/3 flex items-center justify-center text-6xl">
+                      🍣
+                    </div>
                   )}
+                </div>
+                <div className="flex justify-between items-baseline mb-2">
+                  <h3 className="font-serif text-xl group-hover:text-accent transition-colors duration-300">
+                    {item.name}
+                  </h3>
+                  <span className="text-sm font-semibold text-accent">
+                    €{item.price.toFixed(2)}
+                  </span>
+                </div>
+                {item.description && (
+                  <p className="text-xs text-gray-400 font-light leading-relaxed mb-4">
+                    {item.description}
+                  </p>
+                )}
+                <div className="flex justify-between items-center pt-2 border-t border-white/5">
+                  <span className="text-[10px] tracking-wider text-gray-500 uppercase">
+                    Specialità
+                  </span>
+                  <span className="w-8 h-8 rounded-full bg-white/5 group-hover:bg-accent text-white flex items-center justify-center transition-colors text-sm">
+                    +
+                  </span>
                 </div>
               </Link>
             ))}
           </div>
-          <div className="text-center mt-10">
+
+          <div className="text-center mt-12">
             <Link
               href="/menu"
-              className="text-sm text-gray-400 hover:text-orange-400 transition-colors"
+              className="inline-block border border-white/20 hover:border-accent hover:text-accent px-8 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300"
             >
-              Explore the full menu &rarr;
+              Scopri Tutto il Menu
             </Link>
           </div>
         </section>
       )}
 
-      {/* How it works */}
-      <section className="border-y border-white/10 bg-neutral-950">
-        <div className="max-w-6xl mx-auto px-4 py-20 grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
-          <div>
-            <p className="text-4xl mb-4">🥢</p>
-            <h3 className="font-serif text-lg text-white mb-2">Browse the Menu</h3>
-            <p className="text-sm text-gray-500">
-              Explore our full selection of sushi and Italian-inspired dishes.
-            </p>
-          </div>
-          <div>
-            <p className="text-4xl mb-4">🛵</p>
-            <h3 className="font-serif text-lg text-white mb-2">Order Online</h3>
-            <p className="text-sm text-gray-500">
-              Takeaway, delivery, or dine-in — pay by card or cash.
-            </p>
-          </div>
-          <div>
-            <p className="text-4xl mb-4">📅</p>
-            <h3 className="font-serif text-lg text-white mb-2">Reserve a Table</h3>
-            <p className="text-sm text-gray-500">
-              Book online and we&apos;ll have your table ready when you arrive.
-            </p>
-          </div>
+      {/* Philosophy */}
+      <section className="py-20 bg-carbon px-6 md:px-16 lg:px-24 border-t border-white/5">
+        <div className="max-w-2xl">
+          <span className="text-gray-500 text-xs uppercase tracking-widest">
+            La Filosofia
+          </span>
+          <h3 className="text-3xl font-serif mt-2 mb-4 text-cream">
+            La Nostra Visione
+          </h3>
+          <p className="text-sm text-gray-400 font-light leading-relaxed">
+            Il perfetto equilibrio tra la millenaria cultura culinaria del Sol
+            Levante e la freschezza e artigianalità tipiche dei migliori
+            mercati italiani. Ogni piatto è preparato espresso, dal banco alla
+            tavola.
+          </p>
         </div>
       </section>
 
-      {/* Hours & CTA */}
-      <section className="max-w-6xl mx-auto px-4 py-20 text-center">
-        <p className="text-orange-500 text-xs font-medium tracking-[0.35em] uppercase mb-3">
-          Visit Us
-        </p>
-        <h2 className="font-serif text-3xl text-white mb-3">Opening Hours</h2>
-        <p className="text-gray-400 mb-10">
-          Lunch 12:00–14:30 &nbsp;·&nbsp; Dinner 18:00–22:30
+      {/* Hours & reserve */}
+      <section className="py-24 bg-night px-6 md:px-16 lg:px-24 text-center">
+        <span className="text-accent text-xs font-semibold uppercase tracking-widest">
+          {"// Orari"}
+        </span>
+        <h2 className="text-3xl md:text-4xl font-serif mt-2 mb-3 text-cream">
+          Vieni a Trovarci
+        </h2>
+        <p className="text-sm text-gray-400 font-light mb-10">
+          Pranzo 12:00–14:30 &nbsp;·&nbsp; Cena 18:00–22:30
         </p>
         <Link
           href="/reservations/new"
-          className="inline-block rounded-md bg-orange-600 text-white px-7 py-3 font-medium hover:bg-orange-500 transition-colors"
+          className="inline-block bg-accent hover:bg-white hover:text-night text-white px-8 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300"
         >
-          Reserve Your Table
+          Prenota il Tuo Tavolo
         </Link>
       </section>
     </div>

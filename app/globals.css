@@ -1,20 +1,112 @@
 @import "tailwindcss";
 
-:root {
-  --background: #0a0a0a;
-  --foreground: #e7e5e4;
+/*
+ * KURO — luxury dark sushi theme.
+ *   night   — page background (#0B0C10)
+ *   carbon  — raised panels, drawers, sections (#0F1115)
+ *   cream   — primary text (#EAE6E1)
+ *   accent  — vermilion coral, the brand accent (#E05A47)
+ *   gold    — secondary accent for special highlights (#EBB55F)
+ */
+@theme {
+  --color-night: #0b0c10;
+  --color-carbon: #0f1115;
+  --color-cream: #eae6e1;
+  --color-accent: #e05a47;
+  --color-gold: #ebb55f;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
   --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-playfair);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background: var(--color-night);
+  color: var(--color-cream);
+  font-family: var(--font-body), sans-serif;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Glassmorphism containers for food cards */
+.glass {
+  background: rgba(15, 17, 21, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Floating animation for hero dish imagery */
+@keyframes subtle-float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(1.5deg);
+  }
+}
+
+/* Ambient pulsing glow behind featured items */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.15);
+  }
+}
+
+.floating-animation,
+.dynamic-glow {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .floating-animation {
+    animation: subtle-float 6s ease-in-out infinite;
+  }
+  .dynamic-glow {
+    animation: pulse-glow 8s ease-in-out infinite;
+  }
+}
+
+/* Fluid hero slide transitions */
+.hero-slide {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(15px);
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+}
+.hero-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0px);
+  position: relative;
+}
+
+/* Hide scrollbars elegantly */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

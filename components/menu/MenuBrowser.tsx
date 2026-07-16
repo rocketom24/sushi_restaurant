@@ -45,29 +45,38 @@ export default function MenuBrowser({ categories }: { categories: CategoryData[]
   }, [categories, search]);
 
   if (categories.length === 0) {
-    return <p className="text-gray-500 text-center py-20">No menu items available.</p>;
+    return (
+      <p className="text-gray-400 text-center py-20 font-light">
+        Il menu è in preparazione. Torna a trovarci presto.
+      </p>
+    );
   }
 
   return (
     <div>
       <input
         type="text"
-        placeholder="Search menu..."
+        placeholder="Cerca nel menu..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full max-w-md mx-auto block rounded-md bg-neutral-900 border border-white/15 px-4 py-2.5 mb-12 text-neutral-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/60"
+        className="w-full max-w-md block rounded-full bg-white/3 border border-white/10 px-6 py-3 mb-12 text-sm text-cream placeholder:text-gray-500 focus:outline-none focus:border-accent transition-colors"
       />
 
       {filtered.length === 0 && (
-        <p className="text-gray-500 text-center py-20">No items match your search.</p>
+        <p className="text-gray-400 text-center py-20 font-light">
+          Nessun piatto corrisponde a &ldquo;{search}&rdquo;.
+        </p>
       )}
 
       {filtered.map((cat) => (
-        <section key={cat.id} className="mb-14">
-          <h2 className="font-serif text-2xl text-white mb-6 text-center">{cat.name}</h2>
+        <section key={cat.id} className="mb-16">
+          <div className="flex items-center gap-4 mb-8">
+            <h2 className="font-serif text-2xl md:text-3xl text-cream">{cat.name}</h2>
+            <span aria-hidden className="flex-1 h-px bg-white/5" />
+          </div>
 
           {cat.menuItems.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
               {cat.menuItems.map((item) => (
                 <MenuCard key={item.id} item={item} />
               ))}
@@ -75,9 +84,9 @@ export default function MenuBrowser({ categories }: { categories: CategoryData[]
           )}
 
           {cat.children.map((child) => (
-            <div key={child.id} className="mb-6">
-              <h3 className="font-serif text-lg text-gray-300 mb-3">{child.name}</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div key={child.id} className="mb-8">
+              <h3 className="font-serif text-lg text-gray-400 mb-4">{child.name}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {child.menuItems.map((item) => (
                   <MenuCard key={item.id} item={item} />
                 ))}

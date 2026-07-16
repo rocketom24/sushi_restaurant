@@ -8,30 +8,30 @@ export default function CartItem({ item }: { item: CartItemType }) {
   const { updateQuantity, removeItem } = useCart();
 
   return (
-    <div className="flex gap-4 py-4 border-b border-white/10 last:border-b-0">
+    <div className="bg-white/2 border border-white/5 rounded-lg p-3 mb-3 flex gap-4">
       {item.imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={item.imageUrl}
           alt={item.name}
-          className="w-16 h-16 rounded-md object-cover flex-shrink-0"
+          className="w-16 h-16 rounded-lg object-cover shrink-0"
         />
       ) : (
-        <div className="w-16 h-16 rounded-md bg-neutral-800 flex items-center justify-center flex-shrink-0">
+        <div className="w-16 h-16 rounded-lg bg-white/3 flex items-center justify-center shrink-0">
           🍣
         </div>
       )}
 
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
-          <h4 className="font-medium text-white truncate">{item.name}</h4>
-          <span className="font-semibold text-orange-400 whitespace-nowrap">
+          <h4 className="text-sm font-light text-cream truncate">{item.name}</h4>
+          <span className="text-sm font-semibold text-accent whitespace-nowrap">
             €{item.subtotal.toFixed(2)}
           </span>
         </div>
 
         {item.customizations.length > 0 && (
-          <ul className="mt-1 text-sm text-gray-500 space-y-0.5">
+          <ul className="mt-1 text-xs text-gray-500 font-light space-y-0.5">
             {item.customizations.map((c) => (
               <li key={c.optionId}>
                 {c.groupName}: {c.optionName}
@@ -42,7 +42,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
         )}
 
         {item.specialInstructions && (
-          <p className="mt-1 text-sm text-gray-500 italic">
+          <p className="mt-1 text-xs text-gray-500 font-light italic">
             "{item.specialInstructions}"
           </p>
         )}
@@ -55,9 +55,9 @@ export default function CartItem({ item }: { item: CartItemType }) {
           <button
             type="button"
             onClick={() => removeItem(item.lineId)}
-            className="text-sm text-red-400 hover:text-red-300"
+            className="text-xs uppercase tracking-wider text-red-400 hover:text-red-300 transition-colors"
           >
-            Remove
+            Rimuovi
           </button>
         </div>
       </div>

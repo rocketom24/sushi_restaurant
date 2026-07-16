@@ -1,12 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Cormorant_Garamond, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartProvider";
 
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["300", "400", "600"],
 });
 
 const geistMono = Geist_Mono({
@@ -14,18 +21,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: {
-    default: "Sushi Restaurant",
-    template: "%s | Sushi Restaurant",
+    default: "KURO — Sushi Giapponese",
+    template: "%s | KURO",
   },
   description:
-    "Fresh sushi with an Italian twist — order online or reserve a table.",
+    "L'arte del sushi incontra il minimalismo. Ordina online o prenota un tavolo.",
 };
 
 export default function RootLayout({
@@ -34,9 +36,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="it">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
+        className={`${jakarta.variable} ${geistMono.variable} ${cormorant.variable} antialiased`}
       >
         <CartProvider>{children}</CartProvider>
       </body>

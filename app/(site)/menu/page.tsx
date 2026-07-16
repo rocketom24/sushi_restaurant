@@ -4,8 +4,8 @@ import { getPublicMenu } from "@/lib/actions/public-menu.actions";
 import MenuBrowser from "@/components/menu/MenuBrowser";
 
 export const metadata = {
-  title: "Menu",
-  description: "Browse our full sushi menu.",
+  title: "Il Nostro Menu",
+  description: "Sfoglia il nostro menu completo di sushi.",
 };
 
 type PublicMenuItem = Awaited<ReturnType<typeof getPublicMenu>>[number]["menuItems"][number];
@@ -28,12 +28,20 @@ export default async function PublicMenuPage() {
   }));
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-16">
-      <div className="text-center mb-12">
-        <p className="text-orange-500 text-xs font-medium tracking-[0.35em] uppercase mb-3">
-          Delicious &amp; Amazing
+    <div className="py-24 px-6 md:px-16 lg:px-24 bg-night">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <div>
+          <span className="text-accent text-xs font-semibold uppercase tracking-widest">
+            {"// Selezioni Classiche"}
+          </span>
+          <h1 className="text-3xl md:text-5xl font-serif mt-2 text-cream">
+            La Carta dei Nostri Capolavori
+          </h1>
+        </div>
+        <p className="text-xs text-gray-400 mt-2 md:mt-0 max-w-xs font-light">
+          * Ogni piatto è preparato espresso utilizzando materie prime
+          certificate e freschissime.
         </p>
-        <h1 className="font-serif text-4xl text-white">Our Menu</h1>
       </div>
       <MenuBrowser categories={serializedCategories} />
     </div>

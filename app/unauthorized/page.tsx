@@ -1,24 +1,24 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Unauthorized",
+  title: "Accesso Negato",
 };
 
 export default function UnauthorizedPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-night px-6">
       <div className="text-center max-w-md">
-        <h1 className="font-serif text-4xl text-white mb-3">
-          Access Denied
+        <h1 className="font-serif text-4xl text-cream mb-4">
+          Accesso Negato
         </h1>
-        <p className="text-gray-500 mb-8">
-          You don&apos;t have permission to view this page.
+        <p className="text-gray-400 font-light mb-10">
+          Non hai i permessi per visualizzare questa pagina.
         </p>
         <Link
           href="/"
-          className="inline-block rounded-md bg-orange-600 text-white px-6 py-2.5 font-medium hover:bg-orange-500 transition-colors"
+          className="inline-block bg-accent hover:bg-white hover:text-night text-white px-8 py-3 rounded-full text-xs font-semibold uppercase tracking-widest transition-all duration-300"
         >
-          Back to Home
+          Torna alla Home
         </Link>
       </div>
     </div>

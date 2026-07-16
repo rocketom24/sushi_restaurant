@@ -5,12 +5,14 @@ export default async function NewReservationPage() {
   await requireAuthPage();
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-16">
-      <div className="text-center mb-10">
-        <p className="text-orange-500 text-xs font-medium tracking-[0.35em] uppercase mb-3">
-          Reservations
-        </p>
-        <h1 className="font-serif text-4xl text-white">Book a Table</h1>
+    <div className="max-w-lg mx-auto px-6 py-20">
+      <div className="mb-10">
+        <span className="text-accent text-xs font-semibold uppercase tracking-widest">
+          {"// Prenotazioni"}
+        </span>
+        <h1 className="font-serif text-3xl md:text-4xl text-cream mt-2">
+          Prenota un Tavolo
+        </h1>
       </div>
       <ReservationForm />
     </div>

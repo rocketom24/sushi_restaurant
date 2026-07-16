@@ -4,21 +4,24 @@ import { requireGuest } from "@/lib/guards";
 import LoginForm from "@/components/auth/LoginForm";
 
 export const metadata = {
-  title: "Login",
-  description: "Login to your account to order sushi and track your loyalty points.",
+  title: "Accedi",
+  description: "Accedi al tuo account per ordinare sushi e prenotare un tavolo.",
 };
 
 export default async function LoginPage() {
   await requireGuest(); // redirects away if already logged in
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] px-4 scheme-dark">
-      <div className="w-full max-w-md bg-neutral-900 rounded-2xl border border-white/10 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-night px-6 scheme-dark">
+      <div className="w-full max-w-md glass rounded-3xl p-8">
         <div className="text-center mb-8">
-          <Link href="/" className="font-serif text-2xl text-white hover:underline">
-            Sushi<span className="text-orange-500"> Restaurant</span>
+          <Link
+            href="/"
+            className="font-serif text-2xl tracking-widest font-bold text-cream"
+          >
+            KURO<span className="text-accent">.</span>
           </Link>
-          <p className="mt-2 text-gray-500 text-sm">Welcome back</p>
+          <p className="mt-3 text-gray-500 text-sm font-light">Bentornato</p>
         </div>
 
         <Suspense fallback={<div className="h-48" />}>

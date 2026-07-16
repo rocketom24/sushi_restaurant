@@ -50,9 +50,9 @@ export default function AddToCartButton({
     return (
       <button
         disabled
-        className="w-full rounded-md bg-neutral-800 text-gray-500 py-2 text-sm font-medium cursor-not-allowed"
+        className="w-full rounded-full bg-white/5 text-gray-500 py-2.5 text-xs font-semibold uppercase tracking-widest cursor-not-allowed"
       >
-        Unavailable
+        Esaurito
       </button>
     );
   }
@@ -63,11 +63,11 @@ export default function AddToCartButton({
         type="button"
         onClick={handleAdd}
         disabled={isPending}
-        className="w-full rounded-md bg-orange-600 text-white py-2 text-sm font-medium hover:bg-orange-500 disabled:opacity-50 transition-colors"
+        className="w-full rounded-full bg-accent hover:bg-white hover:text-night text-white py-2.5 text-xs font-semibold uppercase tracking-widest disabled:opacity-50 transition-all duration-300"
       >
-        {isPending ? "Adding..." : added ? "Added ✓" : "Add to Cart"}
+        {isPending ? "Aggiungo..." : added ? "Aggiunto ✓" : "Aggiungi"}
       </button>
-      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+      {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
     </div>
   );
 }
