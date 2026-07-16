@@ -10,7 +10,7 @@ type PaymentRow = {
   id: string;
   method: string;
   status: string;
-  amount: unknown;
+  amount: number;
   transactionId: string | null;
   createdAt: Date;
   order: { orderNumber: string; user: { name: string } | null };
@@ -61,7 +61,7 @@ export default function PaymentTable({ payments }: { payments: PaymentRow[] }) {
             <td className="py-3 px-4 font-medium">{p.order.orderNumber}</td>
             <td className="py-3 px-4 text-gray-600">{p.order.user?.name ?? "—"}</td>
             <td className="py-3 px-4 text-gray-600">{p.method.replace(/_/g, " ")}</td>
-            <td className="py-3 px-4 font-medium">€{Number(p.amount).toFixed(2)}</td>
+            <td className="py-3 px-4 font-medium">€{p.amount.toFixed(2)}</td>
             <td className="py-3 px-4"><PaymentStatusBadge status={p.status} /></td>
             <td className="py-3 px-4 text-gray-500 font-mono text-xs">
               {p.transactionId ?? "—"}

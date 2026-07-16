@@ -109,7 +109,7 @@ export async function getAllPayments(filters: {
 
   const { status, method, search } = filters;
 
-  return prisma.payment.findMany({
+  const payments = await prisma.payment.findMany({
     where: {
       deletedAt: null,
       ...(status ? { status: status as never } : {}),
@@ -124,6 +124,14 @@ export async function getAllPayments(filters: {
     orderBy: { createdAt: "desc" },
     take: 100,
   });
+
+  // Prisma Decimal instances can't cross the Server → Client Component
+  // boundary — convert money fields to plain numbers before returning.
+  return payments.map((p) => ({
+    ...p,
+    amount: p.amount.toNumber(),
+    refundAmount: p.refundAmount?.toNumber() ?? null,
+  }));
 }
 
 export async function getPaymentStats() {

@@ -9,6 +9,10 @@ const ALLOWED_TRANSITIONS: Record<ReservationStatus, ReservationStatus[]> = {
   NO_SHOW: [],
 };
 
+export function getAllowedTransitions(from: ReservationStatus): ReservationStatus[] {
+  return ALLOWED_TRANSITIONS[from] ?? [];
+}
+
 export function isValidReservationTransition(
   from: ReservationStatus,
   to: ReservationStatus

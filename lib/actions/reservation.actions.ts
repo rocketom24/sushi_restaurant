@@ -5,6 +5,7 @@ import { requireAuth, requireOwner } from "@/lib/guards";
 import { reservationSchema, type ReservationFormState } from "@/lib/validations/reservation";
 import {
   findAvailableTable,
+  hasConflictingReservation,
   isWithinOperatingHours,
   isOnValidSlotInterval,
 } from "@/lib/reservations/availability";
@@ -191,6 +192,58 @@ export async function getAllReservations(filters: {
   });
 }
 
+export async function getReservationStats() {
+  await requireOwner();
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const endOfToday = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000);
+
+  const [today, pending, confirmed, seated] = await Promise.all([
+    prisma.reservation.count({
+      where: {
+        deletedAt: null,
+        reservationAt: { gte: startOfToday, lt: endOfToday },
+        status: { notIn: ["CANCELLED", "NO_SHOW"] },
+      },
+    }),
+    prisma.reservation.count({ where: { deletedAt: null, status: "PENDING" } }),
+    prisma.reservation.count({ where: { deletedAt: null, status: "CONFIRMED" } }),
+    prisma.reservation.count({ where: { deletedAt: null, status: "SEATED" } }),
+  ]);
+
+  return { today, pending, confirmed, seated };
+}
+
+/** Active-reservation counts per local calendar day, for the dashboard day strip. */
+export async function getReservationDayCounts(days = 7) {
+  await requireOwner();
+
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start.getTime() + days * 24 * 60 * 60 * 1000);
+
+  const reservations = await prisma.reservation.findMany({
+    where: {
+      deletedAt: null,
+      status: { notIn: ["CANCELLED", "NO_SHOW"] },
+      reservationAt: { gte: start, lt: end },
+    },
+    select: { reservationAt: true },
+  });
+
+  const counts: Record<string, number> = {};
+  for (const r of reservations) {
+    const d = r.reservationAt;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+      d.getDate()
+    ).padStart(2, "0")}`;
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+
+  return counts;
+}
+
 export async function getReservationByIdForOwner(reservationId: string) {
   await requireOwner();
 
@@ -240,6 +293,24 @@ export async function assignTableAction(reservationId: string, tableId: string) 
   });
 
   if (!table) return { error: "Table not found." };
+
+  const reservation = await prisma.reservation.findUnique({
+    where: { id: reservationId, deletedAt: null },
+  });
+
+  if (!reservation) return { error: "Reservation not found." };
+
+  const busy = await hasConflictingReservation(
+    tableId,
+    reservation.reservationAt,
+    reservationId
+  );
+
+  if (busy) {
+    return {
+      error: `Table ${table.tableNumber} already has a reservation around that time.`,
+    };
+  }
 
   await prisma.reservation.update({
     where: { id: reservationId },

@@ -45,39 +45,45 @@ export async function findAvailableTable(
   });
 
   for (const table of candidateTables) {
-    const conflicting = await prisma.reservation.findFirst({
-      where: {
-        tableId: table.id,
-        deletedAt: null,
-        status: { in: ["PENDING", "CONFIRMED", "SEATED"] },
-        // Overlap check: existing reservation starts before our window
-        // ends, AND doesn't end before our window starts. Since we
-        // don't store an explicit end time, we approximate using the
-        // same duration logic for the existing reservation's start time.
-        reservationAt: {
-          lt: windowEnd,
-        },
-      },
-    });
-
-    if (conflicting) {
-      const conflictDurationMs =
-        getDurationForTime(conflicting.reservationAt) * 60 * 1000;
-      const conflictEnd = new Date(
-        conflicting.reservationAt.getTime() + conflictDurationMs
-      );
-
-      // Only a real conflict if the existing reservation's window
-      // actually overlaps ours
-      if (conflictEnd > windowStart) {
-        continue; // this table is busy, try the next
-      }
-    }
-
-    return table.id;
+    const busy = await hasConflictingReservation(table.id, reservationAt);
+    if (!busy) return table.id;
   }
 
   return null;
+}
+
+/**
+ * True if the table already has an active reservation whose window
+ * overlaps the requested time. Since we don't store an explicit end
+ * time, each reservation's window is derived from its start time via
+ * the same lunch/dinner duration rule.
+ */
+export async function hasConflictingReservation(
+  tableId: string,
+  reservationAt: Date,
+  excludeReservationId?: string
+): Promise<boolean> {
+  const durationMs = getDurationForTime(reservationAt) * 60 * 1000;
+  const windowStart = reservationAt;
+  const windowEnd = new Date(reservationAt.getTime() + durationMs);
+
+  const existing = await prisma.reservation.findMany({
+    where: {
+      tableId,
+      deletedAt: null,
+      status: { in: ["PENDING", "CONFIRMED", "SEATED"] },
+      // Anything starting after our window ends can't overlap
+      reservationAt: { lt: windowEnd },
+      ...(excludeReservationId ? { id: { not: excludeReservationId } } : {}),
+    },
+    select: { reservationAt: true },
+  });
+
+  return existing.some((r) => {
+    const endMs =
+      r.reservationAt.getTime() + getDurationForTime(r.reservationAt) * 60 * 1000;
+    return endMs > windowStart.getTime();
+  });
 }
 
 export function isWithinOperatingHours(reservationAt: Date): boolean {
