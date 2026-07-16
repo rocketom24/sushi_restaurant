@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { requireAuthPage } from "@/lib/guards";
 import { getMyReservationById } from "@/lib/actions/reservation.actions";
 import ReservationStatusBadge from "@/components/reservations/ReservationStatusBadge";
 import { canCustomerCancel } from "@/lib/reservations/status-transitions";
@@ -10,6 +11,7 @@ export default async function MyReservationDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireAuthPage();
   const { id } = await params;
   const reservation = await getMyReservationById(id);
 

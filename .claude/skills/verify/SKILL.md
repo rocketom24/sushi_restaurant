@@ -28,4 +28,6 @@ description: How to build, run, and drive this app end-to-end for verification
 - Server actions + Supabase auth are slow in dev (2–8s per mutation). After clicking an action button, poll body text up to 30s instead of a fixed 3–4s wait — fixed short waits produce false failures (status "didn't change", router.push URL "didn't update").
 - Screenshots taken right after `waitForURL` can capture the old React tree mid-transition; settle with an extra wait before asserting visuals.
 - Playwright auto-dismisses `confirm()`/`alert()` dialogs — register a `page.on("dialog")` handler that accepts and logs, or destructive actions (No Show, Cancel) silently no-op.
-- Clean up created reservations afterwards: `prisma.reservation.deleteMany({ where: { customerName: { in: [...] } } })`.
+- Clean up created reservations afterwards: `prisma.reservation.deleteMany({ where: { customerName: { in: [...] } } })`; soft-delete test orders/payments (`deletedAt`) instead of hard-deleting (FK children).
+- `innerText` does not include `<input>` values — edit forms (e.g. `/dashboard/menu/[id]/edit`) look "empty" to text assertions; read `input.value` via `evaluateAll`. Also `waitForSelector("input")` hangs on the hidden `$ACTION_ID` server-action input — filter `type !== "hidden"`.
+- Pages calling action-guards (`requireAuth`, throws) instead of page-guards (`requireAuthPage`, redirects) 500 for guests — check every new page has a page-guard before its data call.

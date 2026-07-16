@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { requireAuthPage } from "@/lib/guards";
 import { getMyReservations } from "@/lib/actions/reservation.actions";
 import ReservationCard from "@/components/reservations/ReservationCard";
 
 export default async function MyReservationsPage() {
+  await requireAuthPage();
   const reservations = await getMyReservations();
 
   return (
