@@ -51,6 +51,9 @@ export default async function DashboardLayout({
             <Link href="/dashboard/settings" className="hover:text-neutral-900 hover:underline">
               Settings
             </Link>
+            <Link href="/dashboard/hero-slides" className="hover:text-neutral-900 hover:underline">
+              Hero Slides
+            </Link>
           </nav>
         </div>
 

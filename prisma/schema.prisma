@@ -596,6 +596,56 @@ model KitchenTicketItem {
 
 
 // =======================================================
+// HERO SLIDES — owner-authored, animated home-page carousel content.
+// Each row is one rotating slide; `layout` picks which of the four
+// customer-facing visual treatments renders it (see
+// components/home/hero/*). Not tied to real MenuItem/Coupon rows so
+// the owner can freely customize copy/image/price/discount per slide.
+// =======================================================
+
+enum HeroSlideKind {
+  OFFER
+  FEATURED
+}
+
+enum HeroSlideLayout {
+  IMAGE_RIGHT
+  IMAGE_LEFT
+  FULL_BLEED
+  MULTI_IMAGE
+}
+
+model HeroSlide {
+  id     String          @id @default(uuid())
+  kind   HeroSlideKind
+  layout HeroSlideLayout @default(IMAGE_RIGHT)
+
+  badgeText   String?
+  title       String
+  subtitle    String?
+  description String?
+
+  imageUrl  String?
+  imageUrls String[] @default([])
+
+  price         Decimal? @db.Decimal(10, 2)
+  discountLabel String?
+  couponCode    String?
+
+  ctaLabel String?
+  ctaHref  String?
+
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@map("hero_slides")
+}
+
+// =======================================================
 // RESTAURANT SETTINGS — singleton row (single-restaurant app, not
 // multi-tenant). Read via lib/settings/settings.ts's lazy getter,
 // which creates the default row on first access.

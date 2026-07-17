@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { getFeaturedItems, getHeroSlides } from "@/lib/actions/public-menu.actions";
+import { getFeaturedItems } from "@/lib/actions/public-menu.actions";
+import { getActiveHeroSlidesForHome } from "@/lib/actions/hero-slides.actions";
 import { getDict } from "@/lib/i18n/server";
 import HeroShowcase from "@/components/home/HeroShowcase";
 
@@ -11,14 +12,14 @@ export const metadata = {
 
 export default async function HomePage() {
   const [slides, featured, t] = await Promise.all([
-    getHeroSlides(),
+    getActiveHeroSlidesForHome(),
     getFeaturedItems(),
     getDict(),
   ]);
 
   return (
     <div>
-      {/* Hero slider — featured dishes, new arrivals, active offers */}
+      {/* Hero slider — owner-editable, animated rotation */}
       <HeroShowcase slides={slides} />
 
       {/* Featured / classic selections */}
