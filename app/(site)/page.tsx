@@ -3,6 +3,7 @@ import { getFeaturedItems } from "@/lib/actions/public-menu.actions";
 import { getActiveHeroSlidesForHome } from "@/lib/actions/hero-slides.actions";
 import { getDict } from "@/lib/i18n/server";
 import HeroShowcase from "@/components/home/HeroShowcase";
+import ScrollVideoSection from "@/components/home/ScrollVideoSection";
 
 export const metadata = {
   title: "Nagasaki Sushi & Poke — Japanese Sushi, Delivered & at the Table",
@@ -21,6 +22,9 @@ export default async function HomePage() {
     <div>
       {/* Hero slider — owner-editable, animated rotation */}
       <HeroShowcase slides={slides} />
+
+      {/* Cinematic scroll-scrubbed video */}
+      <ScrollVideoSection />
 
       {/* Featured / classic selections */}
       {featured.length > 0 && (

@@ -67,6 +67,8 @@ const en = {
     hoursEyebrow: "// Hours",
     hoursTitle: "Come Visit Us",
     reserveCta: "Reserve Your Table",
+    scrollVideoEyebrow: "// The Ritual",
+    scrollVideoTagline: "Where Precision Becomes Art.",
   },
   menu: {
     eyebrow: "// Classic Selections",
@@ -369,6 +371,8 @@ const it: typeof en = {
     hoursEyebrow: "// Orari",
     hoursTitle: "Vieni a Trovarci",
     reserveCta: "Prenota il Tuo Tavolo",
+    scrollVideoEyebrow: "// Il Rituale",
+    scrollVideoTagline: "Dove la Precisione Diventa Arte.",
   },
   menu: {
     eyebrow: "// Selezioni Classiche",
