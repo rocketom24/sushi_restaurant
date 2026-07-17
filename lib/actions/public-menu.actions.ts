@@ -119,16 +119,28 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
   return slides;
 }
 
+/** Lean, pre-serialized results for the live search dropdown in the header. */
 export async function searchMenuItems(query: string) {
   if (!query.trim()) return [];
 
-  return prisma.menuItem.findMany({
+  const items = await prisma.menuItem.findMany({
     where: {
       deletedAt: null,
+      isAvailable: true,
       name: { contains: query, mode: "insensitive" },
     },
-    include: { category: { select: { name: true, slug: true } } },
+    include: { category: { select: { name: true } } },
     orderBy: { name: "asc" },
-    take: 20,
+    take: 8,
   });
+
+  return items.map((item) => ({
+    id: item.id,
+    name: item.name,
+    price: Number(item.price),
+    imageUrl: item.imageUrl,
+    category: item.category?.name ?? null,
+  }));
 }
+
+export type MenuSearchResult = Awaited<ReturnType<typeof searchMenuItems>>[number];

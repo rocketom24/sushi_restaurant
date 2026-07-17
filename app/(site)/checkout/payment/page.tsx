@@ -101,9 +101,9 @@ export default function CheckoutPaymentPage() {
           appearance: {
             theme: "night",
             variables: {
-              colorPrimary: "#E05A47",
-              colorBackground: "#0F1115",
-              colorText: "#EAE6E1",
+              colorPrimary: "#BE123C",
+              colorBackground: "#16171D",
+              colorText: "#E5E7EB",
               borderRadius: "10px",
             },
           },

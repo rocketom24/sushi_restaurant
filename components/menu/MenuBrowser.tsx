@@ -1,7 +1,7 @@
 // components/menu/MenuBrowser.tsx
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import MenuCard from "./MenuCard";
 import { useI18n } from "@/components/i18n/I18nProvider";
 
@@ -23,9 +23,28 @@ type CategoryData = {
   children: { id: string; name: string; menuItems: MenuItemData[] }[];
 };
 
-export default function MenuBrowser({ categories }: { categories: CategoryData[] }) {
+export default function MenuBrowser({
+  categories,
+  initialQuery = "",
+  highlightId,
+}: {
+  categories: CategoryData[];
+  initialQuery?: string;
+  highlightId?: string;
+}) {
   const { dict } = useI18n();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialQuery);
+  const [highlighted, setHighlighted] = useState(highlightId);
+
+  // Deep-linked from the header search: scroll straight to the dish and
+  // give it a brief accent ring, without filtering the rest of the menu.
+  useEffect(() => {
+    if (!highlightId) return;
+    const el = document.getElementById(`menu-item-${highlightId}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const timer = setTimeout(() => setHighlighted(undefined), 2600);
+    return () => clearTimeout(timer);
+  }, [highlightId]);
 
   const filtered = useMemo(() => {
     if (!search.trim()) return categories;
@@ -80,7 +99,7 @@ export default function MenuBrowser({ categories }: { categories: CategoryData[]
           {cat.menuItems.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
               {cat.menuItems.map((item) => (
-                <MenuCard key={item.id} item={item} />
+                <MenuCard key={item.id} item={item} highlighted={item.id === highlighted} />
               ))}
             </div>
           )}
@@ -90,7 +109,7 @@ export default function MenuBrowser({ categories }: { categories: CategoryData[]
               <h3 className="font-serif text-lg text-gray-400 mb-4">{child.name}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {child.menuItems.map((item) => (
-                  <MenuCard key={item.id} item={item} />
+                  <MenuCard key={item.id} item={item} highlighted={item.id === highlighted} />
                 ))}
               </div>
             </div>

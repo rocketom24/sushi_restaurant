@@ -99,7 +99,7 @@ export default async function LoyaltyPage() {
                     className={`text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full ${
                       r.fulfilled
                         ? "bg-emerald-500/15 text-emerald-300"
-                        : "bg-gold/15 text-gold"
+                        : "bg-platinum/15 text-platinum"
                     }`}
                   >
                     {r.fulfilled ? tl.fulfilled : tl.pending}

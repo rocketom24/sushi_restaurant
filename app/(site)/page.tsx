@@ -4,7 +4,7 @@ import { getDict } from "@/lib/i18n/server";
 import HeroShowcase from "@/components/home/HeroShowcase";
 
 export const metadata = {
-  title: "KURO — Japanese Sushi, Delivered & at the Table",
+  title: "Nagasaki Sushi & Poke — Japanese Sushi, Delivered & at the Table",
   description:
     "The art of sushi meets minimalism. Order online or book a table.",
 };

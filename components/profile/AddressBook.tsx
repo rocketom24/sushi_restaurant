@@ -127,7 +127,7 @@ function AddressForm({
           type="checkbox"
           name="isDefault"
           defaultChecked={address?.isDefault ?? false}
-          className="accent-[#E05A47]"
+          className="accent-[#BE123C]"
         />
         {t.setDefault}
       </label>

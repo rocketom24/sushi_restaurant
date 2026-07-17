@@ -27,6 +27,7 @@ function formatAddress(a: SavedAddress): string {
 
 export default function CheckoutForm({
   savedAddresses = [],
+  initialOrderType,
   orderTypesEnabled = { DINE_IN: true, TAKEAWAY: true, DELIVERY: true },
   paymentMethodsEnabled = {
     CASH: true,
@@ -38,6 +39,7 @@ export default function CheckoutForm({
   deliveryFee = 0,
 }: {
   savedAddresses?: SavedAddress[];
+  initialOrderType?: OrderType;
   orderTypesEnabled?: Record<OrderType, boolean>;
   paymentMethodsEnabled?: Record<PaymentMethod, boolean>;
   minOrderAmount?: number;
@@ -57,7 +59,9 @@ export default function CheckoutForm({
   );
 
   const [orderType, setOrderType] = useState<OrderType>(
-    availableOrderTypes[0] ?? "TAKEAWAY"
+    (initialOrderType && availableOrderTypes.includes(initialOrderType)
+      ? initialOrderType
+      : availableOrderTypes[0]) ?? "TAKEAWAY"
   );
 
   const availablePaymentMethods = useMemo(

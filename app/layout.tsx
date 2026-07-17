@@ -25,8 +25,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "KURO — Japanese Sushi",
-    template: "%s | KURO",
+    default: "Nagasaki Sushi & Poke",
+    template: "%s | Nagasaki Sushi & Poke",
   },
   description:
     "The art of sushi meets minimalism. Order online or book a table.",

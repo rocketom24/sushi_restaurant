@@ -51,7 +51,7 @@ export default function PaymentMethodSelector({
                 name="paymentMethod"
                 checked={value === m.value}
                 onChange={() => onChange(m.value)}
-                className="accent-[#E05A47]"
+                className="accent-[#BE123C]"
               />
               <span className="text-sm text-cream font-light">{m.label}</span>
             </span>

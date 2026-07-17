@@ -15,8 +15,16 @@ function serializeMenuItem(item: PublicMenuItem) {
   return { ...item, price: Number(item.price) };
 }
 
-export default async function PublicMenuPage() {
-  const [categories, t] = await Promise.all([getPublicMenu(), getDict()]);
+export default async function PublicMenuPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; highlight?: string }>;
+}) {
+  const [categories, t, params] = await Promise.all([
+    getPublicMenu(),
+    getDict(),
+    searchParams,
+  ]);
 
   // Serialize every Decimal price before crossing into Client Components
   const serializedCategories = categories.map((cat) => ({
@@ -43,7 +51,11 @@ export default async function PublicMenuPage() {
           {t.menu.note}
         </p>
       </div>
-      <MenuBrowser categories={serializedCategories} />
+      <MenuBrowser
+        categories={serializedCategories}
+        initialQuery={params.q}
+        highlightId={params.highlight}
+      />
     </div>
   );
 }

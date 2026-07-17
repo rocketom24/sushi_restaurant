@@ -6,13 +6,24 @@ import CheckoutForm from "@/components/checkout/CheckoutForm";
 
 export const metadata = { title: "Checkout" };
 
-export default async function CheckoutPage() {
+export default async function CheckoutPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string }>;
+}) {
   await requireAuthPage(); // guest checkout deferred — see Module 6 doc's own "(future)" note
-  const [addresses, t, settings] = await Promise.all([
+  const [addresses, t, settings, params] = await Promise.all([
     getMyAddresses(),
     getDict(),
     getRestaurantSettings(),
+    searchParams,
   ]);
+
+  const requestedType = params.type;
+  const initialOrderType =
+    requestedType === "DELIVERY" || requestedType === "DINE_IN" || requestedType === "TAKEAWAY"
+      ? requestedType
+      : undefined;
 
   const savedAddresses = addresses.map((a) => ({
     id: a.id,
@@ -33,6 +44,7 @@ export default async function CheckoutPage() {
       </h1>
       <CheckoutForm
         savedAddresses={savedAddresses}
+        initialOrderType={initialOrderType}
         orderTypesEnabled={{
           DINE_IN: settings.dineInEnabled,
           TAKEAWAY: settings.takeawayEnabled,

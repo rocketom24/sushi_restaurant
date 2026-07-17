@@ -6,7 +6,7 @@ import type { HeroSlide } from "@/lib/actions/public-menu.actions";
 import { useI18n } from "@/components/i18n/I18nProvider";
 
 /**
- * KURO hero: asymmetric grid with a floating, glowing visual that
+ * Home hero: asymmetric grid with a floating, glowing visual that
  * rotates every 5 seconds through featured dishes, the newest dish,
  * and active offers. Arrows and dots allow manual navigation.
  */
@@ -71,12 +71,12 @@ export default function HeroShowcase({ slides: incoming }: { slides: HeroSlide[]
       <div className="relative w-full">
         {slides.map((slide, i) => {
           const isOffer = slide.kind === "offer";
-          const accent = isOffer ? "text-gold" : "text-accent";
-          const dot = isOffer ? "bg-gold" : "bg-accent";
-          const glow = isOffer ? "bg-gold/10" : "bg-accent/10";
+          const accent = isOffer ? "text-platinum" : "text-accent";
+          const dot = isOffer ? "bg-platinum" : "bg-accent";
+          const glow = isOffer ? "bg-platinum/10" : "bg-accent/10";
           const cta = isOffer
-            ? "bg-gold hover:bg-white hover:text-night"
-            : "bg-accent hover:bg-white hover:text-night";
+            ? "bg-platinum text-night hover:bg-white"
+            : "bg-accent text-white hover:bg-white hover:text-night";
 
           const eyebrow =
             slide.kind === "offer"
@@ -126,13 +126,13 @@ export default function HeroShowcase({ slides: incoming }: { slides: HeroSlide[]
                       </span>
                     )}
                     {slide.kind === "offer" && (
-                      <span className="text-2xl font-serif text-gold">
+                      <span className="text-2xl font-serif text-platinum">
                         {slide.discountLabel}
                       </span>
                     )}
                     <Link
                       href="/menu"
-                      className={`${cta} text-white px-6 py-2.5 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300`}
+                      className={`${cta} px-6 py-2.5 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300`}
                     >
                       {t.orderNow}
                     </Link>

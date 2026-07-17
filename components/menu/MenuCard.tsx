@@ -15,11 +15,22 @@ type MenuItemData = {
   spiceLevel: string | null;
 };
 
-export default function MenuCard({ item }: { item: MenuItemData }) {
+export default function MenuCard({
+  item,
+  highlighted = false,
+}: {
+  item: MenuItemData;
+  highlighted?: boolean;
+}) {
   const { dict } = useI18n();
 
   return (
-    <div className="glass p-5 rounded-3xl group hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl hover:shadow-accent/5 relative">
+    <div
+      id={`menu-item-${item.id}`}
+      className={`glass p-5 rounded-3xl group hover:-translate-y-2 transition-all duration-700 hover:shadow-2xl hover:shadow-accent/5 relative ${
+        highlighted ? "ring-2 ring-accent shadow-2xl shadow-accent/20" : ""
+      }`}
+    >
       {item.isFeatured && (
         <span className="absolute top-8 left-8 z-10 bg-accent text-white text-[9px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full">
           {dict.menu.featured}

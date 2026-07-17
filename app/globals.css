@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 /*
- * KURO — luxury dark sushi theme.
- *   night   — page background (#0B0C10)
- *   carbon  — raised panels, drawers, sections (#0F1115)
- *   cream   — primary text (#EAE6E1)
- *   accent  — vermilion coral, the brand accent (#E05A47)
- *   gold    — secondary accent for special highlights (#EBB55F)
+ * Kyoto Crimson — deep velvet & platinum luxury theme.
+ *   night     — page background, velvet black (#0B0C10)
+ *   carbon    — raised panels, drawers, sections, smoked obsidian (#16171D)
+ *   cream     — primary text, platinum silver (#E5E7EB)
+ *   accent    — cherry red, the brand accent (#BE123C)
+ *   platinum  — secondary metallic highlight, mirrors the logo's silver ring (#C9CDD3)
  */
 @theme {
   --color-night: #0b0c10;
-  --color-carbon: #0f1115;
-  --color-cream: #eae6e1;
-  --color-accent: #e05a47;
-  --color-gold: #ebb55f;
+  --color-carbon: #16171d;
+  --color-cream: #e5e7eb;
+  --color-accent: #be123c;
+  --color-platinum: #c9cdd3;
 }
 
 @theme inline {

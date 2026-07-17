@@ -21,7 +21,7 @@ export default async function LoginPage() {
             href="/"
             className="font-serif text-2xl tracking-widest font-bold text-cream"
           >
-            KURO<span className="text-accent">.</span>
+            NAGASAKI<span className="text-accent">.</span>
           </Link>
           <p className="mt-3 text-gray-500 text-sm font-light">{t.auth.welcomeBack}</p>
         </div>

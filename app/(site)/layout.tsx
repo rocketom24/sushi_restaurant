@@ -12,7 +12,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <footer className="border-t border-white/5 bg-carbon">
         <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-serif text-lg tracking-widest font-bold">
-            KURO<span className="text-accent">.</span>
+            NAGASAKI<span className="text-accent">.</span>
           </p>
           <nav className="flex gap-8 text-xs tracking-widest uppercase font-light text-gray-400">
             <Link href="/menu" className="hover:text-accent transition-colors duration-300">
@@ -31,7 +31,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           <p className="text-xs text-gray-600">{t.footer.hours}</p>
         </div>
         <div className="border-t border-white/5 py-5 text-center text-xs text-gray-600">
-          © {new Date().getFullYear()} KURO Sushi — {t.footer.rights}
+          © {new Date().getFullYear()} Nagasaki Sushi & Poke — {t.footer.rights}
         </div>
       </footer>
     </div>
