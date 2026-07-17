@@ -254,22 +254,37 @@ export default function ScrollVideoSection() {
         }}
       />
 
+      {/* Soft radial scrim, centered behind the copy — no visible edges,
+          just enough to separate the text from the footage (pale rice one
+          moment, near-black the next) without a hard panel. */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 45% at 50% 50%, rgba(11,12,16,0.55) 0%, transparent 70%)",
+        }}
+      />
+
       <div
         ref={textRef}
         className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
       >
-        {/* Frosted plaque behind the copy — the footage runs from pale
-            rice to near-black, so light text alone (or dark text alone)
-            washes out against half of it. A dedicated light surface keeps
-            dark text readable no matter what's playing behind it. */}
-        <div className="bg-cream/90 backdrop-blur-sm rounded-2xl px-8 py-6 sm:px-12 sm:py-8 shadow-2xl">
-          <span className="text-accent text-xs font-semibold uppercase tracking-widest">
-            {t.scrollVideoEyebrow}
-          </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-6xl font-serif text-night max-w-2xl leading-tight">
-            {t.scrollVideoTagline}
-          </h2>
-        </div>
+        <span
+          className="text-accent text-xs font-semibold uppercase tracking-[0.3em]"
+          style={{ textShadow: "0 2px 12px rgba(0,0,0,0.85)" }}
+        >
+          {t.scrollVideoEyebrow}
+        </span>
+        <h2
+          className="mt-5 text-3xl sm:text-4xl md:text-6xl font-serif font-semibold uppercase text-cream max-w-3xl leading-tight tracking-wide"
+          style={{
+            textShadow:
+              "0 2px 6px rgba(0,0,0,0.85), 0 10px 30px rgba(0,0,0,0.65), 0 25px 50px rgba(0,0,0,0.4)",
+          }}
+        >
+          {t.scrollVideoTagline}
+        </h2>
       </div>
     </section>
   );
