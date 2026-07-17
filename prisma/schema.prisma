@@ -595,6 +595,61 @@ model KitchenTicketItem {
 
 
 
+// =======================================================
+// RESTAURANT SETTINGS — singleton row (single-restaurant app, not
+// multi-tenant). Read via lib/settings/settings.ts's lazy getter,
+// which creates the default row on first access.
+// =======================================================
+
+model RestaurantSettings {
+  id String @id @default(uuid())
+
+  // Restaurant Information
+  name        String  @default("KURO")
+  description String?
+  phone       String?
+  email       String?
+  website     String?
+  address     String?
+  vatNumber   String?
+  taxId       String?
+
+  // Operating hours — JSON array of 7 day entries (Sun=0..Sat=6), each
+  // with a closed flag and optional lunch/dinner shift times ("HH:MM").
+  // Shape lives in lib/settings/settings.ts as the OperatingHours type.
+  operatingHours Json @default("[]")
+
+  // Reservation Settings
+  reservationSlotIntervalMinutes     Int     @default(30)
+  reservationLunchDurationMinutes    Int     @default(90)
+  reservationDinnerDurationMinutes   Int     @default(120)
+  reservationMaxGuests               Int     @default(20)
+  reservationCancellationCutoffHours Int     @default(2)
+  autoAssignTable                    Boolean @default(true)
+
+  // Ordering Settings
+  deliveryEnabled          Boolean @default(true)
+  takeawayEnabled          Boolean @default(true)
+  dineInEnabled            Boolean @default(true)
+  minOrderAmount           Decimal @default(0) @db.Decimal(10, 2)
+  deliveryFee              Decimal @default(0) @db.Decimal(10, 2)
+  estimatedPrepTimeMinutes Int     @default(20)
+
+  // Payment Settings — which methods customers may choose at checkout
+  cashEnabled     Boolean @default(true)
+  cardEnabled     Boolean @default(true)
+  satispayEnabled Boolean @default(false)
+  edenredEnabled  Boolean @default(false)
+
+  // Loyalty Settings
+  pointsPerEuro Decimal @default(1) @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("restaurant_settings")
+}
+
 enum UserRole {
   OWNER
   KITCHEN

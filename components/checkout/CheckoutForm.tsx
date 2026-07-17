@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import { createOrderAction } from "@/lib/actions/checkout.actions";
@@ -19,26 +19,58 @@ export type SavedAddress = {
   isDefault: boolean;
 };
 
+type OrderType = "DINE_IN" | "TAKEAWAY" | "DELIVERY";
+
 function formatAddress(a: SavedAddress): string {
   return [a.fullAddress, a.postalCode, a.city].filter(Boolean).join(", ");
 }
 
 export default function CheckoutForm({
   savedAddresses = [],
+  orderTypesEnabled = { DINE_IN: true, TAKEAWAY: true, DELIVERY: true },
+  paymentMethodsEnabled = {
+    CASH: true,
+    CARD: true,
+    SATISPAY: false,
+    TICKET_RESTAURANT_EDENRED: false,
+  },
+  minOrderAmount = 0,
+  deliveryFee = 0,
 }: {
   savedAddresses?: SavedAddress[];
+  orderTypesEnabled?: Record<OrderType, boolean>;
+  paymentMethodsEnabled?: Record<PaymentMethod, boolean>;
+  minOrderAmount?: number;
+  deliveryFee?: number;
 }) {
   const { items, totals, clearCart } = useCart();
   const { dict } = useI18n();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const [orderType, setOrderType] = useState<
-    "DINE_IN" | "TAKEAWAY" | "DELIVERY"
-  >("TAKEAWAY");
+  const availableOrderTypes = useMemo(
+    () =>
+      (["TAKEAWAY", "DELIVERY", "DINE_IN"] as const).filter(
+        (t) => orderTypesEnabled[t]
+      ),
+    [orderTypesEnabled]
+  );
 
-  const [paymentMethod, setPaymentMethod] =
-    useState<PaymentMethod>("CASH");
+  const [orderType, setOrderType] = useState<OrderType>(
+    availableOrderTypes[0] ?? "TAKEAWAY"
+  );
+
+  const availablePaymentMethods = useMemo(
+    () =>
+      (["CASH", "CARD", "SATISPAY", "TICKET_RESTAURANT_EDENRED"] as const).filter(
+        (m) => paymentMethodsEnabled[m]
+      ),
+    [paymentMethodsEnabled]
+  );
+
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    availablePaymentMethods[0] ?? "CASH"
+  );
 
   const defaultAddress = savedAddresses.find((a) => a.isDefault);
   const [deliveryAddress, setDeliveryAddress] = useState(
@@ -50,12 +82,14 @@ export default function CheckoutForm({
   );
   const [error, setError] = useState<string | null>(null);
 
+  const fee = orderType === "DELIVERY" ? deliveryFee : 0;
   // The applied discount can never exceed the subtotal; server re-checks.
   const discount = coupon ? Math.min(coupon.discount, totals.subtotal) : 0;
   const payableTotal = Math.max(
     0,
-    Math.round((totals.grandTotal - discount) * 100) / 100
+    Math.round((totals.grandTotal - discount + fee) * 100) / 100
   );
+  const belowMinimum = minOrderAmount > 0 && totals.subtotal < minOrderAmount;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -131,7 +165,7 @@ export default function CheckoutForm({
         </label>
 
         <div className="flex gap-2">
-          {(["TAKEAWAY", "DELIVERY", "DINE_IN"] as const).map((type) => (
+          {availableOrderTypes.map((type) => (
             <button
               key={type}
               type="button"
@@ -216,6 +250,12 @@ export default function CheckoutForm({
         onRemoved={() => setCoupon(null)}
       />
 
+      {belowMinimum && (
+        <p className="text-xs text-amber-400">
+          Minimum order amount is €{minOrderAmount.toFixed(2)} (currently €{totals.subtotal.toFixed(2)}).
+        </p>
+      )}
+
       {/* Total */}
       <div className="border-t border-white/5 pt-5 space-y-2">
         {coupon && (
@@ -224,6 +264,12 @@ export default function CheckoutForm({
               {dict.checkout.discount} · {coupon.code}
             </span>
             <span className="text-emerald-400">−€{discount.toFixed(2)}</span>
+          </div>
+        )}
+        {fee > 0 && (
+          <div className="flex justify-between items-baseline text-sm">
+            <span className="text-gray-400">Delivery Fee</span>
+            <span className="text-gray-300">€{fee.toFixed(2)}</span>
           </div>
         )}
         <div className="flex justify-between items-baseline">
@@ -238,12 +284,13 @@ export default function CheckoutForm({
       <PaymentMethodSelector
         value={paymentMethod}
         onChange={setPaymentMethod}
+        enabledMethods={paymentMethodsEnabled}
       />
 
       {/* Submit */}
       <button
         type="submit"
-        disabled={isPending || items.length === 0}
+        disabled={isPending || items.length === 0 || belowMinimum || availableOrderTypes.length === 0}
         className="w-full bg-accent hover:bg-white hover:text-night text-white py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest disabled:opacity-50 transition-all duration-300"
       >
         {isPending

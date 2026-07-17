@@ -4,6 +4,7 @@ import { getMyReservationById } from "@/lib/actions/reservation.actions";
 import { getDict, getLocale } from "@/lib/i18n/server";
 import ReservationStatusBadge from "@/components/reservations/ReservationStatusBadge";
 import { canCustomerCancel } from "@/lib/reservations/status-transitions";
+import { getRestaurantSettings } from "@/lib/settings/settings";
 import CancelReservationButton from "@/components/reservations/CancelReservationButton";
 
 
@@ -14,15 +15,20 @@ export default async function MyReservationDetailPage({
 }) {
   await requireAuthPage();
   const { id } = await params;
-  const [reservation, t, locale] = await Promise.all([
+  const [reservation, t, locale, settings] = await Promise.all([
     getMyReservationById(id),
     getDict(),
     getLocale(),
+    getRestaurantSettings(),
   ]);
 
   if (!reservation) notFound();
 
-  const canCancel = canCustomerCancel(reservation.status, reservation.reservationAt);
+  const canCancel = canCustomerCancel(
+    reservation.status,
+    reservation.reservationAt,
+    settings.reservationCancellationCutoffHours
+  );
 
   return (
     <div className="max-w-lg mx-auto px-6 py-20">

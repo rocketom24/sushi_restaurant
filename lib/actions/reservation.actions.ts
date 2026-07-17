@@ -13,6 +13,7 @@ import {
   isValidReservationTransition,
   canCustomerCancel,
 } from "@/lib/reservations/status-transitions";
+import { getRestaurantSettings } from "@/lib/settings/settings";
 import type { ReservationStatus } from "@/app/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -54,22 +55,37 @@ export async function createReservationAction(
     return { errors: { reservationDate: ["Reservation cannot be in the past."] } };
   }
 
-  if (!isOnValidSlotInterval(reservationAt)) {
+  const settings = await getRestaurantSettings();
+
+  if (guestCount > settings.reservationMaxGuests) {
+    return {
+      errors: {
+        guestCount: [`Maximum ${settings.reservationMaxGuests} guests. Please call us for larger groups.`],
+      },
+    };
+  }
+
+  if (!(await isOnValidSlotInterval(reservationAt))) {
     return { errors: { reservationTime: ["Please select a valid time slot."] } };
   }
 
-  if (!isWithinOperatingHours(reservationAt)) {
+  if (!(await isWithinOperatingHours(reservationAt))) {
     return { errors: { reservationTime: ["This time is outside our opening hours."] } };
   }
 
-  const tableId = await findAvailableTable(reservationAt, guestCount);
-
-  if (!tableId) {
-    return {
-      errors: {
-        _form: ["Sorry, we're fully booked for that time. Please try a different time or date."],
-      },
-    };
+  // When auto-assignment is off, reservations are accepted without a
+  // table and the owner assigns one manually later — the restaurant
+  // is trusted to only turn this off if it can actually seat overflow.
+  let tableId: string | null = null;
+  if (settings.autoAssignTable) {
+    tableId = await findAvailableTable(reservationAt, guestCount);
+    if (!tableId) {
+      return {
+        errors: {
+          _form: ["Sorry, we're fully booked for that time. Please try a different time or date."],
+        },
+      };
+    }
   }
 
   let reservationId: string;
@@ -137,7 +153,15 @@ export async function cancelMyReservationAction(reservationId: string) {
     return { error: "Reservation not found." };
   }
 
-  if (!canCustomerCancel(reservation.status, reservation.reservationAt)) {
+  const settings = await getRestaurantSettings();
+
+  if (
+    !canCustomerCancel(
+      reservation.status,
+      reservation.reservationAt,
+      settings.reservationCancellationCutoffHours
+    )
+  ) {
     return {
       error: "This reservation can no longer be cancelled online. Please call us.",
     };

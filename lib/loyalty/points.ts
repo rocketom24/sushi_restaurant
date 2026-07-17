@@ -5,17 +5,12 @@
 // a matching transaction, so the account always has a full audit trail.
 
 import type { Prisma, PrismaClient } from "@/app/generated/prisma/client";
+import { getRestaurantSettings } from "@/lib/settings/settings";
 
-/**
- * Points earned per euro spent. Configurable in one place so the
- * conversion ratio can change without touching business logic.
- */
-export const POINTS_PER_EURO = 1;
-
-/** Points earned for a given order total (post-discount amount actually paid). */
-export function calculatePoints(amountPaid: number): number {
-  if (amountPaid <= 0) return 0;
-  return Math.floor(amountPaid * POINTS_PER_EURO);
+/** Points earned for a given order total, at the given conversion rate. */
+export function calculatePoints(amountPaid: number, pointsPerEuro: number): number {
+  if (amountPaid <= 0 || pointsPerEuro <= 0) return 0;
+  return Math.floor(amountPaid * pointsPerEuro);
 }
 
 type Tx = Prisma.TransactionClient | PrismaClient;
@@ -43,7 +38,8 @@ export async function awardPointsForOrder(
   });
   if (already) return 0;
 
-  const points = calculatePoints(amountPaid);
+  const settings = await getRestaurantSettings(tx);
+  const points = calculatePoints(amountPaid, Number(settings.pointsPerEuro));
   if (points <= 0) return 0;
 
   const account = await getOrCreateLoyaltyAccount(tx, userId);

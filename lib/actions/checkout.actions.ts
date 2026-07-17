@@ -5,6 +5,7 @@ import { requireAuth } from "@/lib/guards";
 import { checkoutSchema } from "@/lib/validations/checkout";
 import { generateOrderNumber } from "@/lib/orders/order-number";
 import { validateCoupon } from "@/lib/loyalty/coupons";
+import { getRestaurantSettings } from "@/lib/settings/settings";
 import type { CheckoutInput, CheckoutResult } from "@/types/order";
 
 /** Raised inside the order transaction when a coupon re-check fails. */
@@ -30,6 +31,21 @@ if (!validated.success) {
   };
 }
   const { orderType, deliveryAddress, notes, couponCode, items } = validated.data;
+
+  const settings = await getRestaurantSettings();
+
+  const orderTypeEnabled = {
+    DINE_IN: settings.dineInEnabled,
+    TAKEAWAY: settings.takeawayEnabled,
+    DELIVERY: settings.deliveryEnabled,
+  }[orderType];
+
+  if (!orderTypeEnabled) {
+    return {
+      success: false,
+      error: `${orderType.replace("_", " ").toLowerCase()} orders are not currently available.`,
+    };
+  }
 
   // Re-validate every cart item against the database — frontend data
   // (prices, availability) is never trusted, per the module's security
@@ -131,11 +147,20 @@ if (!validated.success) {
     Math.round(validatedLines.reduce((sum, l) => sum + l.subtotal, 0) * 100) /
     100;
 
+  const minOrderAmount = Number(settings.minOrderAmount);
+  if (minOrderAmount > 0 && subtotal < minOrderAmount) {
+    return {
+      success: false,
+      error: `Minimum order amount is €${minOrderAmount.toFixed(2)}.`,
+    };
+  }
+
   // Coupon discount is validated server-side (Module 11) — a client-
-  // supplied code is never trusted for the discount amount. Tax and
-  // service charge remain 0 until a future module wires real logic.
+  // supplied code is never trusted for the discount amount. Tax remains
+  // 0 until a future module wires real tax logic; serviceCharge carries
+  // the configured delivery fee for delivery orders only.
   const taxAmount = 0;
-  const serviceCharge = 0;
+  const serviceCharge = orderType === "DELIVERY" ? Number(settings.deliveryFee) : 0;
 
   // Validate the coupon up-front for a fast, clear error before we open
   // the write transaction. It is re-validated inside the transaction to

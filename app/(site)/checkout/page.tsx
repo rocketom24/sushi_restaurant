@@ -1,13 +1,18 @@
 import { requireAuthPage } from "@/lib/guards";
 import { getMyAddresses } from "@/lib/actions/profile.actions";
 import { getDict } from "@/lib/i18n/server";
+import { getRestaurantSettings } from "@/lib/settings/settings";
 import CheckoutForm from "@/components/checkout/CheckoutForm";
 
 export const metadata = { title: "Checkout" };
 
 export default async function CheckoutPage() {
   await requireAuthPage(); // guest checkout deferred — see Module 6 doc's own "(future)" note
-  const [addresses, t] = await Promise.all([getMyAddresses(), getDict()]);
+  const [addresses, t, settings] = await Promise.all([
+    getMyAddresses(),
+    getDict(),
+    getRestaurantSettings(),
+  ]);
 
   const savedAddresses = addresses.map((a) => ({
     id: a.id,
@@ -26,7 +31,22 @@ export default async function CheckoutPage() {
       <h1 className="font-serif text-3xl md:text-4xl text-cream mt-2 mb-10">
         {t.checkout.title}
       </h1>
-      <CheckoutForm savedAddresses={savedAddresses} />
+      <CheckoutForm
+        savedAddresses={savedAddresses}
+        orderTypesEnabled={{
+          DINE_IN: settings.dineInEnabled,
+          TAKEAWAY: settings.takeawayEnabled,
+          DELIVERY: settings.deliveryEnabled,
+        }}
+        paymentMethodsEnabled={{
+          CASH: settings.cashEnabled,
+          CARD: settings.cardEnabled,
+          SATISPAY: settings.satispayEnabled,
+          TICKET_RESTAURANT_EDENRED: settings.edenredEnabled,
+        }}
+        minOrderAmount={Number(settings.minOrderAmount)}
+        deliveryFee={Number(settings.deliveryFee)}
+      />
     </div>
   );
 }

@@ -7,13 +7,15 @@ import type { PaymentMethod } from "@/app/generated/prisma/client";
 export default function PaymentMethodSelector({
   value,
   onChange,
+  enabledMethods,
 }: {
   value: PaymentMethod;
   onChange: (method: PaymentMethod) => void;
+  enabledMethods?: Record<PaymentMethod, boolean>;
 }) {
   const { dict } = useI18n();
 
-  const methods: { value: PaymentMethod; label: string; note?: string }[] = [
+  const allMethods: { value: PaymentMethod; label: string; note?: string }[] = [
     { value: "CASH", label: dict.checkout.cash },
     { value: "CARD", label: dict.checkout.card },
     { value: "SATISPAY", label: "Satispay", note: dict.checkout.comingSoon },
@@ -23,6 +25,10 @@ export default function PaymentMethodSelector({
       note: dict.checkout.comingSoon,
     },
   ];
+
+  const methods = enabledMethods
+    ? allMethods.filter((m) => enabledMethods[m.value])
+    : allMethods;
 
   return (
     <div>

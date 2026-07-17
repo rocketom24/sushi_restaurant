@@ -5,18 +5,19 @@ import { createReservationAction } from "@/lib/actions/reservation.actions";
 import { useI18n } from "@/components/i18n/I18nProvider";
 import type { ReservationFormState } from "@/lib/validations/reservation";
 
-const TIME_SLOTS = [
-  "12:00", "12:30", "13:00", "13:30", "14:00",
-  "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30",
-];
-
 const inputClass =
   "w-full rounded-lg bg-white/3 border border-white/10 px-4 py-3 text-sm text-cream placeholder:text-gray-500 focus:outline-none focus:border-accent transition-colors";
 const labelClass =
   "block text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2";
 const errorClass = "mt-2 text-xs text-red-400";
 
-export default function ReservationForm() {
+export default function ReservationForm({
+  timeSlots,
+  maxGuests = 20,
+}: {
+  timeSlots: string[];
+  maxGuests?: number;
+}) {
   const [state, formAction, isPending] = useActionState(createReservationAction, {});
   const { dict } = useI18n();
   const t = dict.reservations;
@@ -56,7 +57,7 @@ export default function ReservationForm() {
             className={inputClass}
           >
             <option value="">{t.selectTime}</option>
-            {TIME_SLOTS.map((t) => (
+            {timeSlots.map((t) => (
               <option key={t} value={t}>{t}</option>
             ))}
           </select>
@@ -73,7 +74,7 @@ export default function ReservationForm() {
           name="guestCount"
           type="number"
           min={1}
-          max={20}
+          max={maxGuests}
           defaultValue={2}
           required
           className={inputClass}

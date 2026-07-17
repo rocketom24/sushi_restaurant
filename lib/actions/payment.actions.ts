@@ -6,6 +6,7 @@ import { requireAuth, requireOwner } from "@/lib/guards";
 import { initiatePayment } from "@/lib/payments/payment-service";
 import { refund as refundStripe } from "@/lib/payments/stripe";
 import { reversePointsForOrder } from "@/lib/loyalty/points";
+import { getRestaurantSettings } from "@/lib/settings/settings";
 import type { PaymentMethod } from "@/app/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 
@@ -33,6 +34,17 @@ export async function startPaymentAction(orderId: string, method: PaymentMethod)
   const alreadyPaid = order.payments.some((p) => p.status === "PAID");
   if (alreadyPaid) {
     return { success: false as const, error: "This order has already been paid." };
+  }
+
+  const settings = await getRestaurantSettings();
+  const methodEnabled: Record<PaymentMethod, boolean> = {
+    CASH: settings.cashEnabled,
+    CARD: settings.cardEnabled,
+    SATISPAY: settings.satispayEnabled,
+    TICKET_RESTAURANT_EDENRED: settings.edenredEnabled,
+  };
+  if (!methodEnabled[method]) {
+    return { success: false as const, error: "This payment method is not currently available." };
   }
 
   // Amount always comes from the server-stored order total, never
