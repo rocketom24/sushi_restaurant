@@ -87,7 +87,7 @@ export default function OrderMenu() {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex items-center gap-1.5 hover:text-accent transition-colors duration-300"
+        className="relative inline-flex items-center gap-1.5 py-1 transition-all duration-300 hover:text-accent hover:scale-110 after:content-[''] after:absolute after:left-1/2 after:-bottom-0.5 after:h-px after:w-0 after:-translate-x-1/2 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
       >
         {dict.nav.order}
         <svg

@@ -122,7 +122,7 @@ export default function SearchOverlay() {
         type="button"
         onClick={open}
         aria-label={dict.nav.openSearch}
-        className="p-2 text-cream hover:text-accent transition-colors duration-300 focus:outline-none"
+        className="p-2 text-cream hover:text-accent hover:scale-110 transition-all duration-300 focus:outline-none"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

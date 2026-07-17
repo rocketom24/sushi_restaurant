@@ -42,7 +42,7 @@ export default function ProfileMenu({ user }: { user: NavUser }) {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={dict.nav.account}
-        className="relative p-2 text-cream hover:text-accent transition-colors duration-300 focus:outline-none"
+        className="relative p-2 text-cream hover:text-accent hover:scale-110 transition-all duration-300 focus:outline-none"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

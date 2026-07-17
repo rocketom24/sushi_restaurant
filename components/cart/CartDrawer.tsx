@@ -19,7 +19,7 @@ export default function CartDrawer() {
         type="button"
         onClick={() => setIsOpen(true)}
         aria-label={`${dict.nav.openCart} (${totals.itemCount})`}
-        className="relative p-2 text-cream hover:text-accent transition-colors duration-300 focus:outline-none"
+        className="relative p-2 text-cream hover:text-accent hover:scale-110 transition-all duration-300 focus:outline-none"
       >
         {isHydrated && totals.itemCount > 0 && (
           <span className="absolute top-0 right-0 w-4 h-4 bg-accent text-white text-[9px] font-bold rounded-full flex items-center justify-center">
