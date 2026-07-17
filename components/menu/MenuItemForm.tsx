@@ -3,6 +3,7 @@
 
 import { useActionState } from "react";
 import type { MenuItemFormState } from "@/lib/validations/menu-item";
+import ImageUploadField from "@/components/dashboard/ImageUploadField";
 
 type MenuItem = {
   id: string;
@@ -76,8 +77,7 @@ export default function MenuItemForm({
       </div>
 
       <div>
-        <label htmlFor="imageUrl" className="block text-sm font-medium mb-1">Image URL</label>
-        <input id="imageUrl" name="imageUrl" defaultValue={item?.imageUrl ?? ""} className="w-full rounded-md border border-gray-300 px-3 py-2" />
+        <ImageUploadField name="imageUrl" folder="menu" defaultValue={item?.imageUrl} label="Photo" />
         {state.errors?.imageUrl && <p className="mt-1 text-sm text-red-600">{state.errors.imageUrl[0]}</p>}
       </div>
 

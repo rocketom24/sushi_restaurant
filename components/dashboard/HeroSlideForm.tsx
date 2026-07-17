@@ -5,6 +5,8 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import type { HeroSlideFormState } from "@/lib/validations/hero-slide";
 import type { HeroSlideKind, HeroSlideLayout } from "@/app/generated/prisma/client";
+import ImageUploadField from "./ImageUploadField";
+import MultiImageUploadField from "./MultiImageUploadField";
 
 type HeroSlide = {
   id: string;
@@ -159,37 +161,21 @@ export default function HeroSlideForm({
       </div>
 
       <div>
-        <label htmlFor="imageUrl" className="block text-sm font-medium mb-1">
-          Image URL
-        </label>
-        <input
-          id="imageUrl"
+        <ImageUploadField
           name="imageUrl"
-          defaultValue={slide?.imageUrl ?? ""}
-          placeholder="https://..."
-          className={inputClass}
+          folder="hero-slides"
+          defaultValue={slide?.imageUrl}
+          label={layout === "FULL_BLEED" ? "Background Photo" : "Dish Photo"}
         />
-        <p className="mt-1 text-xs text-gray-500">
-          {layout === "FULL_BLEED"
-            ? "Used as the full-bleed background photo."
-            : "Used as the main floating dish photo."}
-        </p>
       </div>
 
       {layout === "MULTI_IMAGE" && (
-        <div>
-          <label htmlFor="imageUrls" className="block text-sm font-medium mb-1">
-            Additional Images
-          </label>
-          <textarea
-            id="imageUrls"
-            name="imageUrls"
-            defaultValue={slide?.imageUrls?.join("\n") ?? ""}
-            rows={4}
-            placeholder={"One image URL per line, up to 4"}
-            className={inputClass}
-          />
-        </div>
+        <MultiImageUploadField
+          name="imageUrls"
+          folder="hero-slides"
+          defaultValue={slide?.imageUrls}
+          label="Collage Images"
+        />
       )}
 
       {kind === "FEATURED" && (
