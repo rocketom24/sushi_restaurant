@@ -9,6 +9,7 @@ export type CheckoutInput = {
   orderType: "DINE_IN" | "TAKEAWAY" | "DELIVERY";
   deliveryAddress?: string;
   notes?: string;
+  couponCode?: string;
   items: CheckoutCartItemInput[];
 };
 

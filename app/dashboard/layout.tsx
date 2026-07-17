@@ -42,6 +42,9 @@ export default async function DashboardLayout({
             <Link href="/dashboard/reservations" className="hover:text-neutral-900 hover:underline">
               Reservations
             </Link>
+            <Link href="/dashboard/loyalty" className="hover:text-neutral-900 hover:underline">
+              Loyalty
+            </Link>
           </nav>
         </div>
 

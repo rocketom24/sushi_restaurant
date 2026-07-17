@@ -12,6 +12,7 @@ export const checkoutSchema = z
     orderType: z.enum(["DINE_IN", "TAKEAWAY", "DELIVERY"]),
     deliveryAddress: z.string().trim().max(500).optional(),
     notes: z.string().trim().max(250).optional(),
+    couponCode: z.string().trim().max(30).optional(),
     items: z.array(checkoutItemSchema).min(1, "Your cart is empty."),
   })
   .refine(

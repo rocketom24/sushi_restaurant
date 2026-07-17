@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireOwner } from "@/lib/guards";
 import { isValidTransition } from "@/lib/orders/status-transitions";
+import { awardPointsForOrder } from "@/lib/loyalty/points";
 import { revalidatePath } from "next/cache";
 import type { OrderStatus } from "@/app/generated/prisma/client";
 
@@ -134,13 +135,25 @@ export async function updateKitchenStatusAction(
     };
   }
 
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { status: newStatus },
+  // Status flip + loyalty award are atomic (see admin-order.actions).
+  await prisma.$transaction(async (tx) => {
+    await tx.order.update({
+      where: { id: orderId },
+      data: { status: newStatus },
+    });
+
+    if (newStatus === "COMPLETED" && order.userId) {
+      await awardPointsForOrder(tx, {
+        userId: order.userId,
+        orderId: order.id,
+        amountPaid: Number(order.totalAmount),
+      });
+    }
   });
 
   revalidatePath("/dashboard/kitchen");
   revalidatePath("/dashboard/orders");
   revalidatePath(`/dashboard/orders/${orderId}`);
+  revalidatePath("/loyalty");
   return { success: true };
 }

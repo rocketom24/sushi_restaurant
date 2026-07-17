@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import { createOrderAction } from "@/lib/actions/checkout.actions";
 import PaymentMethodSelector from "./PaymentMethodSelector";
+import CouponInput from "@/components/loyalty/CouponInput";
 import { startPaymentAction } from "@/lib/actions/payment.actions";
 import { useI18n } from "@/components/i18n/I18nProvider";
 import type { PaymentMethod } from "@/app/generated/prisma/client";
@@ -44,7 +45,17 @@ export default function CheckoutForm({
     defaultAddress ? formatAddress(defaultAddress) : ""
   );
   const [notes, setNotes] = useState("");
+  const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(
+    null
+  );
   const [error, setError] = useState<string | null>(null);
+
+  // The applied discount can never exceed the subtotal; server re-checks.
+  const discount = coupon ? Math.min(coupon.discount, totals.subtotal) : 0;
+  const payableTotal = Math.max(
+    0,
+    Math.round((totals.grandTotal - discount) * 100) / 100
+  );
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -56,6 +67,7 @@ export default function CheckoutForm({
         deliveryAddress:
           orderType === "DELIVERY" ? deliveryAddress : undefined,
         notes: notes || undefined,
+        couponCode: coupon?.code,
         items: items.map((item) => ({
           menuItemId: item.menuItemId,
           quantity: item.quantity,
@@ -196,12 +208,28 @@ export default function CheckoutForm({
         />
       </div>
 
+      {/* Coupon */}
+      <CouponInput
+        subtotal={totals.subtotal}
+        applied={coupon}
+        onApplied={(code, d) => setCoupon({ code, discount: d })}
+        onRemoved={() => setCoupon(null)}
+      />
+
       {/* Total */}
-      <div className="border-t border-white/5 pt-5">
+      <div className="border-t border-white/5 pt-5 space-y-2">
+        {coupon && (
+          <div className="flex justify-between items-baseline text-sm">
+            <span className="text-gray-400">
+              {dict.checkout.discount} · {coupon.code}
+            </span>
+            <span className="text-emerald-400">−€{discount.toFixed(2)}</span>
+          </div>
+        )}
         <div className="flex justify-between items-baseline">
           <span className="text-gray-400 text-sm">{dict.checkout.total}</span>
           <span className="font-serif text-2xl text-accent">
-            €{totals.grandTotal.toFixed(2)}
+            €{payableTotal.toFixed(2)}
           </span>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth, requireOwner } from "@/lib/guards";
 import { initiatePayment } from "@/lib/payments/payment-service";
 import { refund as refundStripe } from "@/lib/payments/stripe";
+import { reversePointsForOrder } from "@/lib/loyalty/points";
 import type { PaymentMethod } from "@/app/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 
@@ -96,7 +97,13 @@ export async function refundPaymentAction(paymentId: string) {
     return { error: "Refunds for this payment method aren't supported yet." };
   }
 
+  // Reverse any loyalty points earned from the refunded order.
+  await prisma.$transaction(async (tx) => {
+    await reversePointsForOrder(tx, payment.orderId);
+  });
+
   revalidatePath("/dashboard/payments");
+  revalidatePath("/loyalty");
   return { success: true };
 }
 

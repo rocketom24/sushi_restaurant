@@ -4,7 +4,16 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/guards";
 import { checkoutSchema } from "@/lib/validations/checkout";
 import { generateOrderNumber } from "@/lib/orders/order-number";
+import { validateCoupon } from "@/lib/loyalty/coupons";
 import type { CheckoutInput, CheckoutResult } from "@/types/order";
+
+/** Raised inside the order transaction when a coupon re-check fails. */
+class CouponError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CouponError";
+  }
+}
 
 export async function createOrderAction(
   input: CheckoutInput
@@ -20,7 +29,7 @@ if (!validated.success) {
     error: validated.error.issues[0]?.message ?? "Invalid checkout data.",
   };
 }
-  const { orderType, deliveryAddress, notes, items } = validated.data;
+  const { orderType, deliveryAddress, notes, couponCode, items } = validated.data;
 
   // Re-validate every cart item against the database — frontend data
   // (prices, availability) is never trusted, per the module's security
@@ -122,18 +131,50 @@ if (!validated.success) {
     Math.round(validatedLines.reduce((sum, l) => sum + l.subtotal, 0) * 100) /
     100;
 
-  // Tax, service charge, and discount calculation are out of scope for
-  // Module 6 — placeholders remain 0 until Promotions/Payments modules
-  // wire in real logic. Flagged deliberately, not silently omitted.
-  const discountAmount = 0;
+  // Coupon discount is validated server-side (Module 11) — a client-
+  // supplied code is never trusted for the discount amount. Tax and
+  // service charge remain 0 until a future module wires real logic.
   const taxAmount = 0;
   const serviceCharge = 0;
-  const totalAmount =
-    Math.round((subtotal - discountAmount + taxAmount + serviceCharge) * 100) /
-    100;
+
+  // Validate the coupon up-front for a fast, clear error before we open
+  // the write transaction. It is re-validated inside the transaction to
+  // close any race on usage limits.
+  if (couponCode) {
+    const preview = await validateCoupon(prisma, {
+      code: couponCode,
+      subtotal,
+      userId: user.id,
+    });
+    if (!preview.valid) {
+      return { success: false, error: preview.error };
+    }
+  }
 
   try {
     const order = await prisma.$transaction(async (tx) => {
+      let discountAmount = 0;
+      let appliedCoupon: { id: string } | null = null;
+
+      if (couponCode) {
+        const result = await validateCoupon(tx, {
+          code: couponCode,
+          subtotal,
+          userId: user.id,
+        });
+        if (!result.valid) {
+          // Thrown to abort the transaction; caught below and surfaced.
+          throw new CouponError(result.error);
+        }
+        discountAmount = result.discount;
+        appliedCoupon = { id: result.coupon.id };
+      }
+
+      const totalAmount =
+        Math.round(
+          (subtotal - discountAmount + taxAmount + serviceCharge) * 100
+        ) / 100;
+
       const orderNumber = await generateOrderNumber(tx);
 
       const createdOrder = await tx.order.create({
@@ -151,6 +192,21 @@ if (!validated.success) {
           totalAmount,
         },
       });
+
+      if (appliedCoupon) {
+        await tx.couponRedemption.create({
+          data: {
+            couponId: appliedCoupon.id,
+            orderId: createdOrder.id,
+            userId: user.id,
+            discountAmount,
+          },
+        });
+        await tx.coupon.update({
+          where: { id: appliedCoupon.id },
+          data: { usageCount: { increment: 1 } },
+        });
+      }
 
       for (const line of validatedLines) {
         const orderItem = await tx.orderItem.create({
@@ -185,7 +241,7 @@ if (!validated.success) {
           method: "CASH",
           gateway: "NONE",
           status: "PENDING",
-          amount: totalAmount,
+          amount: createdOrder.totalAmount,
         },
       });
 
@@ -194,6 +250,9 @@ if (!validated.success) {
 
     return { success: true, orderId: order.id, orderNumber: order.orderNumber };
   } catch (err) {
+    if (err instanceof CouponError) {
+      return { success: false, error: err.message };
+    }
     console.error("Order creation error:", err);
     return { success: false, error: "Something went wrong. Please try again." };
   }

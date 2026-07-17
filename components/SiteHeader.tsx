@@ -39,6 +39,9 @@ export default async function SiteHeader() {
               >
                 {t.nav.myReservations}
               </Link>
+              <Link href="/loyalty" className="hover:text-accent transition-colors duration-300">
+                {t.nav.loyalty}
+              </Link>
             </>
           )}
           {user && user.role === "OWNER" && (

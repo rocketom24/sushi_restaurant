@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireOwner } from "@/lib/guards";
 import { isValidTransition } from "@/lib/orders/status-transitions";
+import { awardPointsForOrder } from "@/lib/loyalty/points";
 import type { OrderStatus, OrderType } from "@/app/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 
@@ -97,13 +98,26 @@ export async function updateOrderStatusAction(
     };
   }
 
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { status: newStatus },
+  // Awarding loyalty points and flipping the status must be atomic —
+  // wrap both so a completed order can never be left without its points.
+  await prisma.$transaction(async (tx) => {
+    await tx.order.update({
+      where: { id: orderId },
+      data: { status: newStatus },
+    });
+
+    if (newStatus === "COMPLETED" && order.userId) {
+      await awardPointsForOrder(tx, {
+        userId: order.userId,
+        orderId: order.id,
+        amountPaid: Number(order.totalAmount),
+      });
+    }
   });
 
   revalidatePath("/dashboard/orders");
   revalidatePath(`/dashboard/orders/${orderId}`);
+  revalidatePath("/loyalty");
   return { success: true };
 }
 
