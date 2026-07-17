@@ -7,6 +7,7 @@ type MenuItemRow = {
   id: string;
   name: string;
   price: unknown; // Prisma Decimal — displayed as string
+  discountPrice: unknown; // Prisma Decimal | null
   imageUrl: string | null;
   isAvailable: boolean;
   isFeatured: boolean;
@@ -44,7 +45,20 @@ export default function MenuItemTable({ items }: { items: MenuItemRow[] }) {
             </td>
             <td className="py-3 px-4 font-medium">{item.name}</td>
             <td className="py-3 px-4 text-gray-600">{item.category.name}</td>
-            <td className="py-3 px-4">€{Number(item.price).toFixed(2)}</td>
+            <td className="py-3 px-4">
+              {item.discountPrice !== null && item.discountPrice !== undefined ? (
+                <span className="flex items-center gap-2">
+                  <span className="text-gray-400 line-through text-xs">
+                    €{Number(item.price).toFixed(2)}
+                  </span>
+                  <span className="text-red-600 font-medium">
+                    €{Number(item.discountPrice).toFixed(2)}
+                  </span>
+                </span>
+              ) : (
+                <>€{Number(item.price).toFixed(2)}</>
+              )}
+            </td>
             <td className="py-3 px-4">
               <span
                 className={`text-xs px-2 py-1 rounded-full ${

@@ -12,7 +12,11 @@ export const metadata = {
 type PublicMenuItem = Awaited<ReturnType<typeof getPublicMenu>>[number]["menuItems"][number];
 
 function serializeMenuItem(item: PublicMenuItem) {
-  return { ...item, price: Number(item.price) };
+  return {
+    ...item,
+    price: Number(item.price),
+    discountPrice: item.discountPrice ? Number(item.discountPrice) : null,
+  };
 }
 
 export default async function PublicMenuPage({
@@ -37,25 +41,25 @@ export default async function PublicMenuPage({
   }));
 
   return (
-    <div className="py-24 px-6 md:px-16 lg:px-24 bg-night">
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
-        <div>
+    <div className="py-24 px-6 md:px-12 lg:px-16 bg-night">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-14">
           <span className="text-accent text-xs font-semibold uppercase tracking-widest">
             {t.menu.eyebrow}
           </span>
           <h1 className="text-3xl md:text-5xl font-serif mt-2 text-cream">
             {t.menu.title}
           </h1>
+          <p className="text-xs text-gray-400 mt-4 max-w-md mx-auto font-light">
+            {t.menu.note}
+          </p>
         </div>
-        <p className="text-xs text-gray-400 mt-2 md:mt-0 max-w-xs font-light">
-          {t.menu.note}
-        </p>
+        <MenuBrowser
+          categories={serializedCategories}
+          initialQuery={params.q}
+          highlightId={params.highlight}
+        />
       </div>
-      <MenuBrowser
-        categories={serializedCategories}
-        initialQuery={params.q}
-        highlightId={params.highlight}
-      />
     </div>
   );
 }

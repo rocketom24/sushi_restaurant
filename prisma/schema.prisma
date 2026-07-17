@@ -64,6 +64,10 @@ model MenuItem {
   name            String
   description     String?
   price           Decimal     @db.Decimal(10, 2)
+  // When set, this is the current selling price and `price` becomes the
+  // "was" price shown struck through — a real, functional discount (both
+  // cart and checkout charge this), not just homepage decoration.
+  discountPrice   Decimal?    @db.Decimal(10, 2)
   imageUrl        String?
   preparationTime Int?
   isAvailable     Boolean     @default(true)

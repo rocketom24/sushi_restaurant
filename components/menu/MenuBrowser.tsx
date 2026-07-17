@@ -10,6 +10,7 @@ type MenuItemData = {
   name: string;
   description: string | null;
   price: unknown;
+  discountPrice: unknown;
   imageUrl: string | null;
   isAvailable: boolean;
   isFeatured: boolean;
@@ -80,7 +81,7 @@ export default function MenuBrowser({
         placeholder={dict.menu.searchPlaceholder}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full max-w-md block rounded-full bg-white/3 border border-white/10 px-6 py-3 mb-12 text-sm text-cream placeholder:text-gray-500 focus:outline-none focus:border-accent transition-colors"
+        className="w-full max-w-md block mx-auto rounded-full bg-white/3 border border-white/10 px-6 py-3 mb-12 text-sm text-cream text-center placeholder:text-gray-500 focus:outline-none focus:border-accent transition-colors"
       />
 
       {filtered.length === 0 && (
@@ -89,33 +90,47 @@ export default function MenuBrowser({
         </p>
       )}
 
-      {filtered.map((cat) => (
-        <section key={cat.id} className="mb-16">
-          <div className="flex items-center gap-4 mb-8">
-            <h2 className="font-serif text-2xl md:text-3xl text-cream">{cat.name}</h2>
-            <span aria-hidden className="flex-1 h-px bg-white/5" />
-          </div>
+      {filtered.map((cat) => {
+        const totalCount =
+          cat.menuItems.length + cat.children.reduce((sum, c) => sum + c.menuItems.length, 0);
 
-          {cat.menuItems.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-              {cat.menuItems.map((item) => (
-                <MenuCard key={item.id} item={item} highlighted={item.id === highlighted} />
-              ))}
+        return (
+          <section key={cat.id} className="mb-20">
+            <div className="text-center mb-10">
+              <h2 className="font-serif text-3xl md:text-4xl text-cream">{cat.name}</h2>
+              <div className="flex items-center justify-center gap-3 mt-3">
+                <span aria-hidden className="w-8 h-px bg-white/20" />
+                <span className="text-[10px] text-gray-500 uppercase tracking-widest">
+                  {totalCount} {totalCount === 1 ? dict.menu.dish : dict.menu.dishes}
+                </span>
+                <span aria-hidden className="w-8 h-px bg-white/20" />
+              </div>
             </div>
-          )}
 
-          {cat.children.map((child) => (
-            <div key={child.id} className="mb-8">
-              <h3 className="font-serif text-lg text-gray-400 mb-4">{child.name}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {child.menuItems.map((item) => (
+            {cat.menuItems.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+                {cat.menuItems.map((item) => (
                   <MenuCard key={item.id} item={item} highlighted={item.id === highlighted} />
                 ))}
               </div>
-            </div>
-          ))}
-        </section>
-      ))}
+            )}
+
+            {cat.children.map((child) => (
+              <div key={child.id} className="mb-10">
+                <div className="flex items-center justify-center gap-2.5 mb-5">
+                  <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-accent" />
+                  <h3 className="font-serif text-xl text-gray-300 tracking-wide">{child.name}</h3>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {child.menuItems.map((item) => (
+                    <MenuCard key={item.id} item={item} highlighted={item.id === highlighted} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </section>
+        );
+      })}
     </div>
   );
 }

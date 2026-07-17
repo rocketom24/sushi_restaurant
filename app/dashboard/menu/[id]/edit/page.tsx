@@ -24,6 +24,7 @@ export default async function EditMenuItemPage({
   const serializedItem = {
     ...item,
     price: Number(item.price),
+    discountPrice: item.discountPrice ? Number(item.discountPrice) : null,
   };
 
   return (

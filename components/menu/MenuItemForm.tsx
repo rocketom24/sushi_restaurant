@@ -11,6 +11,7 @@ type MenuItem = {
   description: string | null;
   categoryId: string;
   price: number;
+  discountPrice: number | null;
   imageUrl: string | null;
   preparationTime: number | null;
   calories: number | null;
@@ -74,6 +75,28 @@ export default function MenuItemForm({
           <label htmlFor="preparationTime" className="block text-sm font-medium mb-1">Prep Time (min)</label>
           <input id="preparationTime" name="preparationTime" type="number" defaultValue={item?.preparationTime ?? ""} className="w-full rounded-md border border-gray-300 px-3 py-2" />
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="discountPrice" className="block text-sm font-medium mb-1">
+          Discount Price (€, optional)
+        </label>
+        <input
+          id="discountPrice"
+          name="discountPrice"
+          type="number"
+          step="0.01"
+          defaultValue={item?.discountPrice ?? ""}
+          placeholder="Leave blank for no discount"
+          className="w-full rounded-md border border-gray-300 px-3 py-2"
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          When set, customers see the regular price struck through next to this lower
+          price — and this is what actually gets charged at checkout.
+        </p>
+        {state.errors?.discountPrice && (
+          <p className="mt-1 text-sm text-red-600">{state.errors.discountPrice[0]}</p>
+        )}
       </div>
 
       <div>

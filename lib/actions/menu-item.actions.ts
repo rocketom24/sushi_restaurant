@@ -22,6 +22,7 @@ export async function createMenuItemAction(
     description: formData.get("description") as string,
     categoryId: formData.get("categoryId") as string,
     price: formData.get("price") as string,
+    discountPrice: formData.get("discountPrice") as string,
     imageUrl: formData.get("imageUrl") as string,
     preparationTime: formData.get("preparationTime") as string,
     calories: formData.get("calories") as string,
@@ -50,6 +51,7 @@ export async function createMenuItemAction(
       data: {
         ...validated.data,
         description: validated.data.description || null,
+        discountPrice: validated.data.discountPrice ?? null,
         imageUrl: validated.data.imageUrl || null,
         preparationTime: validated.data.preparationTime ?? null,
         calories: validated.data.calories ?? null,
@@ -82,6 +84,7 @@ export async function updateMenuItemAction(
     description: formData.get("description") as string,
     categoryId: formData.get("categoryId") as string,
     price: formData.get("price") as string,
+    discountPrice: formData.get("discountPrice") as string,
     imageUrl: formData.get("imageUrl") as string,
     preparationTime: formData.get("preparationTime") as string,
     calories: formData.get("calories") as string,
@@ -111,6 +114,7 @@ export async function updateMenuItemAction(
       data: {
         ...validated.data,
         description: validated.data.description || null,
+        discountPrice: validated.data.discountPrice ?? null,
         imageUrl: validated.data.imageUrl || null,
         preparationTime: validated.data.preparationTime ?? null,
         calories: validated.data.calories ?? null,

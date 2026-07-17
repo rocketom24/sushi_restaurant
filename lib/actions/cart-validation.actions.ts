@@ -99,7 +99,7 @@ export async function validateAddToCart(
     menuItem: {
       id: menuItem.id,
       name: menuItem.name,
-      basePrice: Number(menuItem.price),
+      basePrice: Number(menuItem.discountPrice ?? menuItem.price),
       imageUrl: menuItem.imageUrl,
     },
     customizations: validatedCustomizations,

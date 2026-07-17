@@ -21,15 +21,13 @@ export async function createOrderAction(
 ): Promise<CheckoutResult> {
   const user = await requireAuth();
 
-// lib/actions/checkout.actions.ts — change this one line
-
-const validated = checkoutSchema.safeParse(input);
-if (!validated.success) {
-  return {
-    success: false,
-    error: validated.error.issues[0]?.message ?? "Invalid checkout data.",
-  };
-}
+  const validated = checkoutSchema.safeParse(input);
+  if (!validated.success) {
+    return {
+      success: false,
+      error: validated.error.issues[0]?.message ?? "Invalid checkout data.",
+    };
+  }
   const { orderType, deliveryAddress, notes, couponCode, items } = validated.data;
 
   const settings = await getRestaurantSettings();
@@ -112,7 +110,7 @@ if (!validated.success) {
       }));
     }
 
-    const basePrice = Number(menuItem.price);
+    const basePrice = Number(menuItem.discountPrice ?? menuItem.price);
     const customizationTotal = customizations.reduce(
       (sum, c) => sum + c.priceModifier,
       0

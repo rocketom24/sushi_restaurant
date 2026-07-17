@@ -82,6 +82,16 @@ const en = {
     add: "Add to Cart",
     adding: "Adding...",
     added: "Added ✓",
+    addNote: "Add a note",
+    notePlaceholder: "e.g. no wasabi, extra crispy",
+    dish: "dish",
+    dishes: "dishes",
+    spiceLevel: "Spice",
+    spiceLevels: {
+      MILD: "Mild",
+      MEDIUM: "Medium",
+      HOT: "Hot",
+    },
   },
   search: {
     placeholder: "Search dishes, categories, anything...",
@@ -386,6 +396,16 @@ const it: typeof en = {
     add: "Aggiungi",
     adding: "Aggiungo...",
     added: "Aggiunto ✓",
+    addNote: "Aggiungi una nota",
+    notePlaceholder: "es. senza wasabi, ben croccante",
+    dish: "piatto",
+    dishes: "piatti",
+    spiceLevel: "Piccantezza",
+    spiceLevels: {
+      MILD: "Delicato",
+      MEDIUM: "Medio",
+      HOT: "Piccante",
+    },
   },
   search: {
     placeholder: "Cerca piatti, categorie, qualsiasi cosa...",

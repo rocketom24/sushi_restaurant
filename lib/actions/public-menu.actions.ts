@@ -27,14 +27,18 @@ export async function getPublicMenu() {
 }
 
 /** Featured, available dishes for the home page. Prices pre-serialized. */
-export async function getFeaturedItems(limit = 4) {
+export async function getFeaturedItems(limit = 8) {
   const items = await prisma.menuItem.findMany({
     where: { deletedAt: null, isAvailable: true, isFeatured: true },
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     take: limit,
   });
 
-  return items.map((item) => ({ ...item, price: Number(item.price) }));
+  return items.map((item) => ({
+    ...item,
+    price: Number(item.price),
+    discountPrice: item.discountPrice ? Number(item.discountPrice) : null,
+  }));
 }
 
 /** Lean, pre-serialized results for the live search dropdown in the header. */
