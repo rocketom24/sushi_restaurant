@@ -76,13 +76,33 @@ export default function MenuBrowser({
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder={dict.menu.searchPlaceholder}
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full max-w-md block mx-auto rounded-full bg-white/3 border border-white/10 px-6 py-3 mb-12 text-sm text-cream text-center placeholder:text-gray-500 focus:outline-none focus:border-accent transition-colors"
-      />
+      <div className="group relative w-full max-w-md mx-auto mb-12">
+        {/* Ambient glow that blooms behind the button on hover/focus. */}
+        <div
+          aria-hidden
+          className="absolute right-0 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-accent/40 blur-xl opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 -z-10"
+        />
+        <input
+          type="text"
+          placeholder={`🍣  ${dict.menu.searchPlaceholder}`}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-full bg-white/5 border border-white/10 pl-6 pr-16 py-3.5 text-sm text-cream placeholder:text-gray-500 shadow-lg shadow-black/30 outline-none transition-all duration-300 group-hover:border-white/20 group-hover:shadow-xl group-hover:shadow-black/40 focus:border-accent/60 focus:bg-white/8"
+        />
+        <span
+          aria-hidden
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-accent flex items-center justify-center shadow-lg shadow-accent/30 transition-transform duration-300 ease-out group-hover:scale-110 group-focus-within:scale-110 group-focus-within:rotate-12"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.75}
+              d="M21 21l-5.2-5.2m0 0a7.5 7.5 0 10-10.6 0 7.5 7.5 0 0010.6 0z"
+            />
+          </svg>
+        </span>
+      </div>
 
       {filtered.length === 0 && (
         <p className="text-gray-400 text-center py-20 font-light">
