@@ -7,6 +7,7 @@ import OrderMenu from "@/components/nav/OrderMenu";
 import ProfileMenu from "@/components/nav/ProfileMenu";
 import MobileMenu from "@/components/nav/MobileMenu";
 import SearchOverlay from "@/components/search/SearchOverlay";
+import FloatingHeaderShell from "@/components/nav/FloatingHeaderShell";
 
 const navLinkClass =
   "relative inline-block py-1 transition-all duration-300 hover:text-accent hover:scale-110 " +
@@ -19,8 +20,8 @@ export default async function SiteHeader() {
   const navUser = user ? { name: user.name, role: user.role } : null;
 
   return (
-    <header className="sticky top-0 z-40 bg-night/70 backdrop-blur-md border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 grid grid-cols-[auto_1fr_auto] items-center gap-4">
+    <FloatingHeaderShell>
+      <div className="mx-auto px-4 sm:px-6 py-3 grid grid-cols-[auto_1fr_auto] items-center gap-4">
         {/* Left: hamburger (mobile) + logo/name */}
         <div className="flex items-center gap-1">
           <MobileMenu user={navUser} />
@@ -45,6 +46,6 @@ export default async function SiteHeader() {
           <ProfileMenu user={navUser} />
         </div>
       </div>
-    </header>
+    </FloatingHeaderShell>
   );
 }

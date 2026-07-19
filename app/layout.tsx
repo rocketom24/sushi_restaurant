@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { EB_Garamond, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { I18nProvider } from "@/components/i18n/I18nProvider";
 import { getLocale } from "@/lib/i18n/server";
 
-const cormorant = Cormorant_Garamond({
+// The site's display serif — was Cormorant Garamond, now EB Garamond
+// everywhere (previously scoped to just the homepage hero).
+const ebGaramond = EB_Garamond({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "600"],
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600"],
 });
 
 const jakarta = Plus_Jakarta_Sans({
@@ -42,7 +43,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${jakarta.variable} ${geistMono.variable} ${cormorant.variable} antialiased`}
+        className={`${jakarta.variable} ${geistMono.variable} ${ebGaramond.variable} antialiased`}
       >
         <I18nProvider locale={locale}>
           <CartProvider>{children}</CartProvider>

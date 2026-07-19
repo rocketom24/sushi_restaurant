@@ -50,7 +50,7 @@ export default function FeaturedMenuCarousel({ items }: { items: FeaturedMenuIte
           the top edge. pt-8/pb-8 give both enough headroom to expand into
           without being cut off by that implicit vertical clip.
         */}
-        <div className="flex gap-6 overflow-x-auto no-scrollbar pt-8 pb-8 snap-x snap-mandatory -mx-6 px-6 md:-mx-16 md:px-16 lg:-mx-24 lg:px-24">
+        <div className="flex gap-6 overflow-x-auto no-scrollbar pt-12 pb-8 snap-x snap-mandatory -mx-6 px-6 md:-mx-16 md:px-16 lg:-mx-24 lg:px-24">
           {items.map((item, i) => (
             <FeaturedMenuCard key={item.id} item={item} index={i} />
           ))}

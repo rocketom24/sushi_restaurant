@@ -6,7 +6,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const t = await getDict();
 
   return (
-    <div className="min-h-screen flex flex-col bg-night text-cream scheme-dark">
+    <div className="site-warm-text min-h-screen flex flex-col bg-night text-cream scheme-dark">
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <footer className="border-t border-white/5 bg-carbon">

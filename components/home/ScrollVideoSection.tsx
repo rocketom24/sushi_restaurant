@@ -191,7 +191,11 @@ export default function ScrollVideoSection() {
         start: "top top",
         end: `+=${pinDistance}`,
         pin: true,
-        scrub: 1,
+        // A touch of smoothing (not 0, not the full 1s this used to be)
+        // absorbs the choppiness of raw wheel/trackpad scroll events
+        // without reading as a delay between scrolling and the frame
+        // updating.
+        scrub: 0.15,
         onUpdate: (self) => {
           const index = Math.min(FRAME_COUNT - 1, Math.round(self.progress * (FRAME_COUNT - 1)));
           if (index !== currentFrameRef.current) {

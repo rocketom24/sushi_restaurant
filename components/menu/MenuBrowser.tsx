@@ -108,7 +108,7 @@ export default function MenuBrowser({
             </div>
 
             {cat.menuItems.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-20 pt-16 mb-10">
                 {cat.menuItems.map((item) => (
                   <MenuCard key={item.id} item={item} highlighted={item.id === highlighted} />
                 ))}
@@ -121,7 +121,7 @@ export default function MenuBrowser({
                   <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-accent" />
                   <h3 className="font-serif text-xl text-gray-300 tracking-wide">{child.name}</h3>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-20 pt-16">
                   {child.menuItems.map((item) => (
                     <MenuCard key={item.id} item={item} highlighted={item.id === highlighted} />
                   ))}

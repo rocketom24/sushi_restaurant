@@ -64,7 +64,7 @@ export default function FeaturedMenuCard({
     <Link
       ref={wrapperRef}
       href={`/menu?highlight=${item.id}`}
-      className={`group relative shrink-0 w-65 sm:w-75 snap-start ${
+      className={`group relative block shrink-0 w-52 sm:w-60 snap-start ${
         isInView ? "card-pop-in-animation" : "opacity-0"
       }`}
       style={{ perspective: "1000px", animationDelay: `${Math.min(index, 6) * 90}ms` }}
@@ -72,7 +72,7 @@ export default function FeaturedMenuCard({
       {/* Accent glow that blooms behind the card on hover — the "pop". */}
       <div
         aria-hidden
-        className="absolute -inset-3 rounded-[2rem] bg-accent/40 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"
+        className="absolute -top-12 -left-3 -right-3 -bottom-3 bg-accent/15 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"
       />
 
       <div
@@ -85,53 +85,87 @@ export default function FeaturedMenuCard({
           transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) scale(${tilt.scale})`,
           transition: "transform 400ms cubic-bezier(0.22, 1, 0.36, 1)",
         }}
-        className="relative aspect-4/5 rounded-3xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/10 group-hover:ring-accent/50 group-hover:shadow-accent/20 transition-shadow duration-500"
+        className="relative rounded-none pt-16 pb-7 px-5 shadow-2xl shadow-black/50 ring-1 ring-white/8 group-hover:ring-accent/30 transition-shadow duration-500"
       >
-        {item.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={item.imageUrl}
-            alt={item.name}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        {/* Card surface — a faint directional gradient instead of one flat
+            fill, so it reads as a lit surface rather than a solid tile.
+            Clipped in its own layer so it doesn't also clip the circular
+            photo, which needs to overflow above the card. */}
+        <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(140% 100% at 15% 0%, #1e2027 0%, var(--color-carbon) 45%, #0f1013 100%)",
+            }}
           />
-        ) : (
-          <div className="absolute inset-0 bg-carbon flex items-center justify-center text-7xl">
-            🍣
-          </div>
-        )}
+          {/* Hairline sheen along the top edge — a thin catch of light
+              rather than a hard border. */}
+          <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/20 to-transparent" />
+        </div>
 
-        <div className="absolute inset-0 bg-linear-to-t from-night via-night/15 to-transparent" />
-
-        {hasDiscount && (
-          <span className="absolute top-4 left-4 bg-accent text-white text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full sale-badge-pulse-animation">
-            Sale
-          </span>
-        )}
-
-        <div className="absolute top-4 right-4 flex items-center gap-1.5 transition-transform duration-300 group-hover:scale-110">
-          {hasDiscount ? (
-            <>
-              <span className="bg-night/85 backdrop-blur-sm text-gray-300 line-through text-[11px] px-2 py-1 rounded-md shadow">
-                €{item.price.toFixed(2)}
-              </span>
-              <span className="bg-accent text-white font-serif text-lg font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-accent/50">
-                €{item.discountPrice!.toFixed(2)}
-              </span>
-            </>
-          ) : (
-            <span className="bg-night/85 backdrop-blur-sm text-white font-serif text-lg font-bold px-3 py-1.5 rounded-lg shadow-lg">
+        {/* Price — plain text, top-right */}
+        <div className="absolute top-5 right-5 text-right transition-transform duration-300 group-hover:scale-110">
+          {hasDiscount && (
+            <div className="text-[11px] text-crimson-silk line-through leading-none mb-1">
               €{item.price.toFixed(2)}
+            </div>
+          )}
+          <div
+            className={`font-hero text-lg font-bold leading-none tracking-tight ${
+              hasDiscount ? "text-accent" : "text-cream"
+            }`}
+          >
+            €{(item.discountPrice ?? item.price).toFixed(2)}
+          </div>
+        </div>
+
+        {/* Circular photo, overlapping the card's top edge — a soft
+            gradient rim rather than a flat solid ring, so it catches
+            light like a real plate edge instead of a printed circle. */}
+        <div className="absolute -top-11 left-6 w-24 h-24 sm:w-28 sm:h-28 rounded-full p-0.75 bg-linear-to-br from-cream/70 via-cream/25 to-transparent shadow-xl shadow-black/60">
+          <div className="relative w-full h-full rounded-full overflow-hidden bg-night ring-1 ring-black/50">
+            {item.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={item.imageUrl}
+                alt={item.name}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-3xl">🍣</div>
+            )}
+          </div>
+          {hasDiscount && (
+            <span className="absolute -bottom-0.5 -right-0.5 bg-accent text-white text-[8px] font-bold uppercase px-1.5 py-0.5 rounded-full ring-2 ring-carbon sale-badge-pulse-animation">
+              Sale
             </span>
           )}
         </div>
 
-        <div className="absolute inset-x-0 bottom-0 p-5">
-          <h3 className="font-serif text-xl md:text-2xl text-cream">{item.name}</h3>
-          {item.description && (
-            <p className="mt-1 text-xs text-gray-300 font-light leading-relaxed line-clamp-2">
-              {item.description}
-            </p>
-          )}
+        <h3 className="mt-4 font-hero text-lg sm:text-xl font-bold text-cream tracking-tight truncate">
+          {item.name}
+        </h3>
+
+        <div aria-hidden className="mt-4 h-px bg-white/6" />
+
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <p className="min-w-0 flex-1 text-xs text-gray-400 font-light truncate">
+            {item.description || " "}
+          </p>
+          <span
+            aria-hidden
+            className="shrink-0 w-7 h-7 rounded-full border border-white/15 flex items-center justify-center text-gray-400 group-hover:border-accent group-hover:text-accent transition-colors duration-300"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+              />
+            </svg>
+          </span>
         </div>
       </div>
     </Link>

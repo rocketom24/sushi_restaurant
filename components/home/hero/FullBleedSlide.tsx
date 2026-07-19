@@ -54,7 +54,7 @@ export default function FullBleedSlide({
           {eyebrow}
         </span>
         <h1
-          className={`mt-4 ${revealClass(2)} text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif leading-[1.05] text-cream drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)]`}
+          className={`font-hero mt-4 ${revealClass(2)} text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-cream drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)]`}
         >
           {slide.title}
         </h1>
@@ -65,7 +65,7 @@ export default function FullBleedSlide({
         )}
         <div className={`mt-6 ${revealClass(4)} flex flex-wrap items-center gap-4 sm:gap-6`}>
           {!isOffer && slide.price !== null && (
-            <span className={`text-3xl md:text-4xl font-serif font-bold ${accent}`}>
+            <span className={`font-hero text-3xl md:text-4xl font-bold ${accent}`}>
               €{slide.price.toFixed(2)}
             </span>
           )}

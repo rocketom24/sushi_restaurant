@@ -6,6 +6,7 @@ import type { HeroSlideData } from "./hero/types";
 import ImageSideSlide from "./hero/ImageSideSlide";
 import FullBleedSlide from "./hero/FullBleedSlide";
 import MultiImageSlide from "./hero/MultiImageSlide";
+import { SmokeBackground } from "@/components/ui/spooky-smoke-animation";
 import { useI18n } from "@/components/i18n/I18nProvider";
 
 /**
@@ -19,19 +20,27 @@ export default function HeroShowcase({ slides: incoming }: { slides: HeroSlideDa
 
   const slides = incoming;
   const [current, setCurrent] = useState(0);
+  // Bumped on every advance (auto or manual) so the active dash's fill
+  // animation always restarts in sync with the timer, even when a click
+  // re-selects the slide that's already showing.
+  const [cycle, setCycle] = useState(0);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const many = slides.length > 1;
 
   const restartTimer = useCallback(() => {
     if (timer.current) clearInterval(timer.current);
     if (many) {
-      timer.current = setInterval(() => setCurrent((c) => (c + 1) % slides.length), 5000);
+      timer.current = setInterval(() => {
+        setCurrent((c) => (c + 1) % slides.length);
+        setCycle((c) => c + 1);
+      }, 5000);
     }
   }, [many, slides.length]);
 
   const goTo = useCallback(
     (index: number) => {
       setCurrent((index + slides.length) % slides.length);
+      setCycle((c) => c + 1);
       restartTimer();
     },
     [slides.length, restartTimer]
@@ -49,7 +58,7 @@ export default function HeroShowcase({ slides: incoming }: { slides: HeroSlideDa
       <section className="relative min-h-[70vh] flex items-center justify-center px-6 bg-linear-to-b from-night to-carbon text-center">
         <div>
           <span className="text-accent tracking-widest text-xs uppercase font-medium">{t.brandEyebrow}</span>
-          <h1 className="mt-4 text-4xl md:text-6xl font-serif leading-tight text-cream">{t.taglineBrand}</h1>
+          <h1 className="font-hero mt-4 text-4xl md:text-6xl leading-tight text-cream">{t.taglineBrand}</h1>
           <p className="mt-4 text-sm md:text-base text-gray-400 max-w-md mx-auto leading-relaxed font-light">
             {t.brandDescription}
           </p>
@@ -72,8 +81,32 @@ export default function HeroShowcase({ slides: incoming }: { slides: HeroSlideDa
     );
   }
 
+  // The IMAGE_RIGHT / IMAGE_LEFT / MULTI_IMAGE layouts all leave dark
+  // negative space beside their content — the smoke fills that space.
+  // FULL_BLEED slides are already a complete photo background, so the
+  // smoke layer unmounts entirely there (frees the WebGL context rather
+  // than paying for a hidden shader loop).
+  const currentSlide = slides[current];
+  const showSmoke = currentSlide.layout !== "FULL_BLEED";
+
   return (
     <section className="relative h-175 sm:h-[80vh] sm:min-h-150 max-h-225 overflow-hidden bg-night">
+      {showSmoke && (
+        <div key={currentSlide.id} className="absolute inset-0 z-0 hero-smoke-fade-in-animation">
+          <SmokeBackground smokeColor="#7a0f1a" />
+        </div>
+      )}
+      {/* Blends the smoke into the solid night background above (nav) and
+          below (next section) so there's no visible seam at either edge. */}
+      <div
+        aria-hidden
+        className="absolute inset-0 z-1"
+        style={{
+          background:
+            "linear-gradient(to bottom, var(--color-night) 0%, transparent 18%, transparent 78%, var(--color-night) 100%)",
+        }}
+      />
+
       {/* Prev/next arrows are a mouse-hover affordance — on touch widths
           they'd sit directly over the eyebrow/title text, so they only
           appear from sm: up. Dots + swipe/auto-rotate cover mobile nav. */}
@@ -96,39 +129,47 @@ export default function HeroShowcase({ slides: incoming }: { slides: HeroSlideDa
         </>
       )}
 
-      {slides.map((slide, i) => {
-        const active = i === current;
-        return (
-          <div key={slide.id} className={`hero-slide ${active ? "active" : ""}`}>
-            {slide.layout === "FULL_BLEED" && <FullBleedSlide slide={slide} active={active} dict={t} />}
-            {slide.layout === "MULTI_IMAGE" && <MultiImageSlide slide={slide} active={active} dict={t} />}
-            {slide.layout === "IMAGE_RIGHT" && (
-              <div className="w-full h-full flex items-center px-6 md:px-16 lg:px-24">
-                <ImageSideSlide slide={slide} reverse={false} active={active} dict={t} />
-              </div>
-            )}
-            {slide.layout === "IMAGE_LEFT" && (
-              <div className="w-full h-full flex items-center px-6 md:px-16 lg:px-24">
-                <ImageSideSlide slide={slide} reverse={true} active={active} dict={t} />
-              </div>
-            )}
-          </div>
-        );
-      })}
+      <div className="relative z-10 w-full h-full">
+        {slides.map((slide, i) => {
+          const active = i === current;
+          return (
+            <div key={slide.id} className={`hero-slide ${active ? "active" : ""}`}>
+              {slide.layout === "FULL_BLEED" && <FullBleedSlide slide={slide} active={active} dict={t} />}
+              {slide.layout === "MULTI_IMAGE" && <MultiImageSlide slide={slide} active={active} dict={t} />}
+              {slide.layout === "IMAGE_RIGHT" && (
+                <div className="w-full h-full flex items-center px-6 md:px-16 lg:px-24">
+                  <ImageSideSlide slide={slide} reverse={false} active={active} dict={t} />
+                </div>
+              )}
+              {slide.layout === "IMAGE_LEFT" && (
+                <div className="w-full h-full flex items-center px-6 md:px-16 lg:px-24">
+                  <ImageSideSlide slide={slide} reverse={true} active={active} dict={t} />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
 
-      {/* Dot indicators */}
+      {/* Dash-style progress pagination — each dash fills over the 5s
+          its slide is on screen, like a stories progress bar. */}
       {many && (
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-50 flex justify-center gap-2.5">
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-50 flex justify-center gap-2">
           {slides.map((slide, i) => (
             <button
               key={slide.id}
               onClick={() => goTo(i)}
               aria-label={`${t.goToSlide} ${i + 1}`}
               aria-current={i === current}
-              className={`h-2 rounded-full transition-all duration-500 ${
-                i === current ? "w-8 bg-accent" : "w-2 bg-white/30 hover:bg-white/50"
-              }`}
-            />
+              className="relative h-0.75 w-9 sm:w-11 overflow-hidden bg-white/20 transition-colors duration-300 hover:bg-white/35"
+            >
+              <span
+                key={i === current ? cycle : `${i}-static`}
+                className={`absolute inset-y-0 left-0 bg-[#b90504] ${
+                  i < current ? "w-full" : i === current ? "hero-dash-fill-animation" : "w-0"
+                }`}
+              />
+            </button>
           ))}
         </div>
       )}
