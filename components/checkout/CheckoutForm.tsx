@@ -11,6 +11,60 @@ import EmptyCart from "@/components/cart/EmptyCart";
 import { startPaymentAction } from "@/lib/actions/payment.actions";
 import { useI18n } from "@/components/i18n/I18nProvider";
 import type { PaymentMethod } from "@/app/generated/prisma/client";
+import MagicBento, { ParticleCard } from "@/src/components/MagicBento/MagicBento";
+
+const CHECKOUT_GLOW_COLOR = "204, 0, 51"; // ruby red
+
+// Layers MagicBento's spotlight/border-glow/magnetism onto the existing
+// glassmorphism card styling. The glow target is a separate absolutely
+// positioned overlay (filling the real card) rather than the card itself,
+// so .magic-bento-card's demo background/border/padding defaults never
+// touch the site's actual card styling — only the animation is added.
+function GlowCard({
+  className = "",
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="checkout-bento">
+      <MagicBento
+        enableStars
+        enableSpotlight
+        enableBorderGlow
+        enableMagnetism
+        glowColor={CHECKOUT_GLOW_COLOR}
+      >
+        <ParticleCard
+          className={className}
+          glowColor={CHECKOUT_GLOW_COLOR}
+          enableTilt={false}
+          enableMagnetism
+        >
+          {children}
+          <div
+            aria-hidden
+            className="magic-bento-card magic-bento-card--border-glow"
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "block",
+              width: "auto",
+              minHeight: 0,
+              aspectRatio: "auto",
+              padding: 0,
+              border: "none",
+              background: "transparent",
+              borderRadius: "inherit",
+              pointerEvents: "none",
+            }}
+          />
+        </ParticleCard>
+      </MagicBento>
+    </div>
+  );
+}
 
 export type SavedAddress = {
   id: string;
@@ -164,15 +218,15 @@ export default function CheckoutForm({
           {dict.checkout.yourItems} ({totals.itemCount})
         </h2>
         {items.length === 0 ? (
-          <div className="glass rounded-3xl">
+          <GlowCard className="glass">
             <EmptyCart />
-          </div>
+          </GlowCard>
         ) : (
-          <div className="glass rounded-3xl px-6 md:px-8">
+          <GlowCard className="glass px-6 md:px-8">
             {items.map((item) => (
               <CheckoutItemRow key={item.lineId} item={item} />
             ))}
-          </div>
+          </GlowCard>
         )}
       </div>
 
@@ -185,7 +239,7 @@ export default function CheckoutForm({
         )}
 
         {/* Order Details */}
-        <div className="glass rounded-3xl p-6 space-y-6">
+        <GlowCard className="glass p-6 space-y-6">
           {/* Order Type */}
           <div>
             <label className="mb-3 block text-xs font-semibold uppercase tracking-widest text-gray-400">
@@ -283,10 +337,10 @@ export default function CheckoutForm({
               Minimum order amount is €{minOrderAmount.toFixed(2)} (currently €{totals.subtotal.toFixed(2)}).
             </p>
           )}
-        </div>
+        </GlowCard>
 
         {/* Order Summary */}
-        <div className="glass rounded-3xl p-6 space-y-2">
+        <GlowCard className="glass p-6 space-y-2">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
             {dict.checkout.orderSummary}
           </h2>
@@ -314,10 +368,10 @@ export default function CheckoutForm({
               €{payableTotal.toFixed(2)}
             </span>
           </div>
-        </div>
+        </GlowCard>
 
         {/* Payment Options */}
-        <div className="glass rounded-3xl p-6 space-y-6">
+        <GlowCard className="glass p-6 space-y-6">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400">
             {dict.checkout.paymentOptions}
           </h2>
@@ -339,7 +393,7 @@ export default function CheckoutForm({
               ? dict.checkout.paySecure
               : dict.checkout.submit}
           </button>
-        </div>
+        </GlowCard>
       </div>
     </form>
   );
