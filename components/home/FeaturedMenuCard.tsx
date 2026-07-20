@@ -57,7 +57,13 @@ export default function FeaturedMenuCard({
         className="absolute -inset-3 rounded-3xl bg-accent/15 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"
       />
 
-      <div className="relative aspect-3/4 w-full overflow-hidden rounded-2xl shadow-2xl shadow-black/50 ring-1 ring-white/10 transition-all duration-500 group-hover:ring-accent/40 group-hover:-translate-y-1">
+      <div
+        className="relative aspect-[3/4.9] w-full overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/10 transition-all duration-500 group-hover:ring-accent/40 group-hover:-translate-y-1"
+        style={{
+          WebkitMaskImage: "linear-gradient(to bottom, black 88%, transparent 100%)",
+          maskImage: "linear-gradient(to bottom, black 88%, transparent 100%)",
+        }}
+      >
         {item.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img

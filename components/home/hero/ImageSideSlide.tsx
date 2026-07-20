@@ -88,7 +88,7 @@ export default function ImageSideSlide({
       {/* Borderless visual: no ring or frame — the photo's own edge
           dissolves into the dark background via a soft radial mask, the
           way a dish blends into a matching dark backdrop in a real photo
-          shoot. Still grounded with a contact shadow and slowly circulating. */}
+          shoot. Still grounded with a contact shadow and gently floating. */}
       <div
         className={`relative lg:col-span-7 flex justify-center items-center order-1 min-h-64 sm:min-h-96 md:min-h-120 ${
           reverse ? "lg:order-1 lg:justify-start" : "lg:order-2 lg:justify-end"
@@ -96,7 +96,7 @@ export default function ImageSideSlide({
       >
         <div className={`absolute w-72 h-72 sm:w-96 sm:h-96 ${glow} rounded-full blur-3xl dynamic-glow`} />
 
-        <div className="relative w-[96%] sm:w-[94%] max-w-3xl aspect-square floating-animation">
+        <div className="relative w-[82%] sm:w-[78%] max-w-2xl aspect-square floating-animation">
           {/* Contact shadow — grounds the dish into the dark background. */}
           <div
             aria-hidden
@@ -115,7 +115,7 @@ export default function ImageSideSlide({
               <img
                 src={slide.imageUrl}
                 alt={slide.title}
-                className="w-full h-full object-cover rounded-full hero-photo-spin-animation"
+                className="w-full h-full object-cover rounded-full"
               />
             ) : (
               <div className="w-full h-full rounded-full bg-carbon flex items-center justify-center">

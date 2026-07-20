@@ -118,17 +118,6 @@ body {
   }
 }
 
-/* Slow continuous turntable rotation for the hero's circular plate photo —
-   a layered, "the dish is circulating" feel rather than a static cutout. */
-@keyframes hero-photo-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes hero-smoke-fade-in {
   0% {
     opacity: 0;
@@ -140,7 +129,6 @@ body {
 
 .floating-animation,
 .dynamic-glow,
-.hero-photo-spin-animation,
 .hero-smoke-fade-in-animation {
   animation: none;
 }
@@ -151,9 +139,6 @@ body {
   }
   .dynamic-glow {
     animation: pulse-glow 8s ease-in-out infinite;
-  }
-  .hero-photo-spin-animation {
-    animation: hero-photo-spin 70s linear infinite;
   }
   .hero-smoke-fade-in-animation {
     animation: hero-smoke-fade-in 1.2s ease-out both;
