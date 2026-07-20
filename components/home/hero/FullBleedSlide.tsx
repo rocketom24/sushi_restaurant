@@ -54,7 +54,7 @@ export default function FullBleedSlide({
           {eyebrow}
         </span>
         <h1
-          className={`font-hero mt-4 ${revealClass(2)} text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-cream drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)]`}
+          className={`font-hero font-bold mt-4 ${revealClass(2)} text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05] text-cream drop-shadow-[0_2px_24px_rgba(0,0,0,0.7)]`}
         >
           {slide.title}
         </h1>

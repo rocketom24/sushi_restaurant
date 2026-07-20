@@ -18,7 +18,7 @@ export default function DiscountBadge({
 
   return (
     <div
-      className={`${dims} shrink-0 rounded-full bg-accent border-4 border-dashed border-white/50 shadow-2xl shadow-accent/30 flex flex-col items-center justify-center rotate-[8deg] ${
+      className={`${dims} shrink-0 rounded-full bg-deep-bordeaux border-4 border-dashed border-white/50 shadow-2xl shadow-black/50 flex flex-col items-center justify-center rotate-[8deg] ${
         active ? "badge-pop-animation" : "opacity-0"
       }`}
     >

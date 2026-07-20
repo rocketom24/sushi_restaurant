@@ -34,7 +34,14 @@ void main(){
 
   // KEY CHANGE: Instead of mixing with white (vec3(1)), we mix with our custom.
   // This tints the brightest parts of the noise with the color provided by the user.
-  col=mix(col, u_color, dot(col,vec3(.21,.71,.07)));
+  // A plain lerp from this near-white base toward u_color looks pink/pastel
+  // across most of the visible range — white mixed toward red at any partial
+  // ratio IS pink, no matter how saturated the target red is. Reshaping the
+  // mix factor with pow() reaches full u_color much sooner, shrinking that
+  // pale band so the smoke reads as red almost everywhere, not just at the
+  // very brightest peaks.
+  float tint=pow(clamp(dot(col,vec3(.21,.71,.07)),0.,1.),0.3);
+  col=mix(col, u_color, tint);
 
   col=mix(vec3(.08),col,min(time*.1,1.));
   col=clamp(col,.08,1.);

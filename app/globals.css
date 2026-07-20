@@ -4,8 +4,12 @@
  * Kyoto Crimson — deep velvet & platinum luxury theme.
  *   night     — page background, velvet black (#0B0C10)
  *   carbon    — raised panels, drawers, sections, smoked obsidian (#16171D)
- *   accent    — cherry red, the brand accent (#BE123C) — unchanged; it's
- *               the established brand color used on every button/badge
+ *   accent    — the brand accent, every button/badge/link sitewide — was
+ *               a brighter cherry red (#BE123C), now ruby red to sit with
+ *               the rest of the darker wine palette below. Not deep
+ *               bordeaux: that's dark enough to nearly vanish against the
+ *               near-black page background, which would make buttons stop
+ *               reading as buttons.
  *
  * Text color palette — every font color sitewide is drawn from these six,
  * not arbitrary grays. Two do the heavy lifting (they're what `cream` and
@@ -16,14 +20,13 @@
  *   cream-vanilla  — secondary/metallic text (→ platinum), pale
  *                    custard-vanilla (#F5E8C8)
  *   crimson-silk   — smooth mid-crimson, for small accent/eyebrow text
- *   ruby-red       — vivid jewel red, for emphasis (discounted prices)
+ *   ruby-red       — vivid jewel red, brand accent (→ accent)
  *   cherry-cola    — dark reddish-brown, for muted/struck-through text
  *   deep-bordeaux  — near-black wine red, for the darkest accent text
  */
 @theme {
   --color-night: #0b0c10;
   --color-carbon: #16171d;
-  --color-accent: #be123c;
 
   --color-cream-blush: #f2ded4;
   --color-cream-vanilla: #f5e8c8;
@@ -32,6 +35,7 @@
   --color-cherry-cola: #4a1620;
   --color-deep-bordeaux: #3d0c14;
 
+  --color-accent: var(--color-ruby-red);
   --color-cream: var(--color-cream-blush);
   --color-platinum: var(--color-cream-vanilla);
 }

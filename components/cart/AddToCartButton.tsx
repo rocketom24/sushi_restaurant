@@ -4,9 +4,7 @@ import { useState, useTransition } from "react";
 import { useCart } from "@/hooks/useCart";
 import { validateAddToCart } from "@/lib/actions/cart-validation.actions";
 import { useI18n } from "@/components/i18n/I18nProvider";
-
-const SPICE_LEVELS = ["MILD", "MEDIUM", "HOT"] as const;
-type SpiceLevel = (typeof SPICE_LEVELS)[number];
+import SpiceSlider, { type SpiceLevel } from "./SpiceSlider";
 
 export default function AddToCartButton({
   menuItemId,
@@ -82,25 +80,8 @@ export default function AddToCartButton({
 
   return (
     <div className="space-y-1.5" onClick={(e) => e.stopPropagation()}>
-      {offersSpiceChoice && (
-        <div className="flex items-center gap-1" role="radiogroup" aria-label={dict.menu.spiceLevel}>
-          {SPICE_LEVELS.map((level) => (
-            <button
-              key={level}
-              type="button"
-              role="radio"
-              aria-checked={selectedSpice === level}
-              onClick={() => setSelectedSpice(level)}
-              className={`flex-1 rounded-md py-1 text-[10px] font-semibold uppercase tracking-wide transition-colors duration-200 ${
-                selectedSpice === level
-                  ? "bg-accent text-white"
-                  : "bg-night/70 text-gray-400 border border-white/10 hover:border-accent/50 hover:text-gray-200"
-              }`}
-            >
-              {dict.menu.spiceLevels[level]}
-            </button>
-          ))}
-        </div>
+      {offersSpiceChoice && selectedSpice && (
+        <SpiceSlider value={selectedSpice} onChange={setSelectedSpice} labels={dict.menu.spiceLevels} />
       )}
 
       {noteOpen && (

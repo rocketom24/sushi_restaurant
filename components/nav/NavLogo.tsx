@@ -14,9 +14,14 @@ export default function NavLogo() {
           className="absolute inset-0 h-full w-full object-cover scale-[2.15] saturate-125 contrast-110 group-hover:scale-[2.25] transition-transform duration-300"
         />
       </div>
-      <span className="hidden sm:block font-serif text-lg md:text-xl tracking-[0.15em] font-bold text-cream leading-none">
-        NAGASAKI
-        <span className="text-accent">.</span>
+      <span className="hidden sm:flex flex-col leading-none">
+        <span className="font-serif text-lg md:text-xl tracking-[0.15em] font-bold text-cream">
+          NAGASAKI
+          <span className="text-accent">.</span>
+        </span>
+        <span className="mt-1 text-[9px] tracking-[0.25em] font-medium text-gray-400 uppercase">
+          Sushi &amp; Poke
+        </span>
       </span>
     </Link>
   );

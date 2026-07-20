@@ -30,8 +30,8 @@ export default function FloatingHeaderShell({ children }: { children: React.Reac
       <div
         className={`mx-auto transition-all duration-500 ease-out backdrop-saturate-150 ${
           scrolled
-            ? "mt-3 max-w-4xl rounded-full border border-white/15 bg-night/35 shadow-2xl shadow-black/40 backdrop-blur-2xl px-2"
-            : "mt-0 max-w-7xl rounded-none border-b border-white/10 bg-night/30 shadow-none backdrop-blur-xl px-4 sm:px-6"
+            ? "mt-3 max-w-3xl rounded-full border border-white/15 bg-night/35 shadow-2xl shadow-black/40 backdrop-blur-2xl px-2"
+            : "mt-0 max-w-6xl rounded-none border-b border-white/10 bg-night/30 shadow-none backdrop-blur-xl px-4 sm:px-6"
         }`}
       >
         {children}

@@ -93,7 +93,13 @@ export default function HeroShowcase({ slides: incoming }: { slides: HeroSlideDa
     <section className="relative h-175 sm:h-[80vh] sm:min-h-150 max-h-225 overflow-hidden bg-night">
       {showSmoke && (
         <div key={currentSlide.id} className="absolute inset-0 z-0 hero-smoke-fade-in-animation">
-          <SmokeBackground smokeColor="#7a0f1a" />
+          {/* Fire red — green ≥ blue (no pink/magenta lean), high
+              saturation. Paired with a shader fix (spooky-smoke-animation)
+              that reshapes the color mix so this reaches full strength
+              across most of the visible smoke instead of just the peaks —
+              the pink cast in every earlier attempt was the mix math
+              lerping from white, not the color choice. */}
+          <SmokeBackground smokeColor="#e01010" />
         </div>
       )}
       {/* Blends the smoke into the solid night background above (nav) and
@@ -137,12 +143,12 @@ export default function HeroShowcase({ slides: incoming }: { slides: HeroSlideDa
               {slide.layout === "FULL_BLEED" && <FullBleedSlide slide={slide} active={active} dict={t} />}
               {slide.layout === "MULTI_IMAGE" && <MultiImageSlide slide={slide} active={active} dict={t} />}
               {slide.layout === "IMAGE_RIGHT" && (
-                <div className="w-full h-full flex items-center px-6 md:px-16 lg:px-24">
+                <div className="w-full h-full flex items-center">
                   <ImageSideSlide slide={slide} reverse={false} active={active} dict={t} />
                 </div>
               )}
               {slide.layout === "IMAGE_LEFT" && (
-                <div className="w-full h-full flex items-center px-6 md:px-16 lg:px-24">
+                <div className="w-full h-full flex items-center">
                   <ImageSideSlide slide={slide} reverse={true} active={active} dict={t} />
                 </div>
               )}
