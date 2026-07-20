@@ -35,7 +35,7 @@ export default async function CheckoutPage({
   }));
 
   return (
-    <div className="max-w-xl mx-auto px-6 py-20">
+    <div className="max-w-6xl mx-auto px-6 py-20">
       <span className="text-accent text-xs font-semibold uppercase tracking-widest">
         {t.checkout.eyebrow}
       </span>

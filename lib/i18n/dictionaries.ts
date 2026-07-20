@@ -171,6 +171,10 @@ const en = {
     couponRemove: "Remove",
     couponApplied: "Coupon applied",
     discount: "Discount",
+    orderSummary: "Order Summary",
+    deliveryFee: "Delivery Fee",
+    paymentOptions: "Payment Options",
+    yourItems: "Your Items",
   },
   payment: {
     eyebrow: "// Secure Payment",
@@ -508,6 +512,10 @@ const it: typeof en = {
     couponRemove: "Rimuovi",
     couponApplied: "Coupon applicato",
     discount: "Sconto",
+    orderSummary: "Riepilogo Ordine",
+    deliveryFee: "Costo di Consegna",
+    paymentOptions: "Opzioni di Pagamento",
+    yourItems: "I Tuoi Articoli",
   },
   payment: {
     eyebrow: "// Pagamento Sicuro",
