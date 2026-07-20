@@ -90,7 +90,7 @@ export default function HeroShowcase({ slides: incoming }: { slides: HeroSlideDa
   const showSmoke = currentSlide.layout !== "FULL_BLEED";
 
   return (
-    <section className="relative h-175 sm:h-[80vh] sm:min-h-150 max-h-225 overflow-hidden bg-night">
+    <section className="relative h-200 sm:h-[88vh] sm:min-h-170 max-h-250 overflow-hidden bg-night">
       {showSmoke && (
         <div key={currentSlide.id} className="absolute inset-0 z-0 hero-smoke-fade-in-animation">
           {/* Fire red — green ≥ blue (no pink/magenta lean), high
@@ -103,13 +103,18 @@ export default function HeroShowcase({ slides: incoming }: { slides: HeroSlideDa
         </div>
       )}
       {/* Blends the smoke into the solid night background above (nav) and
-          below (next section) so there's no visible seam at either edge. */}
+          below (next section) so there's no visible seam at either edge.
+          Smoke stays visible until 70% of the (now taller) section before
+          fading, so it reaches further down; the 70%→100% fade-out tail is
+          shorter than before, tightening the dead black space above the
+          video section while still dissolving smoothly rather than cutting
+          off at a hard edge. */}
       <div
         aria-hidden
         className="absolute inset-0 z-1"
         style={{
           background:
-            "linear-gradient(to bottom, var(--color-night) 0%, transparent 18%, transparent 78%, var(--color-night) 100%)",
+            "linear-gradient(to bottom, var(--color-night) 0%, transparent 18%, transparent 70%, var(--color-night) 100%)",
         }}
       />
 
