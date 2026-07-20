@@ -2,6 +2,12 @@ import Link from "next/link";
 import { getFeaturedItems } from "@/lib/actions/public-menu.actions";
 import { getActiveHeroSlidesForHome } from "@/lib/actions/hero-slides.actions";
 import { getDict } from "@/lib/i18n/server";
+import { getRestaurantSettings } from "@/lib/settings/settings";
+import {
+  isTimeWithinHours,
+  parseOperatingHours,
+  type DayOfWeek,
+} from "@/lib/settings/operating-hours";
 import HeroShowcase from "@/components/home/HeroShowcase";
 import ScrollVideoSection from "@/components/home/ScrollVideoSection";
 import FeaturedMenuCarousel from "@/components/home/FeaturedMenuCarousel";
@@ -15,11 +21,17 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [slides, featured, t] = await Promise.all([
+  const [slides, featured, t, settings] = await Promise.all([
     getActiveHeroSlidesForHome(),
     getFeaturedItems(),
     getDict(),
+    getRestaurantSettings(),
   ]);
+
+  const operatingHours = parseOperatingHours(settings.operatingHours);
+  const now = new Date();
+  const isOpenNow = isTimeWithinHours(now, operatingHours);
+  const todayDay = now.getDay() as DayOfWeek;
 
   return (
     <div>
@@ -74,7 +86,11 @@ export default async function HomePage() {
       </RevealSection>
 
       {/* Table reservation CTA */}
-      <ReserveTableSection />
+      <ReserveTableSection
+        operatingHours={operatingHours}
+        isOpenNow={isOpenNow}
+        todayDay={todayDay}
+      />
 
       {/* Philosophy */}
       <RevealSection className="relative py-14 md:py-20 bg-carbon px-6 md:px-16 lg:px-24 overflow-hidden">
