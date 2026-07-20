@@ -46,7 +46,7 @@ export default function FeaturedMenuCard({
     <Link
       ref={wrapperRef}
       href={`/menu?highlight=${item.id}`}
-      className={`group relative block shrink-0 w-56 sm:w-64 snap-start ${
+      className={`group relative block grow shrink basis-56 sm:basis-64 min-w-56 sm:min-w-64 max-w-105 snap-start ${
         isInView ? "card-pop-in-animation" : "opacity-0"
       }`}
       style={{ animationDelay: `${Math.min(index, 6) * 90}ms` }}

@@ -12,6 +12,15 @@ if (typeof window !== "undefined") {
 const FRAME_COUNT = 160;
 const framePath = (i: number) => `/videos/frames/frame-${String(i + 1).padStart(4, "0")}.jpg`;
 
+// This section pins for PIN_VH of scroll, inserting a tall spacer that
+// shifts the scroll position of everything below it (notably
+// FeaturedMenuCarousel's ScrollTrigger). That spacer only exists once frame
+// decoding resolves, which can land before or after window "load" depending
+// on cache state — sections below can't safely guess the timing, so this
+// event fires once this section's own layout impact (pinned, reduced-motion,
+// or load-error) is finalized and it's safe for them to (re)measure.
+export const SCROLL_VIDEO_READY_EVENT = "sushi:scroll-video-ready";
+
 // Scroll distance while pinned — not tied to the source clip's real-time
 // duration since frames are scrubbed, not played back. Long enough that
 // the sequence reads as deliberate motion, not a quick flick.
@@ -92,6 +101,8 @@ export default function ScrollVideoSection() {
       imagesRef.current = images;
       if (loadedCount === 0) {
         setLoadError(true);
+        // No pin, so no layout impact — safe for later sections right away.
+        window.dispatchEvent(new Event(SCROLL_VIDEO_READY_EVENT));
       } else {
         setIsReady(true);
       }
@@ -155,6 +166,8 @@ export default function ScrollVideoSection() {
       gsap.set(section, { opacity: 1 });
       if (textEl) gsap.set(textEl, { opacity: 1, y: 0 });
       drawFrame(Math.floor(FRAME_COUNT / 2));
+      // No pin in this branch either — layout is already final.
+      window.dispatchEvent(new Event(SCROLL_VIDEO_READY_EVENT));
       return () => {
         window.removeEventListener("resize", handleResize);
         ScrollTrigger.removeEventListener("refresh", resizeCanvas);
@@ -225,6 +238,10 @@ export default function ScrollVideoSection() {
       );
       if (textIn.scrollTrigger) triggers.push(textIn.scrollTrigger);
     }
+
+    // The pin trigger above just reserved its scroll space — anything
+    // below can now measure its own position correctly.
+    window.dispatchEvent(new Event(SCROLL_VIDEO_READY_EVENT));
 
     return () => {
       triggers.forEach((trigger) => trigger.kill());
