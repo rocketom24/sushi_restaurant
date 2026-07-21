@@ -46,57 +46,81 @@ export default function FeaturedMenuCarousel({ items }: { items: FeaturedMenuIte
     const track = trackRef.current;
     if (!section || !viewport || !track) return;
 
-    const ctx = gsap.context(() => {
-      const distance = () => Math.max(0, track!.scrollWidth - viewport!.clientWidth);
+    let ctx: gsap.Context | undefined;
+    let resizeObserver: ResizeObserver | undefined;
+    let refreshTimer: ReturnType<typeof setTimeout>;
 
-      const tween = gsap.to(track, {
-        x: () => -distance(),
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 0.6,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            setAtStart(self.progress <= 0.001);
-            setAtEnd(self.progress >= 0.999);
+    function build() {
+      ctx = gsap.context(() => {
+        const distance = () => Math.max(0, track!.scrollWidth - viewport!.clientWidth);
+
+        const tween = gsap.to(track, {
+          x: () => -distance(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              setAtStart(self.progress <= 0.001);
+              setAtEnd(self.progress >= 0.999);
+            },
+            onRefresh: () => setHasOverflow(distance() > 0),
           },
-          onRefresh: () => setHasOverflow(distance() > 0),
-        },
-      });
-      scrollTriggerRef.current = tween.scrollTrigger ?? null;
-      setHasOverflow(distance() > 0);
-    }, section);
+        });
+        scrollTriggerRef.current = tween.scrollTrigger ?? null;
+        setHasOverflow(distance() > 0);
+      }, section!);
+
+      // A later ScrollTrigger.refresh() can't correct a trigger's start/end
+      // once it's been measured against the wrong layout — GSAP bakes in
+      // the pin space that existed *at creation time* and doesn't re-derive
+      // it from scratch afterward. So instead of creating this trigger
+      // eagerly and trying to refresh it into correctness, only late
+      // changes (a font swap, a resized image) still get picked up here.
+      function scheduleRefresh() {
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 50);
+      }
+      resizeObserver = new ResizeObserver(scheduleRefresh);
+      resizeObserver.observe(document.body);
+    }
 
     // An earlier section on this page (the scroll-video hero) pins itself
     // for several viewport-heights of scroll, and that reserved space only
     // exists once its async frame decode resolves — which can land before
-    // or after this component mounts depending on cache state. A one-time
-    // "load"/ready-event refresh isn't enough to guarantee correctness on
-    // every load: any further height change after that point (a late font
-    // swap, a delayed image, the pin-spacer settling to a slightly
-    // different size) silently leaves this trigger's start/end stale.
-    // Watching the document's actual height instead of guessing which
-    // events matter is what makes the position correct on every load,
-    // not just the ones where the timing happens to line up.
-    let refreshTimer: ReturnType<typeof setTimeout>;
-    function scheduleRefresh() {
-      clearTimeout(refreshTimer);
-      refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 50);
+    // or after this component mounts depending on cache state. Measuring
+    // this trigger before that pin space is reserved bakes in a start/end
+    // that's short by exactly that reserved distance (confirmed: GSAP does
+    // not re-derive it via ScrollTrigger.refresh(), even forced), which is
+    // what desynced the scroll-tied pan and sent the arrow buttons to the
+    // wrong place on the page. Waiting for that ready signal — with a
+    // fallback timeout for pages that never fire it — avoids the bad
+    // measurement instead of trying to fix it after the fact.
+    let built = false;
+    const fallback = setTimeout(() => {
+      if (!built) {
+        built = true;
+        build();
+      }
+    }, 1000);
+    function onVideoReady() {
+      if (built) return;
+      built = true;
+      clearTimeout(fallback);
+      build();
     }
-    const resizeObserver = new ResizeObserver(scheduleRefresh);
-    resizeObserver.observe(document.body);
-    window.addEventListener("load", scheduleRefresh);
-    window.addEventListener(SCROLL_VIDEO_READY_EVENT, scheduleRefresh);
+    window.addEventListener(SCROLL_VIDEO_READY_EVENT, onVideoReady, { once: true });
 
     return () => {
+      clearTimeout(fallback);
       clearTimeout(refreshTimer);
-      resizeObserver.disconnect();
-      window.removeEventListener("load", scheduleRefresh);
-      window.removeEventListener(SCROLL_VIDEO_READY_EVENT, scheduleRefresh);
+      window.removeEventListener(SCROLL_VIDEO_READY_EVENT, onVideoReady);
+      resizeObserver?.disconnect();
       scrollTriggerRef.current = null;
-      ctx.revert();
+      ctx?.revert();
     };
   }, [items.length, reducedMotion]);
 
