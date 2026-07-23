@@ -482,11 +482,11 @@ export default function FullBleedSlide({
         <div className="relative flex-1 w-full max-w-4xl flex items-center justify-center py-4 md:py-6 min-h-0">
           <div
             aria-hidden
-            className="absolute w-[70%] max-w-xl aspect-[16/10] rounded-full blur-3xl"
+            className="absolute w-[70%] max-w-xl aspect-16/10 rounded-full blur-3xl"
             style={{ background: "radial-gradient(circle, rgba(155,27,48,0.45), transparent 70%)" }}
           />
 
-          <div className="relative w-[86%] sm:w-[75%] max-w-xl aspect-[16/10]">
+          <div className="relative w-[86%] sm:w-[75%] max-w-xl aspect-16/10">
             {slide.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
