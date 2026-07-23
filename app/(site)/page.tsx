@@ -47,7 +47,10 @@ export default async function HomePage() {
       <FeaturedMenuCarousel items={featured} />
 
       {/* Home delivery CTA */}
-      <RevealSection className="relative py-14 md:py-20 bg-night px-6 md:px-16 lg:px-24 overflow-hidden">
+      <RevealSection
+        id="delivery"
+        className="relative py-14 md:py-20 bg-night px-6 md:px-16 lg:px-24 overflow-hidden scroll-mt-24"
+      >
         {/* Ambient dot-field background — theme-colored, dimmed, masked
             top/bottom so it fades into the night sections above/below
             instead of a hard rectangle edge. Content stays above at z-10. */}
@@ -81,22 +84,15 @@ export default async function HomePage() {
               aria-hidden
               className="absolute w-72 h-72 sm:w-96 sm:h-96 bg-accent/10 rounded-full blur-3xl"
             />
-            {/* Filled dark red circle behind the delivery man. Sized to
-                roughly match the photo's own height so its lower edge
-                lines up with the circle's curve; the photo's bottom fades
-                into it (see mask below) instead of showing a hard cutoff. */}
+            {/* Hollow ring behind the delivery man — background shows through,
+                dark red border only. Sized to roughly match the photo's own
+                height so its lower edge lines up with the circle's curve;
+                the photo's bottom fades into it (see mask below) instead of
+                showing a hard cutoff. */}
             <div
               aria-hidden
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 md:w-md md:h-112 rounded-full bg-deep-bordeaux shadow-[0_0_40px_rgba(155,27,48,0.35)] floating-animation overflow-hidden"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/logo.png"
-                alt=""
-                aria-hidden
-                className="absolute inset-0 w-full h-full object-cover opacity-50 blur-sm"
-              />
-            </div>
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 md:w-md md:h-112 rounded-full border-4 border-deep-bordeaux shadow-[0_0_40px_rgba(155,27,48,0.35)] floating-animation"
+            />
             <div
               aria-hidden
               className="absolute bottom-6 inset-x-12 h-8 rounded-full bg-black/60 blur-2xl"

@@ -36,6 +36,24 @@ const en = {
   footer: {
     hours: "Lunch 12:00–14:30 · Dinner 18:00–22:30",
     rights: "All rights reserved.",
+    tagline: "Delivery to Your Doorstep",
+    locationTitle: "Find Us Here",
+    directions: "Directions",
+    addressFallback: "Address coming soon",
+    contactTitle: "Contact",
+    phoneLabel: "Phone",
+    emailLabel: "Email",
+    hoursLabel: "Hours",
+    linksTitle: "Important Links",
+    linkMenu: "Menu",
+    linkReservations: "Reservations",
+    linkDelivery: "Home Delivery",
+    linkAbout: "About",
+    linkContact: "Contact",
+    linkCareers: "Careers",
+    paymentTitle: "We Accept",
+    privacy: "Privacy Policy",
+    terms: "Terms of Service",
   },
   home: {
     brandEyebrow: "Japanese Sushi · Italian Kitchen",
@@ -347,6 +365,28 @@ const en = {
       DINE_IN: "Dine In",
     },
   },
+  pages: {
+    about: {
+      title: "About Us",
+      text: "Our story is being written. Check back soon.",
+    },
+    contact: {
+      title: "Contact Us",
+      text: "Reach us by phone or email — details in the footer below.",
+    },
+    careers: {
+      title: "Careers",
+      text: "We're not hiring right now, but check back — great things are cooking.",
+    },
+    privacy: {
+      title: "Privacy Policy",
+      text: "Our privacy policy is being finalized. Check back soon.",
+    },
+    terms: {
+      title: "Terms of Service",
+      text: "Our terms of service are being finalized. Check back soon.",
+    },
+  },
 };
 
 const it: typeof en = {
@@ -377,6 +417,24 @@ const it: typeof en = {
   footer: {
     hours: "Pranzo 12:00–14:30 · Cena 18:00–22:30",
     rights: "Tutti i diritti riservati.",
+    tagline: "Consegna Direttamente a Casa Tua",
+    locationTitle: "Dove Siamo",
+    directions: "Indicazioni",
+    addressFallback: "Indirizzo in arrivo",
+    contactTitle: "Contatti",
+    phoneLabel: "Telefono",
+    emailLabel: "Email",
+    hoursLabel: "Orari",
+    linksTitle: "Link Utili",
+    linkMenu: "Menu",
+    linkReservations: "Prenotazioni",
+    linkDelivery: "Consegna a Domicilio",
+    linkAbout: "Chi Siamo",
+    linkContact: "Contatti",
+    linkCareers: "Lavora con Noi",
+    paymentTitle: "Metodi Accettati",
+    privacy: "Privacy Policy",
+    terms: "Termini di Servizio",
   },
   home: {
     brandEyebrow: "Sushi Giapponese · Cucina Italiana",
@@ -686,6 +744,28 @@ const it: typeof en = {
       TAKEAWAY: "Asporto",
       DELIVERY: "Consegna",
       DINE_IN: "Al Tavolo",
+    },
+  },
+  pages: {
+    about: {
+      title: "Chi Siamo",
+      text: "La nostra storia è in preparazione. Torna a trovarci presto.",
+    },
+    contact: {
+      title: "Contattaci",
+      text: "Contattaci per telefono o email — i dettagli sono nel footer qui sotto.",
+    },
+    careers: {
+      title: "Lavora con Noi",
+      text: "Al momento non stiamo assumendo, ma torna a trovarci — presto novità.",
+    },
+    privacy: {
+      title: "Privacy Policy",
+      text: "La nostra privacy policy è in fase di definizione. Torna a trovarci presto.",
+    },
+    terms: {
+      title: "Termini di Servizio",
+      text: "I nostri termini di servizio sono in fase di definizione. Torna a trovarci presto.",
     },
   },
 };
