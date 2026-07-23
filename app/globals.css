@@ -274,6 +274,48 @@ body {
   }
 }
 
+/* Discount-header marquee rows — two infinite duplicated-content loops,
+   one per direction, same translateX(-50%) technique as the sushi
+   conveyor belt. */
+@keyframes discount-marquee-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes discount-marquee-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Orbit discount badge — rotating dashed ring plus an idle glow/scale
+   pulse on the badge itself. */
+@keyframes badge-orbit-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes badge-orbit-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 24px 4px rgba(155, 27, 48, 0.55);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 36px 10px rgba(155, 27, 48, 0.85);
+  }
+}
+
 /* Hero slide progress dashes — fills left-to-right over the same 5s the
    slide is on screen, Stories-style. Base state (and the reduced-motion
    fallback) is simply "filled", so a static page still shows the active
@@ -305,7 +347,11 @@ body {
 .reveal-4,
 .badge-pop-animation,
 .card-pop-in-animation,
-.sale-badge-pulse-animation {
+.sale-badge-pulse-animation,
+.discount-marquee-right-animation,
+.discount-marquee-left-animation,
+.badge-orbit-ring-animation,
+.badge-orbit-pulse-animation {
   animation: none;
 }
 
@@ -346,6 +392,18 @@ body {
   }
   .sale-badge-pulse-animation {
     animation: sale-badge-pulse 1.8s ease-in-out infinite;
+  }
+  .discount-marquee-right-animation {
+    animation: discount-marquee-right 28s linear infinite;
+  }
+  .discount-marquee-left-animation {
+    animation: discount-marquee-left 28s linear infinite;
+  }
+  .badge-orbit-ring-animation {
+    animation: badge-orbit-spin 8s linear infinite;
+  }
+  .badge-orbit-pulse-animation {
+    animation: badge-orbit-pulse 2.2s ease-in-out infinite;
   }
 }
 
