@@ -87,8 +87,16 @@ export default async function HomePage() {
                 into it (see mask below) instead of showing a hard cutoff. */}
             <div
               aria-hidden
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 md:w-md md:h-112 rounded-full bg-deep-bordeaux shadow-[0_0_40px_rgba(155,27,48,0.35)] floating-animation"
-            />
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 md:w-md md:h-112 rounded-full bg-deep-bordeaux shadow-[0_0_40px_rgba(155,27,48,0.35)] floating-animation overflow-hidden"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.png"
+                alt=""
+                aria-hidden
+                className="absolute inset-0 w-full h-full object-cover opacity-50 blur-sm"
+              />
+            </div>
             <div
               aria-hidden
               className="absolute bottom-6 inset-x-12 h-8 rounded-full bg-black/60 blur-2xl"
