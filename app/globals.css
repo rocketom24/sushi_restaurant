@@ -135,9 +135,22 @@ body {
   }
 }
 
+/* Gentle rotate-only tilt for the delivery man photo, layered over its
+   own dark red circle backdrop (which floats independently). */
+@keyframes gentle-tilt {
+  0%,
+  100% {
+    transform: rotate(-1.5deg);
+  }
+  50% {
+    transform: rotate(1.5deg);
+  }
+}
+
 .floating-animation,
 .dynamic-glow,
-.hero-smoke-fade-in-animation {
+.hero-smoke-fade-in-animation,
+.image-tilt-animation {
   animation: none;
 }
 
@@ -150,6 +163,9 @@ body {
   }
   .hero-smoke-fade-in-animation {
     animation: hero-smoke-fade-in 1.2s ease-out both;
+  }
+  .image-tilt-animation {
+    animation: gentle-tilt 5s ease-in-out infinite;
   }
 }
 

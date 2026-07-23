@@ -81,6 +81,14 @@ export default async function HomePage() {
               aria-hidden
               className="absolute w-72 h-72 sm:w-96 sm:h-96 bg-accent/10 rounded-full blur-3xl"
             />
+            {/* Filled dark red circle behind the delivery man. Sized to
+                roughly match the photo's own height so its lower edge
+                lines up with the circle's curve; the photo's bottom fades
+                into it (see mask below) instead of showing a hard cutoff. */}
+            <div
+              aria-hidden
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 md:w-md md:h-112 rounded-full bg-deep-bordeaux shadow-[0_0_40px_rgba(155,27,48,0.35)] floating-animation"
+            />
             <div
               aria-hidden
               className="absolute bottom-6 inset-x-12 h-8 rounded-full bg-black/60 blur-2xl"
@@ -89,7 +97,13 @@ export default async function HomePage() {
             <img
               src="/images/deliveryman.png"
               alt={t.home.deliveryImageAlt}
-              className="relative w-full max-w-sm sm:max-w-lg md:max-w-xl floating-animation"
+              className="relative w-full max-w-sm sm:max-w-lg md:max-w-xl image-tilt-animation"
+              style={{
+                maskImage:
+                  "linear-gradient(to bottom, black 0%, black 78%, transparent 96%)",
+                WebkitMaskImage:
+                  "linear-gradient(to bottom, black 0%, black 78%, transparent 96%)",
+              }}
             />
           </div>
 
