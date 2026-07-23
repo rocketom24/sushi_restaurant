@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EB_Garamond, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { EB_Garamond, Geist_Mono, Plus_Jakarta_Sans, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { I18nProvider } from "@/components/i18n/I18nProvider";
@@ -24,6 +24,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const bebasNeue = Bebas_Neue({
+  variable: "--font-marquee",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: {
     default: "Nagasaki Sushi & Poke",
@@ -43,7 +49,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${jakarta.variable} ${geistMono.variable} ${ebGaramond.variable} antialiased`}
+        className={`${jakarta.variable} ${geistMono.variable} ${ebGaramond.variable} ${bebasNeue.variable} antialiased`}
       >
         <I18nProvider locale={locale}>
           <CartProvider>{children}</CartProvider>

@@ -86,6 +86,14 @@ body {
   letter-spacing: -0.02em;
 }
 
+/* Condensed poster face for the discount-header marquee text and the
+ * orbit discount badge — the site's other two fonts (EB Garamond,
+ * Plus Jakarta Sans) don't have a bold condensed weight that reads at
+ * small marquee sizes. */
+.font-marquee {
+  font-family: var(--font-marquee), sans-serif;
+}
+
 /* Glassmorphism containers for food cards */
 .glass {
   background: rgba(15, 17, 21, 0.65);
