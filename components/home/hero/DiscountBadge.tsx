@@ -23,7 +23,7 @@ export default function DiscountBadge({
   if (variant === "orbit") {
     return (
       <div
-        className={`relative shrink-0 w-24 h-24 sm:w-32 sm:h-32 md:w-37 md:h-37 rotate-[-8deg] ${
+        className={`relative shrink-0 rounded-full w-24 h-24 sm:w-32 sm:h-32 md:w-37 md:h-37 rotate-[-8deg] ${
           active ? "badge-orbit-pulse-animation" : "opacity-0"
         }`}
       >

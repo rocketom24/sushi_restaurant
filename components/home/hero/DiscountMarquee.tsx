@@ -1,9 +1,10 @@
 // components/home/hero/DiscountMarquee.tsx
 //
 // One infinite-scrolling row of decorative food-name / discount text,
-// used above and below the offer slide's centered image. Content is
-// static English flavor text — not slide data, not run through i18n —
-// duplicated once so the loop point is seamless.
+// sized to sit as a large background layer behind the offer slide's
+// centered image (the image occludes the middle, text shows past its
+// edges). Content is static English flavor text — not slide data, not
+// run through i18n — duplicated once so the loop point is seamless.
 
 type MarqueeItem = { text: string; highlight?: boolean };
 
@@ -36,20 +37,20 @@ export default function DiscountMarquee({ direction }: { direction: "left" | "ri
     direction === "left" ? "discount-marquee-left-animation" : "discount-marquee-right-animation";
 
   return (
-    <div aria-hidden className="hidden sm:block w-full overflow-hidden py-2 md:py-3">
-      <div className={`flex items-center w-max gap-6 md:gap-10 whitespace-nowrap ${animationClass}`}>
+    <div aria-hidden className="hidden sm:block w-full overflow-hidden">
+      <div className={`flex items-center w-max gap-8 md:gap-14 whitespace-nowrap ${animationClass}`}>
         {row.map((item, i) => (
-          <span key={i} className="flex items-center gap-6 md:gap-10">
+          <span key={i} className="flex items-center gap-8 md:gap-14">
             <span
               className={
                 item.highlight
-                  ? "font-marquee text-lg md:text-2xl tracking-wide text-accent drop-shadow-[0_0_10px_rgba(155,27,48,0.8)]"
-                  : "font-marquee text-base md:text-xl tracking-wide text-cream/42"
+                  ? "font-marquee text-3xl md:text-6xl tracking-wide text-accent drop-shadow-[0_0_14px_rgba(155,27,48,0.85)]"
+                  : "font-marquee text-2xl md:text-5xl tracking-wide text-cream/42"
               }
             >
               {item.text}
             </span>
-            <span className="text-cream/20">·</span>
+            <span className="text-cream/20 text-2xl md:text-5xl">·</span>
           </span>
         ))}
       </div>

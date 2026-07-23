@@ -30,10 +30,6 @@ export default function FullBleedSlide({
     // fine and matches the rest of the discount-header palette.
     return (
       <div className="relative w-full h-full bg-night flex flex-col items-center justify-center overflow-hidden px-4">
-        <div className="w-full">
-          <DiscountMarquee direction="right" />
-        </div>
-
         <div className="relative flex-1 w-full max-w-4xl flex items-center justify-center py-4 md:py-6 min-h-0">
           <div
             aria-hidden
@@ -41,7 +37,19 @@ export default function FullBleedSlide({
             style={{ background: "radial-gradient(circle, rgba(155,27,48,0.45), transparent 70%)" }}
           />
 
-          <div className="relative w-[86%] sm:w-[75%] max-w-xl aspect-16/10">
+          {/* Marquee text layer — sits behind the image (lower z-index),
+              sized large so it reads as a moving background layer that
+              peeks out past the image's edges rather than framing text
+              above/below it. */}
+          <div
+            aria-hidden
+            className="absolute inset-0 z-0 flex flex-col justify-between py-1 md:py-2 pointer-events-none"
+          >
+            <DiscountMarquee direction="right" />
+            <DiscountMarquee direction="left" />
+          </div>
+
+          <div className="relative z-10 w-[86%] sm:w-[75%] max-w-xl aspect-16/10">
             {slide.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -96,10 +104,6 @@ export default function FullBleedSlide({
               {dict.bookTable}
             </Link>
           </div>
-        </div>
-
-        <div className="w-full mt-2 md:mt-4">
-          <DiscountMarquee direction="left" />
         </div>
 
         <div className="relative z-10 flex flex-col items-center gap-2 py-3 md:py-4">
