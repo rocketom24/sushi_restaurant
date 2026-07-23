@@ -6,6 +6,7 @@ import {
   parseOperatingHours,
 } from "@/lib/settings/settings";
 import ReservationForm from "@/components/reservations/ReservationForm";
+import { LampContainer } from "@/components/ui/lamp";
 
 export const metadata = { title: "Book a Table" };
 
@@ -17,16 +18,22 @@ export default async function NewReservationPage() {
   const timeSlots = allPossibleSlots(hours, settings.reservationSlotIntervalMinutes);
 
   return (
-    <div className="max-w-lg mx-auto px-6 py-20">
-      <div className="mb-10">
-        <span className="text-accent text-xs font-semibold uppercase tracking-widest">
-          {t.reservations.formEyebrow}
-        </span>
-        <h1 className="font-serif text-3xl md:text-4xl text-cream mt-2">
-          {t.reservations.formTitle}
-        </h1>
+    <LampContainer>
+      <div className="w-full max-w-lg mx-auto">
+        <div className="text-center mb-8">
+          <span className="text-accent text-xs font-semibold uppercase tracking-widest">
+            {t.reservations.formEyebrow}
+          </span>
+          <h1 className="font-serif text-3xl md:text-4xl text-cream mt-2">
+            {t.reservations.formTitle}
+          </h1>
+        </div>
+        <div className="glow-card">
+          <div className="glow-card-inner rounded-2xl bg-night backdrop-blur-xl shadow-2xl shadow-black/50 p-6 md:p-8">
+            <ReservationForm timeSlots={timeSlots} maxGuests={settings.reservationMaxGuests} />
+          </div>
+        </div>
       </div>
-      <ReservationForm timeSlots={timeSlots} maxGuests={settings.reservationMaxGuests} />
-    </div>
+    </LampContainer>
   );
 }
