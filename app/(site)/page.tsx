@@ -13,6 +13,7 @@ import ScrollVideoSection from "@/components/home/ScrollVideoSection";
 import FeaturedMenuCarousel from "@/components/home/FeaturedMenuCarousel";
 import RevealSection from "@/components/home/RevealSection";
 import ReserveTableSection from "@/components/home/ReserveTableSection";
+import DotField from "@/src/components/DotField/DotField";
 
 export const metadata = {
   title: "Nagasaki Sushi & Poke — Japanese Sushi, Delivered & at the Table",
@@ -47,7 +48,34 @@ export default async function HomePage() {
 
       {/* Home delivery CTA */}
       <RevealSection className="relative py-14 md:py-20 bg-night px-6 md:px-16 lg:px-24 overflow-hidden">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        {/* Ambient dot-field background — theme-colored, dimmed, masked
+            top/bottom so it fades into the night sections above/below
+            instead of a hard rectangle edge. Content stays above at z-10. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 z-0 opacity-25 pointer-events-none"
+          style={{
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
+          }}
+        >
+          <DotField
+            dotRadius={1.2}
+            dotSpacing={20}
+            cursorRadius={260}
+            bulgeStrength={40}
+            glowRadius={140}
+            sparkle={false}
+            waveAmplitude={0}
+            gradientFrom="rgba(155, 27, 48, 0.55)"
+            gradientTo="rgba(242, 222, 212, 0.35)"
+            glowColor="#9b1b30"
+          />
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="relative flex justify-center">
             <div
               aria-hidden
