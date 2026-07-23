@@ -27,7 +27,7 @@ export default async function RewardsPage() {
           </Link>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
           <RewardTable rewards={rewards} />
         </div>
       </div>
@@ -36,7 +36,7 @@ export default async function RewardsPage() {
         <h2 className="text-lg font-semibold text-neutral-900 mb-4">
           Redemptions
         </h2>
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
           <RewardRedemptionsTable redemptions={redemptions} />
         </div>
       </div>

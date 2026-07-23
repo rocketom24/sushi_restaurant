@@ -19,7 +19,7 @@ export default async function CategoriesPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
         <CategoryTable categories={categories} />
       </div>
     </div>

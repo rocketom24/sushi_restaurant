@@ -35,7 +35,7 @@ export default async function LoyaltyDashboardPage() {
       </div>
 
       <h2 className="text-lg font-semibold text-neutral-900 mb-4">Top Customers</h2>
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
         {topCustomers.length === 0 ? (
           <p className="text-gray-500 text-center py-12">
             No customers have earned points yet.

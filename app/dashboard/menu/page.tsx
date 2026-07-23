@@ -19,7 +19,7 @@ export default async function MenuDashboardPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
         <MenuItemTable items={items} />
       </div>
     </div>

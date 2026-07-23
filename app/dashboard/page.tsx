@@ -84,34 +84,36 @@ export default async function DashboardPage() {
         {recentOrders.length === 0 ? (
           <p className="text-gray-400 text-sm text-center py-8">No orders yet.</p>
         ) : (
-          <table className="w-full border-collapse mt-3">
-            <thead>
-              <tr className="border-b border-gray-200 text-left text-sm text-gray-500">
-                <th className="py-2 px-5">Order #</th>
-                <th className="py-2 px-5">Customer</th>
-                <th className="py-2 px-5">Type</th>
-                <th className="py-2 px-5">Total</th>
-                <th className="py-2 px-5">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentOrders.map((o) => (
-                <tr key={o.id} className="border-b border-gray-100 last:border-0">
-                  <td className="py-2.5 px-5">
-                    <Link href={`/dashboard/orders/${o.id}`} className="text-neutral-900 underline text-sm">
-                      {o.orderNumber}
-                    </Link>
-                  </td>
-                  <td className="py-2.5 px-5 text-sm text-gray-600">{o.customerName}</td>
-                  <td className="py-2.5 px-5 text-sm text-gray-600">{o.orderType.replace("_", " ")}</td>
-                  <td className="py-2.5 px-5 text-sm text-gray-600">€{o.totalAmount.toFixed(2)}</td>
-                  <td className="py-2.5 px-5">
-                    <OrderStatusBadge status={o.status} />
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse mt-3">
+              <thead>
+                <tr className="border-b border-gray-200 text-left text-sm text-gray-500">
+                  <th className="py-2 px-5">Order #</th>
+                  <th className="py-2 px-5">Customer</th>
+                  <th className="py-2 px-5">Type</th>
+                  <th className="py-2 px-5">Total</th>
+                  <th className="py-2 px-5">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {recentOrders.map((o) => (
+                  <tr key={o.id} className="border-b border-gray-100 last:border-0">
+                    <td className="py-2.5 px-5">
+                      <Link href={`/dashboard/orders/${o.id}`} className="text-neutral-900 underline text-sm">
+                        {o.orderNumber}
+                      </Link>
+                    </td>
+                    <td className="py-2.5 px-5 text-sm text-gray-600">{o.customerName}</td>
+                    <td className="py-2.5 px-5 text-sm text-gray-600">{o.orderType.replace("_", " ")}</td>
+                    <td className="py-2.5 px-5 text-sm text-gray-600">€{o.totalAmount.toFixed(2)}</td>
+                    <td className="py-2.5 px-5">
+                      <OrderStatusBadge status={o.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </div>

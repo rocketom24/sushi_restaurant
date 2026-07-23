@@ -24,7 +24,7 @@ export default async function HeroSlidesPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
         <HeroSlideTable slides={slides} />
       </div>
     </div>
