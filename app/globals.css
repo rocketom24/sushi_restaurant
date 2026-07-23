@@ -431,3 +431,31 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/*
+  Pure-CSS 1-5 star rating input. Markup order is 5,4,3,2,1 (reversed by
+  flex-direction: row-reverse below) so the general-sibling combinator
+  can light up every star "before" (visually: up to and including) the
+  checked/hovered one using only ~, no JS required.
+*/
+.rating-stars {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+.rating-stars input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.rating-stars label {
+  cursor: pointer;
+  color: var(--color-gray-600);
+  transition: color 0.15s ease;
+  line-height: 1;
+}
+.rating-stars input:checked ~ label,
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+  color: var(--color-accent);
+}

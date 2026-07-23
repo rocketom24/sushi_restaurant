@@ -31,6 +31,8 @@ model User {
   assignedKitchenTickets KitchenTicket[]
   assignedKitchenTicketItems KitchenTicketItem[] @relation("KitchenTicketItemChef")
 
+  reviews Review[]
+
   @@index([email])
   @@index([role])
   @@map("users")
@@ -141,9 +143,10 @@ model Order {
   couponRedemptions   CouponRedemption[]
   loyaltyTransactions LoyaltyTransaction[]
 
-  
+
   kitchenTicket KitchenTicket?
 
+  review Review?
 
   @@index([status])
   @@index([orderType])
@@ -247,6 +250,40 @@ model Reservation {
   @@index([userId])
 
   @@map("reservations")
+}
+
+// =======================================================
+// REVIEWS — customer reviews left on completed orders.
+// One review per order (orderId is @unique). Reviews start PENDING and
+// only become public once the owner approves them and they're visible.
+// =======================================================
+
+model Review {
+  id      String @id @default(uuid())
+  rating  Int // 1-5
+  title   String
+  comment String
+
+  status     ReviewStatus @default(PENDING)
+  isVisible  Boolean      @default(true) // owner hide/unhide, independent of approval
+  isFeatured Boolean      @default(false) // pinned to the front of the homepage carousel
+  sortOrder  Int          @default(0) // manual display order among approved reviews
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([status])
+  @@index([isVisible])
+  @@index([isFeatured])
+  @@index([userId])
+  @@map("reviews")
 }
 
 model CustomizationGroup {
@@ -806,4 +843,10 @@ enum SpiceLevel {
   MILD
   MEDIUM
   HOT
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

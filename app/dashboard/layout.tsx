@@ -45,6 +45,9 @@ export default async function DashboardLayout({
             <Link href="/dashboard/loyalty" className="hover:text-neutral-900 hover:underline">
               Loyalty
             </Link>
+            <Link href="/dashboard/reviews" className="hover:text-neutral-900 hover:underline">
+              Reviews
+            </Link>
             <Link href="/dashboard/analytics" className="hover:text-neutral-900 hover:underline">
               Analytics
             </Link>

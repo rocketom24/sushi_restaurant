@@ -13,7 +13,9 @@ import ScrollVideoSection from "@/components/home/ScrollVideoSection";
 import FeaturedMenuCarousel from "@/components/home/FeaturedMenuCarousel";
 import RevealSection from "@/components/home/RevealSection";
 import ReserveTableSection from "@/components/home/ReserveTableSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
 import DotField from "@/src/components/DotField/DotField";
+import { getPublicReviews, getPublicReviewStats } from "@/lib/actions/review.actions";
 
 export const metadata = {
   title: "Nagasaki Sushi & Poke — Japanese Sushi, Delivered & at the Table",
@@ -22,11 +24,13 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [slides, featured, t, settings] = await Promise.all([
+  const [slides, featured, t, settings, reviews, reviewStats] = await Promise.all([
     getActiveHeroSlidesForHome(),
     getFeaturedItems(),
     getDict(),
     getRestaurantSettings(),
+    getPublicReviews(),
+    getPublicReviewStats(),
   ]);
 
   const operatingHours = parseOperatingHours(settings.operatingHours);
@@ -138,49 +142,8 @@ export default async function HomePage() {
         todayDay={todayDay}
       />
 
-      {/* Philosophy */}
-      <RevealSection className="relative py-14 md:py-20 bg-carbon px-6 md:px-16 lg:px-24 overflow-hidden">
-        {/* Top/bottom fade — blends this carbon panel into the night
-            sections above and below it instead of a hard color cut. */}
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-16 md:h-20 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, var(--color-night) 0%, transparent 100%)" }}
-        />
-        <div
-          aria-hidden
-          className="absolute inset-x-0 bottom-0 h-16 md:h-20 pointer-events-none"
-          style={{ background: "linear-gradient(to top, var(--color-night) 0%, transparent 100%)" }}
-        />
-        <div className="relative max-w-2xl">
-          <span className="text-gray-500 text-xs uppercase tracking-widest">
-            {t.home.philosophyEyebrow}
-          </span>
-          <h3 className="text-3xl font-serif mt-2 mb-4 text-cream">
-            {t.home.philosophyTitle}
-          </h3>
-          <p className="text-sm text-gray-400 font-light leading-relaxed">
-            {t.home.philosophyText}
-          </p>
-        </div>
-      </RevealSection>
-
-      {/* Hours & reserve */}
-      <RevealSection className="py-16 md:py-20 bg-night px-6 md:px-16 lg:px-24 text-center">
-        <span className="text-accent text-xs font-semibold uppercase tracking-widest">
-          {t.home.hoursEyebrow}
-        </span>
-        <h2 className="text-3xl md:text-4xl font-serif mt-2 mb-3 text-cream">
-          {t.home.hoursTitle}
-        </h2>
-        <p className="text-sm text-gray-400 font-light mb-10">{t.footer.hours}</p>
-        <Link
-          href="/reservations/new"
-          className="inline-block bg-accent hover:bg-white hover:text-night text-white px-8 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300"
-        >
-          {t.home.reserveCta}
-        </Link>
-      </RevealSection>
+      {/* Customer testimonials — approved & visible reviews only */}
+      <TestimonialsSection reviews={reviews} stats={reviewStats} />
     </div>
   );
 }

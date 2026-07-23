@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
 import { getMyOrderById } from "@/lib/actions/order.actions";
+import { getMyReviewForOrder, createReviewAction } from "@/lib/actions/review.actions";
 import { getDict, getLocale } from "@/lib/i18n/server";
 import OrderStatusBadge from "@/components/orders/OrderStatusBadge";
 import CancelOrderButton from "@/components/orders/CancelOrderButton";
+import ReviewForm from "@/components/orders/ReviewForm";
+import MyReviewCard from "@/components/orders/MyReviewCard";
 import { canCustomerCancel } from "@/lib/orders/status-transitions";
 
 export default async function MyOrderDetailPage({
@@ -18,6 +21,8 @@ export default async function MyOrderDetailPage({
   ]);
 
   if (!order) notFound();
+
+  const myReview = order.status === "COMPLETED" ? await getMyReviewForOrder(id) : null;
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-20">
@@ -100,6 +105,26 @@ export default async function MyOrderDetailPage({
         <div className="text-right">
           <CancelOrderButton orderId={order.id} />
         </div>
+      )}
+
+      {order.status === "COMPLETED" && (
+        myReview ? (
+          <MyReviewCard review={myReview} />
+        ) : (
+          <div className="glass rounded-3xl p-6 mb-5">
+            <span className="text-accent text-xs font-semibold uppercase tracking-widest">
+              {t.orders.reviewEyebrow}
+            </span>
+            <h2 className="font-serif text-xl text-cream mt-2 mb-5">
+              {t.orders.reviewTitle}
+            </h2>
+            <ReviewForm
+              action={createReviewAction.bind(null, order.id)}
+              submitLabel={t.orders.reviewSubmit}
+              submittingLabel={t.orders.reviewSubmitting}
+            />
+          </div>
+        )
       )}
     </div>
   );
